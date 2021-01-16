@@ -13,4 +13,19 @@ enum BLEType
     Client
 };
 
+class MyBLE
+{
+private:
+    BLERemoteCharacteristic *ClientRemoteCharacteristic = NULL;
+    BLERemoteService *ClientRemoteService = NULL;
+    BLEClient *pClient = NULL;
+    BLEScan *pBLEScan = NULL;
+public:
+    MyBLE(BLEType type);
+    void TickServer();
+    void TickClient();
+};
+
+extern class MyBLE *BLE;
+
 #endif
