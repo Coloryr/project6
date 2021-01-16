@@ -119,12 +119,14 @@ MyBLE::MyBLE(BLEType type)
         pBLEScan->setActiveScan(true);
         pBLEScan->start(5);
         ClientDoScan = true;
+
+        Serial.println("BLE Search Start");
     }
 }
 
 void MyBLE::TickServer()
 {
-
+    
 }
 
 void MyBLE::TickClient()
@@ -135,7 +137,7 @@ void MyBLE::TickClient()
     }
     else if (!ClientConnect)
     {
-        Serial.println("Start Connecting");
+        Serial.println("BLE Connecting");
         pClient = BLEDevice::createClient();
         pClient->setClientCallbacks(new ClientCall());
         pClient->connect(ClientDevice);
@@ -161,17 +163,11 @@ void MyBLE::TickClient()
         if (ClientRemoteCharacteristic->canNotify())
             ClientRemoteCharacteristic->registerForNotify(ClientNotifyCallback);
 
-        Serial.println("Connected");
+        Serial.println("BLE Connected");
         ClientConnect = true;
     }
     else
     {
-        if (ClientRemoteCharacteristic->canRead())
-        {
-            std::string value = ClientRemoteCharacteristic->readValue();
-            Serial.print("The characteristic value was: ");
-            Serial.println(value.c_str());
-        }
         if (ClientRemoteCharacteristic->canWrite())
         {
             Serial.println("Write");

@@ -2,6 +2,7 @@
 #define MYBLE_h
 
 #include "Arduino.h"
+#include "main.h"
 #include <BLEDevice.h>
 #include <BLEServer.h>
 #include <BLEUtils.h>
@@ -25,7 +26,5 @@ public:
     void TickServer();
     void TickClient();
 };
-
-extern class MyBLE *BLE;
 
 #endif
