@@ -3,6 +3,18 @@
 
 NBIoT *IoT;
 
+void IoTRead(void *arg)
+{
+    for (;;)
+    {
+        if (Serial2.available() > 0)
+        {
+            String data = Serial2.readString();
+        }
+        delay(10);
+    }
+}
+
 NBIoT::NBIoT()
 {
     Serial2.begin(115200);
@@ -14,8 +26,13 @@ NBIoT::NBIoT()
     String data = Serial2.readString();
     data.replace("\n", "");
     Serial.println(data.c_str());
-    if(data.equalsIgnoreCase("OK"))
+    if (data.equalsIgnoreCase("OK"))
     {
-        Serial.println("NB-IOT OK");
+        Serial.println("NB-IoT OK");
+        xTaskCreate(IoTRead, "IoT", 1024, NULL, 5, NULL);
+    }
+    else
+    {
+        NetWork_State = false;
     }
 }

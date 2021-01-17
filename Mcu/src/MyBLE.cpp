@@ -83,7 +83,7 @@ MyBLE::MyBLE(BLEType type)
 {
     // 初始化蓝牙设备
     BLEDevice::init("Coloryr");
-
+    Bluetooth_State = false;
     if (type == Server)
     {
         BLEServer *pServer = BLEDevice::createServer();
@@ -109,6 +109,8 @@ MyBLE::MyBLE(BLEType type)
         pServer->startAdvertising();
 
         Serial.println("BLE Server Start");
+        Task = &MyBLE::TickServer;
+        Bluetooth_State = true;
     }
     else
     {
@@ -121,7 +123,14 @@ MyBLE::MyBLE(BLEType type)
         ClientDoScan = true;
 
         Serial.println("BLE Search Start");
+        Task = &MyBLE::TickClient;
+        Bluetooth_State = true;
     }
+}
+
+void MyBLE::Tick()
+{
+    (this->*Task)();
 }
 
 void MyBLE::TickServer()

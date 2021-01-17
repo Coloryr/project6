@@ -4,8 +4,8 @@
 #include "Arduino.h"
 
 extern uint8_t mode;
-extern uint8_t Bluetooth_State;
-extern uint8_t NetWork_State;
+extern bool Bluetooth_State;
+extern bool NetWork_State;
 
 extern class MyBLE *BLE;
 extern class Servo *ThisServo;

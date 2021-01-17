@@ -21,10 +21,12 @@ private:
     BLERemoteService *ClientRemoteService = NULL;
     BLEClient *pClient = NULL;
     BLEScan *pBLEScan = NULL;
-public:
-    MyBLE(BLEType type);
+    void (MyBLE::*Task)();
     void TickServer();
     void TickClient();
+public:
+    MyBLE(BLEType type);
+    void Tick();
 };
 
 #endif
