@@ -9,5 +9,6 @@ extern uint8_t NetWork_State;
 
 extern class MyBLE *BLE;
 extern class Servo *ThisServo;
+extern class NBIoT *IoT;
 
 #endif

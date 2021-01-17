@@ -3,4 +3,12 @@
 
 #include "Arduino.h"
 
+class NBIoT
+{
+private:
+    
+public:
+    NBIoT();
+};
+
 #endif
