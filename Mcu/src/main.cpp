@@ -4,6 +4,10 @@
 #include "main.h"
 #include "NBIoT.h"
 
+uint8_t mode;
+bool Bluetooth_State;
+bool NetWork_State;
+
 void setup()
 {
     Serial.begin(115200);
