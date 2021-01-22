@@ -13,7 +13,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Òì²½¼ÓÔØµØÍ¼</title>
+    <title>å¼‚æ­¥åŠ è½½åœ°å›¾</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta http-equiv="X-UA-Compatible" content="IE=Edge">
@@ -25,7 +25,7 @@
             width: 100%;
             height: 100%;
             margin: 0;
-            font-family: "Î¢ÈíÑÅºÚ";
+            font-family: "å¾®è½¯é›…é»‘";
         }
     </style>
 </head>
@@ -35,7 +35,7 @@
 </body>
 
 </html>
-<script type="text/javascript">
+<script type="text/javascript" charset="UTF-8">
     window.TILE_VERSION = {
         "ditu": {
             "normal": {
@@ -920,13 +920,13 @@
                     map.__listeners = {}
                 }
                 bl = null;
-                var i = "°Ù¶ÈÎ´ÊÚÈ¨Ê¹ÓÃµØÍ¼API£¬¿ÉÄÜÊÇÒòÎªÄúÌá¹©µÄÃÜÔ¿²»ÊÇÓĞĞ§µÄ°Ù¶ÈLBS¿ª·ÅÆ½Ì¨ÃÜÔ¿£¬»ò´ËÃÜÔ¿Î´¶Ô±¾Ó¦ÓÃµÄ°Ù¶ÈµØÍ¼JavaScriptAPIÊÚÈ¨¡£Äú¿ÉÒÔ·ÃÎÊÈçÏÂÍøÖ·ÁË½âÈçºÎ»ñÈ¡ÓĞĞ§µÄÃÜÔ¿£ºhttp://lbsyun.baidu.com/apiconsole/key#¡£";
+                var i = "ç™¾åº¦æœªæˆæƒä½¿ç”¨åœ°å›¾APIï¼Œå¯èƒ½æ˜¯å› ä¸ºæ‚¨æä¾›çš„å¯†é’¥ä¸æ˜¯æœ‰æ•ˆçš„ç™¾åº¦LBSå¼€æ”¾å¹³å°å¯†é’¥ï¼Œæˆ–æ­¤å¯†é’¥æœªå¯¹æœ¬åº”ç”¨çš„ç™¾åº¦åœ°å›¾JavaScriptAPIæˆæƒã€‚æ‚¨å¯ä»¥è®¿é—®å¦‚ä¸‹ç½‘å€äº†è§£å¦‚ä½•è·å–æœ‰æ•ˆçš„å¯†é’¥ï¼šhttp://lbsyun.baidu.com/apiconsole/key#ã€‚";
                 switch (e.error) {
                     case 101:
-                        i = "¿ª·¢Õß½ûÓÃÁË¸ÃakµÄjsapi·şÎñÈ¨ÏŞ¡£Äú¿ÉÒÔ·ÃÎÊÈçÏÂÍøÖ·ÁË½âÈçºÎ»ñÈ¡ÓĞĞ§µÄÃÜÔ¿£ºhttp://lbsyun.baidu.com/apiconsole/key#¡£";
+                        i = "å¼€å‘è€…ç¦ç”¨äº†è¯¥akçš„jsapiæœåŠ¡æƒé™ã€‚æ‚¨å¯ä»¥è®¿é—®å¦‚ä¸‹ç½‘å€äº†è§£å¦‚ä½•è·å–æœ‰æ•ˆçš„å¯†é’¥ï¼šhttp://lbsyun.baidu.com/apiconsole/key#ã€‚";
                         break;
                     case 102:
-                        i = "¿ª·¢ÕßReferer²»ÕıÈ·¡£Äú¿ÉÒÔ·ÃÎÊÈçÏÂÍøÖ·ÁË½âÈçºÎ»ñÈ¡ÓĞĞ§µÄÃÜÔ¿£ºhttp://lbsyun.baidu.com/apiconsole/key#¡£";
+                        i = "å¼€å‘è€…Refererä¸æ­£ç¡®ã€‚æ‚¨å¯ä»¥è®¿é—®å¦‚ä¸‹ç½‘å€äº†è§£å¦‚ä½•è·å–æœ‰æ•ˆçš„å¯†é’¥ï¼šhttp://lbsyun.baidu.com/apiconsole/key#ã€‚";
                         break
                 }
                 alert(i)
@@ -4941,7 +4941,7 @@
             var hS = 0;
             var hQ = 0;
             if (!hT) {
-                throw "Òì³£"
+                throw "å¼‚å¸¸"
             }
             if (hT.length === 0) {
                 return []
@@ -6576,7 +6576,7 @@
                 var hO = (Math.random() * 100000).toFixed(0);
                 bl._rd["_cbk" + hO] = function (hT) {
                     if (hT.result && hT.result["error"] && hT.result["error"] === 202) {
-                        alert("¸ÃAKÒòÎª¶ñÒâĞĞÎªÒÑ¾­±»¹ÜÀíÔ±·â½û£¡");
+                        alert("è¯¥AKå› ä¸ºæ¶æ„è¡Œä¸ºå·²ç»è¢«ç®¡ç†å‘˜å°ç¦ï¼");
                         return
                     }
                     i = i || {};
@@ -6952,15 +6952,15 @@
                     name: "metric",
                     conv: 1,
                     incon: 1000,
-                    u1: "Ã×",
-                    u2: "¹«Àï"
+                    u1: "ç±³",
+                    u2: "å…¬é‡Œ"
                 },
                 us: {
                     name: "us",
                     conv: 3.2808,
                     incon: 5280,
-                    u1: "Ó¢³ß",
-                    u2: "Ó¢Àï"
+                    u1: "è‹±å°º",
+                    u2: "è‹±é‡Œ"
                 }
             };
             this.sateMapStyle = false;
@@ -7655,7 +7655,7 @@
                 e.background = "url(" + this._imgPath + ") no-repeat";
                 e.backgroundSize = "266px auto";
                 this._rotateCCW = this._createButton();
-                this._rotateCCW.title = "ÄæÊ±Õë×ª¶¯";
+                this._rotateCCW.title = "é€†æ—¶é’ˆè½¬åŠ¨";
                 e = this._rotateCCW.style;
                 e.left = "2px";
                 e.top = "5px";
@@ -7664,7 +7664,7 @@
                 e.height = "42px";
                 e.backgroundPosition = "-75px -5px";
                 this._rotateCW = this._createButton();
-                this._rotateCW.title = "Ë³Ê±Õë×ª¶¯";
+                this._rotateCW.title = "é¡ºæ—¶é’ˆè½¬åŠ¨";
                 e = this._rotateCW.style;
                 e.right = "2px";
                 e.top = "5px";
@@ -7674,7 +7674,7 @@
                 e.backgroundPosition = "-75px -5px";
                 e.WebkitTransform = e.transform = "scaleX(-1)";
                 this._compass = this._createButton();
-                this._compass.title = "»Ö¸´Õı±±·½Ïò";
+                this._compass.title = "æ¢å¤æ­£åŒ—æ–¹å‘";
                 e = this._compass.style;
                 e.left = "19px";
                 e.top = "4px";
@@ -7895,7 +7895,7 @@
             },
             _createDom: function () {
                 var e = this._div = S("button");
-                e.title = "ÇãĞ±";
+                e.title = "å€¾æ–œ";
                 var i = e.style;
                 i.position = "absolute";
                 i.zIndex = 5;
@@ -8089,12 +8089,12 @@
                 this._div && (this._div.style.backgroundPosition = hO);
                 if (this._enabled) {
                     if (T > 0) {
-                        this._div && (this._div.title = "»Ö¸´")
+                        this._div && (this._div.title = "æ¢å¤")
                     } else {
-                        this._div && (this._div.title = "ÇãĞ±")
+                        this._div && (this._div.title = "å€¾æ–œ")
                     }
                 } else {
-                    this._div && (this._div.title = "Çë·Å´óµØÍ¼ºó²Ù×÷")
+                    this._div && (this._div.title = "è¯·æ”¾å¤§åœ°å›¾åæ“ä½œ")
                 }
             },
             hide: function () {
@@ -9035,10 +9035,10 @@
                 this.draw()
             },
             initialize: function (e) {
-                throw "initialize·½·¨Î´ÊµÏÖ"
+                throw "initializeæ–¹æ³•æœªå®ç°"
             },
             draw: function () {
-                throw "draw·½·¨Î´ÊµÏÖ"
+                throw "drawæ–¹æ³•æœªå®ç°"
             },
             remove: function () {
                 if (this.domElement && this.domElement.parentNode) {
@@ -14088,7 +14088,7 @@
                             }
                             for (var ia = 0; ia < hR.length; ia++) {
                                 var h8 = hR[ia][4];
-                                if (h8 && h8[7] === "±±¾©") {
+                                if (h8 && h8[7] === "åŒ—äº¬") {
                                     hN = ei.getStyleFromCache(ii, e, "point", 6, ij);
                                     id = ei.getStyleFromCache(ii, e, "pointText", 6, ij);
                                     break
@@ -21962,8 +21962,8 @@
             i = i || {};
             this._opts = C.extend(C.extend(this._opts || {}, {
                 autoClear: false,
-                tips: "²â¾à",
-                followText: "µ¥»÷È·¶¨Æğµã£¬Ë«»÷½áÊø»æÖÆ",
+                tips: "æµ‹è·",
+                followText: "å•å‡»ç¡®å®šèµ·ç‚¹ï¼ŒåŒå‡»ç»“æŸç»˜åˆ¶",
                 unit: "metric",
                 showResult: true,
                 lineColor: "blue",
@@ -21981,7 +21981,7 @@
             }), i);
             if (this._opts.showResult === false) {
                 if (typeof i.tips === "undefined") {
-                    this._opts.tips = "»æÖÆÕÛÏß"
+                    this._opts.tips = "ç»˜åˆ¶æŠ˜çº¿"
                 }
                 if (!i.cursor) {
                     this._opts.cursor = "crosshair"
@@ -22013,15 +22013,15 @@
                     name: "metric",
                     conv: 1,
                     incon: 1000,
-                    u1: "Ã×",
-                    u2: "¹«Àï"
+                    u1: "ç±³",
+                    u2: "å…¬é‡Œ"
                 },
                 us: {
                     name: "us",
                     conv: 3.2808,
                     incon: 5279.856,
-                    u1: "Ó¢³ß",
-                    u2: "Ó¢Àï"
+                    u1: "è‹±å°º",
+                    u2: "è‹±é‡Œ"
                 }
             };
             if (!this._units[this._opts.unit]) {
@@ -22033,15 +22033,15 @@
             this._dLineStyle = "solid";
             this._dCursor = e0.distCursor;
             if (this._opts.showResult) {
-                this._opts.followText = "µ¥»÷È·¶¨Æğµã"
+                this._opts.followText = "å•å‡»ç¡®å®šèµ·ç‚¹"
             }
-            this._followTextM = "µ¥»÷È·¶¨µØµã£¬Ë«»÷½áÊø";
-            this._sectionMarkerTip = "µ¥»÷¿ÉÉ¾³ı´Ëµã£¬ÍÏ×§¿Éµ÷ÕûÎ»ÖÃ";
+            this._followTextM = "å•å‡»ç¡®å®šåœ°ç‚¹ï¼ŒåŒå‡»ç»“æŸ";
+            this._sectionMarkerTip = "å•å‡»å¯åˆ é™¤æ­¤ç‚¹ï¼Œæ‹–æ‹½å¯è°ƒæ•´ä½ç½®";
             this._movingTimerId = null;
             if (this._opts.showResult) {
-                this.text = "²â¾à"
+                this.text = "æµ‹è·"
             } else {
-                this.text = "»æÏß"
+                this.text = "ç»˜çº¿"
             }
             this._isOpen = false;
             var e = this;
@@ -22375,7 +22375,7 @@
                     fz(this)
                 })
             }
-            i.cityName = "ÖĞ¹ú";
+            i.cityName = "ä¸­å›½";
             i.cCode = "1";
             var e = {};
             e.enableRequest = true;
@@ -22394,40 +22394,40 @@
                 var hO = hN.getNorthEast();
                 cy.request(function (hT) {
                     if (hT.current_city["code"] >= 9000 && hT.current_city["code"] <= 9378) {
-                        hT.current_city["name"] = "Ì¨ÍåÊ¡"
+                        hT.current_city["name"] = "å°æ¹¾çœ"
                     }
                     if (hT.current_city["code"] >= 20000 && hT.current_city["code"] <= 20499) {
-                        hT.current_city["name"] = "ĞÂ¼ÓÆÂ"
+                        hT.current_city["name"] = "æ–°åŠ å¡"
                     }
                     if (hT.current_city["code"] >= 20500 && hT.current_city["code"] <= 25999) {
-                        hT.current_city["name"] = "Ì©¹ú"
+                        hT.current_city["name"] = "æ³°å›½"
                     }
                     if (hT.current_city["code"] >= 26000 && hT.current_city["code"] <= 29999) {
-                        hT.current_city["name"] = "ÈÕ±¾"
+                        hT.current_city["name"] = "æ—¥æœ¬"
                     }
                     if (hT.current_city["code"] >= 30000 && hT.current_city["code"] <= 30999) {
-                        hT.current_city["name"] = "º«¹ú"
+                        hT.current_city["name"] = "éŸ©å›½"
                     }
                     if (hT.current_city["code"] >= 31000 && hT.current_city["code"] <= 37000) {
-                        hT.current_city["name"] = "ÑÇÌ«"
+                        hT.current_city["name"] = "äºšå¤ª"
                     }
                     if (hT.current_city["code"] >= 46609 && hT.current_city["code"] <= 52505) {
-                        hT.current_city["name"] = "Å·ÖŞ"
+                        hT.current_city["name"] = "æ¬§æ´²"
                     }
                     if (hT.current_city["code"] >= 39509 && hT.current_city["code"] <= 53500) {
-                        hT.current_city["name"] = "ÄÏÃÀÖŞ"
+                        hT.current_city["name"] = "å—ç¾æ´²"
                     }
                     if (hT.current_city["code"] >= 54000 && hT.current_city["code"] <= 70000) {
-                        hT.current_city["name"] = "±±ÃÀÖŞ"
+                        hT.current_city["name"] = "åŒ—ç¾æ´²"
                     }
                     if (hT.current_city["code"] === 54003 && hT.current_city["code"] >= 60731 && hT.current_city["code"] <= 61123) {
-                        hT.current_city["name"] = "ÃÀ¹ú"
+                        hT.current_city["name"] = "ç¾å›½"
                     }
                     if (hT.current_city["code"] === 54015 || hT.current_city["code"] >= 57970 && hT.current_city["code"] <= 60223) {
-                        hT.current_city["name"] = "¼ÓÄÃ´ó"
+                        hT.current_city["name"] = "åŠ æ‹¿å¤§"
                     }
                     if (hT.current_city["code"] === 54025 || hT.current_city["code"] >= 54338 && hT.current_city["code"] <= 57374) {
-                        hT.current_city["name"] = "Ä«Î÷¸ç"
+                        hT.current_city["name"] = "å¢¨è¥¿å“¥"
                     }
                     e.enableRequest = true;
                     if (hT && hT.current_city) {
@@ -22529,23 +22529,23 @@
                 });
                 h2.cpyCtrl = h5
             }
-            var ik = h2.cityName || "ÖĞ¹ú";
+            var ik = h2.cityName || "ä¸­å›½";
             var h3 = h2.getMapType();
-            var h4 = ["³£ÖİÊĞ", "ÄÏ²ıÊĞ", "ÎÚÂ³Ä¾ÆëÊĞ", "ÎŞÎıÊĞ", "¸£ÖİÊĞ", "ÈªÖİÊĞ", "Öéº£ÊĞ", "¹óÑôÊĞ"];
-            var hW = ["±±¾©ÊĞ", "ÉÏº£ÊĞ", "¹ãÖİÊĞ", "ÉîÛÚÊĞ", "Äş²¨ÊĞ", "Ê¯¼Ò×¯ÊĞ", "ÉòÑôÊĞ", "³¤´ºÊĞ", "ÇàµºÊĞ", "ÎÂÖİÊĞ", "Ì¨ÖİÊĞ", "½ğ»ªÊĞ", "·ğÉ½ÊĞ", "ÖĞÉ½ÊĞ", "À¥Ã÷ÊĞ", "ÄÏÄşÊĞ", "ËÕÖİÊĞ", "Î÷°²ÊĞ", "¼ÃÄÏÊĞ", "Ö£ÖİÊĞ", "ºÏ·ÊÊĞ", "ºôºÍºÆÌØÊĞ", "º¼ÖİÊĞ", "³É¶¼ÊĞ", "ÎäººÊĞ", "³¤É³ÊĞ", "Ìì½òÊĞ", "ÄÏ¾©ÊĞ", "ÖØÇìÊĞ", "´óÁ¬ÊĞ", "¶«İ¸ÊĞ", "ÏÃÃÅÊĞ"];
-            var hY = ["Ïã¸ÛÌØ±ğĞĞÕşÇø"];
-            var hS = ["Ì¨ÍåÊ¡"];
-            var ib = ["ÈÕ±¾"];
-            var ii = ["º«¹ú"];
-            var h6 = ["Ì©¹ú"];
-            var h9 = ["ÑÇÌ«"];
-            var hT = ["ĞÂ¼ÓÆÂ"];
-            var ij = ["Å·ÖŞ"];
-            var hN = ["ÄÏÃÀÖŞ"];
-            var ie = ["±±ÃÀÖŞ"];
-            var T = ["ÃÀ¹ú"];
-            var h8 = ["Ä«Î÷¸ç"];
-            var hQ = ["¼ÓÄÃ´ó"];
+            var h4 = ["å¸¸å·å¸‚", "å—æ˜Œå¸‚", "ä¹Œé²æœ¨é½å¸‚", "æ— é”¡å¸‚", "ç¦å·å¸‚", "æ³‰å·å¸‚", "ç æµ·å¸‚", "è´µé˜³å¸‚"];
+            var hW = ["åŒ—äº¬å¸‚", "ä¸Šæµ·å¸‚", "å¹¿å·å¸‚", "æ·±åœ³å¸‚", "å®æ³¢å¸‚", "çŸ³å®¶åº„å¸‚", "æ²ˆé˜³å¸‚", "é•¿æ˜¥å¸‚", "é’å²›å¸‚", "æ¸©å·å¸‚", "å°å·å¸‚", "é‡‘åå¸‚", "ä½›å±±å¸‚", "ä¸­å±±å¸‚", "æ˜†æ˜å¸‚", "å—å®å¸‚", "è‹å·å¸‚", "è¥¿å®‰å¸‚", "æµå—å¸‚", "éƒ‘å·å¸‚", "åˆè‚¥å¸‚", "å‘¼å’Œæµ©ç‰¹å¸‚", "æ­å·å¸‚", "æˆéƒ½å¸‚", "æ­¦æ±‰å¸‚", "é•¿æ²™å¸‚", "å¤©æ´¥å¸‚", "å—äº¬å¸‚", "é‡åº†å¸‚", "å¤§è¿å¸‚", "ä¸œèå¸‚", "å¦é—¨å¸‚"];
+            var hY = ["é¦™æ¸¯ç‰¹åˆ«è¡Œæ”¿åŒº"];
+            var hS = ["å°æ¹¾çœ"];
+            var ib = ["æ—¥æœ¬"];
+            var ii = ["éŸ©å›½"];
+            var h6 = ["æ³°å›½"];
+            var h9 = ["äºšå¤ª"];
+            var hT = ["æ–°åŠ å¡"];
+            var ij = ["æ¬§æ´²"];
+            var hN = ["å—ç¾æ´²"];
+            var ie = ["åŒ—ç¾æ´²"];
+            var T = ["ç¾å›½"];
+            var h8 = ["å¢¨è¥¿å“¥"];
+            var hQ = ["åŠ æ‹¿å¤§"];
             for (var ig in h4) {
                 if (h4[ig] === ik) {
                     var hZ = true;
@@ -22600,31 +22600,31 @@
             if (h8[0] === ik) {
                 var hP = true
             }
-            var il = ["&copy;&nbsp;2021 Baidu - GS(2019)5218ºÅ - ¼×²â×Ê×Ö1100930 - ¾©ICPÖ¤030173ºÅ - Data &copy; "];
+            var il = ["&copy;&nbsp;2021 Baidu - GS(2019)5218å· - ç”²æµ‹èµ„å­—1100930 - äº¬ICPè¯030173å· - Data &copy; "];
             var h7 = "rgba(255, 255, 255, 0.701961)";
             if (h2.getZoom() <= 9) {
-                il = ["&copy;&nbsp;2021 Baidu - GS(2019)5218ºÅ - ¼×²â×Ê×Ö1100930 - ¾©ICPÖ¤030173ºÅ - Data &copy; "]
+                il = ["&copy;&nbsp;2021 Baidu - GS(2019)5218å· - ç”²æµ‹èµ„å­—1100930 - äº¬ICPè¯030173å· - Data &copy; "]
             } else {
                 if (id) {
-                    il = ["&copy;&nbsp;2021 Baidu - GS(2019)5218ºÅ - ¼×²â×Ê×Ö1100930 - ¾©ICPÖ¤030173ºÅ - Data &copy; "]
+                    il = ["&copy;&nbsp;2021 Baidu - GS(2019)5218å· - ç”²æµ‹èµ„å­—1100930 - äº¬ICPè¯030173å· - Data &copy; "]
                 } else {
                     if (hV || h1) {
-                        il = ["&copy;&nbsp;2021 Baidu - GS(2019)5218ºÅ - ¼×²â×Ê×Ö1100930 - ¾©ICPÖ¤030173ºÅ - Data &copy; "]
+                        il = ["&copy;&nbsp;2021 Baidu - GS(2019)5218å· - ç”²æµ‹èµ„å­—1100930 - äº¬ICPè¯030173å· - Data &copy; "]
                     } else {
                         if (i || h0) {
-                            il = ["&copy;&nbsp;2021 Baidu - GS(2019)5218ºÅ - ¼×²â×Ê×Ö1100930 - ¾©ICPÖ¤030173ºÅ - Data &copy; "]
+                            il = ["&copy;&nbsp;2021 Baidu - GS(2019)5218å· - ç”²æµ‹èµ„å­—1100930 - äº¬ICPè¯030173å· - Data &copy; "]
                         } else {
                             if (hR) {
-                                il = ["&copy;&nbsp;2021 Baidu - GS(2019)5218ºÅ - ¼×²â×Ê×Ö1100930 - ¾©ICPÖ¤030173ºÅ - Data &copy; "]
+                                il = ["&copy;&nbsp;2021 Baidu - GS(2019)5218å· - ç”²æµ‹èµ„å­—1100930 - äº¬ICPè¯030173å· - Data &copy; "]
                             } else {
                                 if (hX) {
-                                    il = ["&copy;&nbsp;2021 Baidu - GS(2019)5218ºÅ - ¼×²â×Ê×Ö1100930 - ¾©ICPÖ¤030173ºÅ - Data &copy; "]
+                                    il = ["&copy;&nbsp;2021 Baidu - GS(2019)5218å· - ç”²æµ‹èµ„å­—1100930 - äº¬ICPè¯030173å· - Data &copy; "]
                                 } else {
                                     if (hU) {
-                                        il = ["&copy;&nbsp;2021 Baidu - GS(2019)5218ºÅ - ¼×²â×Ê×Ö1100930 - ¾©ICPÖ¤030173ºÅ - Data &copy; "]
+                                        il = ["&copy;&nbsp;2021 Baidu - GS(2019)5218å· - ç”²æµ‹èµ„å­—1100930 - äº¬ICPè¯030173å· - Data &copy; "]
                                     } else {
                                         if (e) {
-                                            il = ["&copy;&nbsp;2021 Baidu - GS(2019)5218ºÅ - ¼×²â×Ê×Ö1100930 - ¾©ICPÖ¤030173ºÅ - Data &copy; "]
+                                            il = ["&copy;&nbsp;2021 Baidu - GS(2019)5218å· - ç”²æµ‹èµ„å­—1100930 - äº¬ICPè¯030173å· - Data &copy; "]
                                         }
                                     }
                                 }
@@ -22633,7 +22633,7 @@
                     }
                 }
             } if (h2.getZoom() <= 9) {
-                il.push("³¤µØÍò·½");
+                il.push("é•¿åœ°ä¸‡æ–¹");
                 il.push(' &amp; <a target="_blank" href="http://www.openstreetmap.org/">OpenStreetMap</a>');
                 il.push(' &amp; <a target="_blank" href="http://corporate.navteq.com/supplier_terms.html">HERE</a>');
                 if (h3 === BMAP_SATELLITE_MAP || h3 === BMAP_HYBRID_MAP) {
@@ -22667,7 +22667,7 @@
                                             il.push('<a target="_blank" href="http://www.openstreetmap.org/">OpenStreetMap</a>');
                                             il.push(' &amp; <a target="_blank" href="https://www.mapbox.com/">Mapbox</a>')
                                         } else {
-                                            il.push("³¤µØÍò·½");
+                                            il.push("é•¿åœ°ä¸‡æ–¹");
                                             if (hZ) {
                                                 il.push(' &amp; <a target="_blank" href="http://www.palmcity.cn/palmcity/">PalmCity</a>')
                                             }
@@ -22676,7 +22676,7 @@
                                             }
                                             if (id) {
                                                 il.push(' &amp; <a target="_blank" href="http://corporate.navteq.com/supplier_terms.html">HERE</a>');
-                                                il.push(' &amp; <a target="_blank" href="http://www.localking.com.tw/about/localking.aspx">˜·¿ÍLocalKing</a>')
+                                                il.push(' &amp; <a target="_blank" href="http://www.localking.com.tw/about/localking.aspx">æ¨‚å®¢LocalKing</a>')
                                             }
                                             if (h3 === BMAP_SATELLITE_MAP || h3 === BMAP_HYBRID_MAP) {
                                                 h7 = "rgba(0,0,0,.7)"
@@ -23531,7 +23531,7 @@
                 types: i.types || [],
                 onSearchComplete: i.onSearchComplete || function () { }
             };
-            this._loc.src = i.location || "È«¹ú";
+            this._loc.src = i.location || "å…¨å›½";
             this._word = "";
             this._show = false;
             this._suggestion = null;
@@ -23705,7 +23705,7 @@
                 this.init_d()
             }
         };
-        cH.ROAD_TYPE = ["", "»·µº", "ÎŞÊôĞÔµÀÂ·", "Ö÷Â·", "¸ßËÙÁ¬½ÓÂ·", "½»²æµãÄÚÂ·¶Î", "Á¬½ÓµÀÂ·", "Í£³µ³¡ÄÚ²¿µÀÂ·", "·şÎñÇøÄÚ²¿µÀÂ·", "ÇÅ", "²½ĞĞ½Ö", "¸¨Â·", "ÔÑµÀ", "È«·â±ÕµÀÂ·", "Î´¶¨Òå½»Í¨ÇøÓò", "POIÁ¬½ÓÂ·", "ËíµÀ", "²½ĞĞµÀ", "¹«½»×¨ÓÃµÀ", "ÌáÇ°ÓÒ×ªµÀ"];
+        cH.ROAD_TYPE = ["", "ç¯å²›", "æ— å±æ€§é“è·¯", "ä¸»è·¯", "é«˜é€Ÿè¿æ¥è·¯", "äº¤å‰ç‚¹å†…è·¯æ®µ", "è¿æ¥é“è·¯", "åœè½¦åœºå†…éƒ¨é“è·¯", "æœåŠ¡åŒºå†…éƒ¨é“è·¯", "æ¡¥", "æ­¥è¡Œè¡—", "è¾…è·¯", "åŒé“", "å…¨å°é—­é“è·¯", "æœªå®šä¹‰äº¤é€šåŒºåŸŸ", "POIè¿æ¥è·¯", "éš§é“", "æ­¥è¡Œé“", "å…¬äº¤ä¸“ç”¨é“", "æå‰å³è½¬é“"];
         C.inherit(cH, hb, "DWRoute");
         C.extend(cH.prototype, {
             search: function (T, e, i) {
@@ -23864,23 +23864,23 @@
         Start(BMapGL, "BMapGL");
     }
     function init() {
-        map = new BMapGL.Map('container'); // ´´½¨MapÊµÀı
-        var point = new BMapGL.Point(116.404, 39.915); // ´´½¨µã×ø±ê
+        map = new BMapGL.Map('container'); // åˆ›å»ºMapå®ä¾‹
+        var point = new BMapGL.Point(116.404, 39.915); // åˆ›å»ºç‚¹åæ ‡
         map.centerAndZoom(point, 10);
-        map.enableScrollWheelZoom(); // ÆôÓÃ¹öÂÖ·Å´óËõĞ¡
-        var scaleCtrl = new BMapGL.ScaleControl();  // Ìí¼Ó±ÈÀı³ß¿Ø¼ş
+        map.enableScrollWheelZoom(); // å¯ç”¨æ»šè½®æ”¾å¤§ç¼©å°
+        var scaleCtrl = new BMapGL.ScaleControl();  // æ·»åŠ æ¯”ä¾‹å°ºæ§ä»¶
         map.addControl(scaleCtrl);
-        var zoomCtrl = new BMapGL.ZoomControl();  // Ìí¼Ó±ÈÀı³ß¿Ø¼ş
+        var zoomCtrl = new BMapGL.ZoomControl();  // æ·»åŠ æ¯”ä¾‹å°ºæ§ä»¶
         map.addControl(zoomCtrl);
         var menu = new BMapGL.ContextMenu();
         var txtMenuItem = [
             {
-                text: '·Å´óÒ»¼¶',
+                text: 'æ”¾å¤§ä¸€çº§',
                 callback: function () {
                     map.zoomIn();
                 }
             }, {
-                text: 'ËõĞ¡Ò»¼¶',
+                text: 'ç¼©å°ä¸€çº§',
                 callback: function () {
                     map.zoomOut();
                 }
@@ -23891,24 +23891,24 @@
         }
         map.addContextMenu(menu);
 
-        set(116.404, 39.925, '¹Ê¹¬²©ÎïÔº', 'µØÖ·£º±±¾©ÊĞ¶«³ÇÇøÍõ¸®¾®´ó½Ö88ºÅÀÖÌìÒøÌ©°Ù»õ°Ë²ã');
+        set(116.404, 39.925, 'æ•…å®«åšç‰©é™¢', 'åœ°å€ï¼šåŒ—äº¬å¸‚ä¸œåŸåŒºç‹åºœäº•å¤§è¡—88å·ä¹å¤©é“¶æ³°ç™¾è´§å…«å±‚');
     }
     function set(x, y, name, text) {
-        var point = new BMapGL.Point(x, y); // ´´½¨µã×ø±ê
-        // ´´½¨µã±ê¼Ç
+        var point = new BMapGL.Point(x, y); // åˆ›å»ºç‚¹åæ ‡
+        // åˆ›å»ºç‚¹æ ‡è®°
         var marker = new BMapGL.Marker(point);
         map.addOverlay(marker);
-        // ´´½¨ĞÅÏ¢´°¿Ú
+        // åˆ›å»ºä¿¡æ¯çª—å£
         var opts = {
             width: 200,
             height: 100,
             title: name
         };
         var infoWindow = new BMapGL.InfoWindow(text, opts);
-        // µã±ê¼ÇÌí¼Óµã»÷ÊÂ¼ş
+        // ç‚¹æ ‡è®°æ·»åŠ ç‚¹å‡»äº‹ä»¶
         marker.addEventListener('click', function () {
-            map.openInfoWindow(infoWindow, point); // ¿ªÆôĞÅÏ¢´°¿Ú
+            map.openInfoWindow(infoWindow, point); // å¼€å¯ä¿¡æ¯çª—å£
         });
     }
-    window.onload = loadJScript; // Òì²½¼ÓÔØµØÍ¼
+    window.onload = loadJScript; // å¼‚æ­¥åŠ è½½åœ°å›¾
 </script>
