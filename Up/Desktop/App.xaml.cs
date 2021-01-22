@@ -43,8 +43,8 @@ namespace Desktop
             
             try 
             {
-                HttpServer.Start();
-                HttpServer.BeginGetContext(ContextReady, null);
+                //HttpServer.Start();
+                //HttpServer.BeginGetContext(ContextReady, null);
             }
             catch
             {

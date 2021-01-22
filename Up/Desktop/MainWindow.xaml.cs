@@ -23,7 +23,8 @@ namespace Desktop
         public MainWindow()
         {
             InitializeComponent();
-            Map.Source = new Uri($"http://127.0.0.1:{App.Config.Port}/");
+            //Map.Source = new Uri($"http://127.0.0.1:{App.Config.Port}/");
+            Map.NavigateToString(DesktopResource.web);
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
