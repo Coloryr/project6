@@ -23,9 +23,8 @@
 <body>
     <div id="container"></div>
 </body>
-
 </html>
-<script>
+<script type="text/javascript">
     var map;
     function loadJScript() {
         var script = document.createElement('script');
