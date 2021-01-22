@@ -1,7 +1,9 @@
-﻿using System;
+﻿using CefSharp;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -23,7 +25,11 @@ namespace Desktop
         public MainWindow()
         {
             InitializeComponent();
-            Map.Source = new Uri($"http://127.0.0.1:{App.Config.Port}/");
+            Task.Run(() =>
+            {
+                Thread.Sleep(1000);
+                Dispatcher.Invoke(() => Map.LoadHtml(DesktopResource.web));
+            });
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
