@@ -5,9 +5,16 @@ VisualStudioVersion = 16.0.30804.86
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Server", "Server\Server.csproj", "{4E8C54EF-612E-431E-9587-C5D272F093F3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Desktop", "Desktop\Desktop.csproj", "{62DBDAEA-AE55-48C6-B345-B6D8B467EEF3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Desktop", "Desktop\Desktop.csproj", "{62DBDAEA-AE55-48C6-B345-B6D8B467EEF3}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Lib", "Lib\Lib.shproj", "{2C95B18B-ED1A-488B-916C-AA6BFA3EDDDF}"
 EndProject
 Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		Lib\Lib.projitems*{2c95b18b-ed1a-488b-916c-aa6bfa3edddf}*SharedItemsImports = 13
+		Lib\Lib.projitems*{4e8c54ef-612e-431e-9587-c5d272f093f3}*SharedItemsImports = 5
+		Lib\Lib.projitems*{62dbdaea-ae55-48c6-b345-b6d8b467eef3}*SharedItemsImports = 5
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU

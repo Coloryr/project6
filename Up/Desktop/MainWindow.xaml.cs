@@ -23,9 +23,12 @@ namespace Desktop
         public MainWindow()
         {
             InitializeComponent();
-            //Map.sc = true;
-            //Map.Source = new Uri("pack://application:,,,/Desktop;component/Resources/web.txt", UriKind.Absolute);
-            Map.NavigateToString(DesktopResource.web);
+            Map.Source = new Uri($"http://127.0.0.1:{App.Config.Port}/");
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            App.Stop();
         }
     }
 }
