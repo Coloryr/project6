@@ -18,6 +18,7 @@ namespace Desktop
     public partial class App : Application
     {
         public const string Version = "1.0.0";
+        private static HttpListener HttpServer = new();
         public static ConfigObj Config;
         public static HttpUtils HttpUtils;
         public static string Local;
@@ -28,20 +29,43 @@ namespace Desktop
             Config = ConfigSave.Config(new ConfigObj()
             {
                 AutoLogin = false,
+                Port = 10000,
                 Token = "",
                 Url = "https://",
                 User = ""
             }, Local + "MainConfig.json");
+            HttpServer.Prefixes.Add($"http://127.0.0.1:{Config.Port}/");
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
             DispatcherUnhandledException += new DispatcherUnhandledExceptionEventHandler(App_DispatcherUnhandledException);
             TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
             HttpUtils = new();
+            
+            try 
+            {
+                HttpServer.Start();
+                HttpServer.BeginGetContext(ContextReady, null);
+            }
+            catch
+            {
+                MessageBox.Show("内置服务器启动失败");
+                Shutdown();
+            }
+        }
+
+        private void ContextReady(IAsyncResult ar)
+        {
+            HttpServer.BeginGetContext(ContextReady, null);
+            var res = HttpServer.EndGetContext(ar);
+            var data = Encoding.UTF8.GetBytes(DesktopResource.web);
+            res.Response.ContentType = "text/xml; charset=utf-8";
+            res.Response.OutputStream.Write(data);
+            res.Response.Close();
         }
 
         public static void Stop()
         {
-            
+            HttpServer.Stop();
         }
         private void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
