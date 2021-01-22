@@ -23,6 +23,9 @@ namespace Desktop
         public MainWindow()
         {
             InitializeComponent();
+            //Map.sc = true;
+            //Map.Source = new Uri("pack://application:,,,/Desktop;component/Resources/web.txt", UriKind.Absolute);
+            Map.NavigateToString(DesktopResource.web);
         }
     }
 }
