@@ -8,7 +8,6 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="770" Width="800" Closing="Window_Closing" Loaded="Window_Loaded">
     <Grid>
-        <WebBrowser x:Name="Map" Margin="0,0,0,378"/>
-        <wpf:ChromiumWebBrowser x:Name="Map1" Margin="0,377,0,0"/>
+        <wpf:ChromiumWebBrowser x:Name="Map" Margin="0"/>
     </Grid>
 </Window>

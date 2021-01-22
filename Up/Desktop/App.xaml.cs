@@ -55,12 +55,19 @@ namespace Desktop
 
         private void ContextReady(IAsyncResult ar)
         {
-            HttpServer.BeginGetContext(ContextReady, null);
-            var res = HttpServer.EndGetContext(ar);
-            var data = Encoding.UTF8.GetBytes(DesktopResource.web);
-            res.Response.ContentType = "text/html; charset=utf-8";
-            res.Response.OutputStream.Write(data);
-            res.Response.Close();
+            try
+            {
+                HttpServer.BeginGetContext(ContextReady, null);
+                var res = HttpServer.EndGetContext(ar);
+                var data = Encoding.UTF8.GetBytes(DesktopResource.web);
+                res.Response.ContentType = "text/html; charset=utf-8";
+                res.Response.OutputStream.Write(data);
+                res.Response.Close();
+            }
+            catch
+            { 
+                
+            }
         }
 
         public static void Stop()
