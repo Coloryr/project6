@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -34,6 +35,11 @@ namespace Desktop
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             Map.Load($"http://127.0.0.1:{App.Config.Port}/");
+            Task.Run(() =>
+            {
+                Thread.Sleep(1000);
+                Map.EvaluateScriptAsync("set(116.404, 39.925,'测试','一个测试')");
+            });
         }
     }
 }

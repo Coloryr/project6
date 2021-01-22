@@ -7,12 +7,22 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <style>
+        body,
+        html,
+        #container {
+            overflow: hidden;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            font-family: "微软雅黑";
+        }
+    </style>
 </head>
 
 <body>
     <div id="container"></div>
 </body>
-
 <script>
     var map;
     function loadJScript() {
@@ -49,7 +59,7 @@
         }
         map.addContextMenu(menu);
 
-        set(116.404, 39.925, '故宫博物院', '地址：北京市东城区王府井大街88号乐天银泰百货八层');
+        //set(116.404, 39.925, '故宫博物院', '地址：北京市东城区王府井大街88号乐天银泰百货八层');
     }
     function set(x, y, name, text) {
         var point = new BMapGL.Point(x, y); // 创建点坐标
