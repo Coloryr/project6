@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CefSharp;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,13 +24,21 @@ namespace Desktop
         public MainWindow()
         {
             InitializeComponent();
-            //Map.Source = new Uri($"http://127.0.0.1:{App.Config.Port}/");
-            Map.NavigateToString(DesktopResource.web);
+            
+            
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             App.Stop();
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            //Map.NavigateToString(DesktopResource.web);
+            //Map1.LoadHtml(DesktopResource.web);
+            Map.Source = new Uri($"http://127.0.0.1:{App.Config.Port}/");
+            Map1.Load($"http://127.0.0.1:{App.Config.Port}/");
         }
     }
 }

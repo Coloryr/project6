@@ -43,8 +43,8 @@ namespace Desktop
             
             try 
             {
-                //HttpServer.Start();
-                //HttpServer.BeginGetContext(ContextReady, null);
+                HttpServer.Start();
+                HttpServer.BeginGetContext(ContextReady, null);
             }
             catch
             {
@@ -58,7 +58,7 @@ namespace Desktop
             HttpServer.BeginGetContext(ContextReady, null);
             var res = HttpServer.EndGetContext(ar);
             var data = Encoding.UTF8.GetBytes(DesktopResource.web);
-            res.Response.ContentType = "text/xml; charset=utf-8";
+            res.Response.ContentType = "text/html; charset=utf-8";
             res.Response.OutputStream.Write(data);
             res.Response.Close();
         }
