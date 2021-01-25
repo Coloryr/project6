@@ -5,28 +5,34 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Desktop"
         mc:Ignorable="d"
-        Title="ListWindows" Height="450" Width="800">
+        Title="垃圾桶列表" Height="450" Width="800">
     <Grid>
         <Rectangle Fill="#FFF4F4F5" Stroke="#FF5ABED6" StrokeThickness="2"/>
-        <GroupBox Header="垃圾桶列表" Margin="0">
-            <ListView>
-                <ListView.View>
-                    <GridView>
-                        <GridViewColumn Header="UUID" Width="280" DisplayMemberBinding="{Binding UUID}"/>
-                        <GridViewColumn Header="经度" Width="240" DisplayMemberBinding="{Binding Text}"/>
-                        <GridViewColumn Header="维度" Width="40" DisplayMemberBinding="{Binding Version}"/>
-                        <GridViewColumn Header="垃圾桶容量" Width="180" DisplayMemberBinding="{Binding CreateTime}"/>
-                        <GridViewColumn Header="上线时间" Width="180" DisplayMemberBinding="{Binding UpdataTime}"/>
-                    </GridView>
-                </ListView.View>
-                <ListView.ContextMenu>
-                    <ContextMenu>
-                        <MenuItem Header="刷线" Click="Re_Click"/>
-                        <MenuItem Header="追踪" Click="Local_Click"/>
-                        <MenuItem Header="下发指令" Click="Command_Click"/>
-                    </ContextMenu>
-                </ListView.ContextMenu>
-            </ListView>
-        </GroupBox>
+        <ListView Margin="4,28,4,4">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="UUID" Width="100" DisplayMemberBinding="{Binding UUID}"/>
+                    <GridViewColumn Header="备注" Width="240" DisplayMemberBinding="{Binding UUID}"/>
+                    <GridViewColumn Header="经度" Width="80" DisplayMemberBinding="{Binding Text}"/>
+                    <GridViewColumn Header="维度" Width="80" DisplayMemberBinding="{Binding Version}"/>
+                    <GridViewColumn Header="垃圾桶容量" Width="80" DisplayMemberBinding="{Binding CreateTime}"/>
+                    <GridViewColumn Header="上线时间" Width="180" DisplayMemberBinding="{Binding UpdataTime}"/>
+                </GridView>
+            </ListView.View>
+            <ListView.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="追踪"/>
+                    <MenuItem Header="创建分区"/>
+                    <MenuItem Header="修改分区"/>
+                    <MenuItem Header="下发指令"/>
+                </ContextMenu>
+            </ListView.ContextMenu>
+        </ListView>
+        <ComboBox Margin="60,5,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="20" Width="448"/>
+        <Label Content="选择分区" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="2,2,0,0"/>
+        <Button Content="清空" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="513,5,0,0" Height="20" Width="60"/>
+        <Button Content="搜索" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="578,5,0,0" Height="20" Width="60"/>
+        <Button Content="批量分区" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="643,5,0,0" Height="20" Width="60"/>
+        <Button Content="刷新" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="708,5,0,0" Height="20" Width="60"/>
     </Grid>
 </Window>

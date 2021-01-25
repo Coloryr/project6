@@ -37,7 +37,7 @@ namespace Desktop
             Map.Load($"http://127.0.0.1:{App.Config.Port}/");
             Task.Run(() =>
             {
-                Thread.Sleep(1000);
+                Thread.Sleep(2000);
                 Map.EvaluateScriptAsync("set(116.404, 39.925,'测试','一个测试')");
             });
         }

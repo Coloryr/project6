@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Òì²½¼ÓÔØµØÍ¼</title>
+    <title>å¼‚æ­¥åŠ è½½åœ°å›¾</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta http-equiv="X-UA-Compatible" content="IE=Edge">
@@ -15,7 +15,7 @@
             width: 100%;
             height: 100%;
             margin: 0;
-            font-family: "Î¢ÈíÑÅºÚ";
+            font-family: "å¾®è½¯é›…é»‘";
         }
     </style>
 </head>
@@ -25,6 +25,7 @@
 </body>
 <script>
     var map;
+    var points = new Array();
     function loadJScript() {
         var script = document.createElement('script');
         script.type = 'text/javascript';
@@ -32,23 +33,23 @@
         document.body.appendChild(script);
     }
     function init() {
-        map = new BMapGL.Map('container'); // ´´½¨MapÊµÀı
-        var point = new BMapGL.Point(116.404, 39.915); // ´´½¨µã×ø±ê
+        map = new BMapGL.Map('container'); // åˆ›å»ºMapå®ä¾‹
+        var point = new BMapGL.Point(116.404, 39.915); // åˆ›å»ºç‚¹åæ ‡
         map.centerAndZoom(point, 10);
-        map.enableScrollWheelZoom(); // ÆôÓÃ¹öÂÖ·Å´óËõĞ¡
-        var scaleCtrl = new BMapGL.ScaleControl();  // Ìí¼Ó±ÈÀı³ß¿Ø¼ş
+        map.enableScrollWheelZoom(); // å¯ç”¨æ»šè½®æ”¾å¤§ç¼©å°
+        var scaleCtrl = new BMapGL.ScaleControl();  // æ·»åŠ æ¯”ä¾‹å°ºæ§ä»¶
         map.addControl(scaleCtrl);
-        var zoomCtrl = new BMapGL.ZoomControl();  // Ìí¼Ó±ÈÀı³ß¿Ø¼ş
+        var zoomCtrl = new BMapGL.ZoomControl();  // æ·»åŠ æ¯”ä¾‹å°ºæ§ä»¶
         map.addControl(zoomCtrl);
         var menu = new BMapGL.ContextMenu();
         var txtMenuItem = [
             {
-                text: '·Å´óÒ»¼¶',
+                text: 'æ”¾å¤§ä¸€çº§',
                 callback: function () {
                     map.zoomIn();
                 }
             }, {
-                text: 'ËõĞ¡Ò»¼¶',
+                text: 'ç¼©å°ä¸€çº§',
                 callback: function () {
                     map.zoomOut();
                 }
@@ -58,27 +59,39 @@
             menu.addItem(new BMapGL.MenuItem(txtMenuItem[i].text, txtMenuItem[i].callback, 100));
         }
         map.addContextMenu(menu);
-
-        //set(116.404, 39.925, '¹Ê¹¬²©ÎïÔº', 'µØÖ·£º±±¾©ÊĞ¶«³ÇÇøÍõ¸®¾®´ó½Ö88ºÅÀÖÌìÒøÌ©°Ù»õ°Ë²ã');
     }
-    function set(x, y, name, text) {
-        var point = new BMapGL.Point(x, y); // ´´½¨µã×ø±ê
-        // ´´½¨µã±ê¼Ç
+    function addpoint(x, y, name, text) {
+        var point = new BMapGL.Point(x, y); // åˆ›å»ºç‚¹åæ ‡
+        // åˆ›å»ºç‚¹æ ‡è®°
         var marker = new BMapGL.Marker(point);
         map.addOverlay(marker);
-        // ´´½¨ĞÅÏ¢´°¿Ú
+        // åˆ›å»ºä¿¡æ¯çª—å£
         var opts = {
             width: 200,
             height: 100,
             title: name
         };
         var infoWindow = new BMapGL.InfoWindow(text, opts);
-        // µã±ê¼ÇÌí¼Óµã»÷ÊÂ¼ş
+        // ç‚¹æ ‡è®°æ·»åŠ ç‚¹å‡»äº‹ä»¶
         marker.addEventListener('click', function () {
-            map.openInfoWindow(infoWindow, point); // ¿ªÆôĞÅÏ¢´°¿Ú
+            map.openInfoWindow(infoWindow, point); // å¼€å¯ä¿¡æ¯çª—å£
         });
+        points[name] = marker;
+        return true;
     }
-    window.onload = loadJScript; // Òì²½¼ÓÔØµØÍ¼
+    function removepoint(name) {
+        if (!!points[name]) {
+            map.removeOverlay(points[name]);
+            delete (points[name]);
+            return true;
+        }
+        return false;
+    }
+    function clearpoint() {
+        map.clearOverlays();
+        return true;
+    }
+    window.onload = loadJScript; // å¼‚æ­¥åŠ è½½åœ°å›¾
 </script>
 
 </html>

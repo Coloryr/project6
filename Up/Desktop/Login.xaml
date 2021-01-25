@@ -14,7 +14,7 @@
         <TextBox Text="" TextWrapping="Wrap" VerticalAlignment="Top" Margin="56,39,0,0" HorizontalAlignment="Left" Width="174" x:Name="User"/>
         <CheckBox Content="保存令牌" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,89,0,0" Style="{DynamicResource Check}"
                   Name="Token"/>
-        <Button Content="登录" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="175,86,0,0" Width="55" IsDefault="True" Click="Button_Click"/>
+        <Button Content="登录" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="175,86,0,0" Width="55" IsDefault="True"/>
         <Label Content="网址：" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0"/>
         <PasswordBox VerticalAlignment="Top" Margin="56,64,0,0" HorizontalAlignment="Left" Width="174" x:Name="Pass"/>
     </Grid>

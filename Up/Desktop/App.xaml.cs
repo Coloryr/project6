@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -59,7 +60,7 @@ namespace Desktop
             {
                 HttpServer.BeginGetContext(ContextReady, null);
                 var res = HttpServer.EndGetContext(ar);
-                var data = Encoding.UTF8.GetBytes(DesktopResource.web);
+                var data = Encoding.UTF8.GetBytes(File.ReadAllText(@"E:\MCU's_src\project6\Up\Desktop\Resources\web.txt"));
                 res.Response.ContentType = "text/html; charset=utf-8";
                 res.Response.OutputStream.Write(data);
                 res.Response.Close();

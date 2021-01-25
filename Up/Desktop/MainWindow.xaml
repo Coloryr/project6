@@ -6,7 +6,7 @@
         xmlns:wpf="clr-namespace:CefSharp.Wpf;assembly=CefSharp.Wpf"
         xmlns:local="clr-namespace:Desktop"
         mc:Ignorable="d"
-        Title="控制台地图" Height="770" Width="1200" Closing="Window_Closing" Loaded="Window_Loaded">
+        Title="控制台地图" MinHeight="600" MinWidth="800" Closing="Window_Closing" Loaded="Window_Loaded">
     <Grid>
         <Rectangle Fill="#FFF4F4F5" Stroke="#FF5ABED6" StrokeThickness="2"/>
         <wpf:ChromiumWebBrowser x:Name="Map" Margin="2"/>
