@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
 using System.IO;
-using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -41,8 +36,8 @@ namespace Desktop
             TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
             HttpUtils = new();
-            
-            try 
+
+            try
             {
                 HttpServer.Start();
                 HttpServer.BeginGetContext(ContextReady, null);
@@ -66,8 +61,8 @@ namespace Desktop
                 res.Response.Close();
             }
             catch
-            { 
-                
+            {
+
             }
         }
 

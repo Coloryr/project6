@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -8,6 +9,7 @@ namespace Server
     {
         public static string RunLocal;
         public static ConfigObj Config;
+        public static SaveDataUtil SaveData;
 
         private static Logs Logs;
         private static bool isGo;
@@ -19,11 +21,13 @@ namespace Server
             RunLocal = AppDomain.CurrentDomain.BaseDirectory;
             //设置编码
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+            ConfigUtil.Start();
+            SaveData = new();
             //创建日志文件
             Logs = new Logs(RunLocal);
             Logs.LogOut("服务器启动中");
             while (true)
-            { 
+            {
                 string data = Console.ReadLine();
                 switch (data)
                 {
@@ -37,6 +41,7 @@ namespace Server
         private static void Stop()
         {
             isGo = false;
+            SaveData.Save();
         }
 
         /// <summary>

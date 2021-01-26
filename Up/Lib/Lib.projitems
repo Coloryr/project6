@@ -9,6 +9,7 @@
     <Import_RootNamespace>Lib</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)Login.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DataPackObj.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)LoginArg.cs" />
   </ItemGroup>
 </Project>

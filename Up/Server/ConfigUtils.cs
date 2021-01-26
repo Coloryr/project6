@@ -2,9 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Server
 {
@@ -66,6 +63,161 @@ namespace Server
         public static void Save()
         {
             ConfigSave.Save(ServerMain.Config, FilePath);
+        }
+    }
+    public class SaveDataUtil
+    { 
+        public string FilePath = ServerMain.RunLocal + "Save\\";
+        public readonly Dictionary<string, DataSaveObj> Groups = new();
+        public readonly Dictionary<string, string> UUID_Group = new();
+
+        private const string EmptyGroup = "*";
+        private object Lock = new object();
+
+        public void AddGroup(string Name)
+        { 
+        
+        }
+
+        public void AddItem(string UUID)
+        {
+            string Time = string.Format("{0:s}", DateTime.Now);
+            if (!UUID_Group.ContainsKey(UUID))
+            {
+                lock (Lock)
+                {
+                    var item = Groups[EmptyGroup];
+                    item.List.Add(UUID, new ItemSaveObj
+                    {
+                        Capacity = 0,
+                        UUID = UUID,
+                        Name = "新的垃圾桶",
+                        Time = Time,
+                        X = -1,
+                        Y = -1
+                    });
+                }
+                SaveGroup(EmptyGroup);
+            }
+            else
+            {
+                lock (Lock)
+                {
+                    var group = UUID_Group[UUID];
+                    var obj = Groups[group];
+                    var item = obj.List[UUID];
+                    item.Time = Time;
+                }
+                SaveUUID(UUID);
+            }
+        }
+
+        public void UpData(string UUID, int x, int y, int a)
+        { 
+            
+        }
+
+        public void MoveGroup(string UUID, string Group)
+        {
+            string oldgroup = UUID_Group[UUID];
+            if (oldgroup == Group)
+                return;
+            lock (Lock)
+            {
+                var obj = Groups[oldgroup];
+                var item = obj.List[UUID];
+                obj.List.Remove(UUID);
+                var obj1 = Groups[Group];
+                obj1.List.Add(UUID, item);
+                UUID_Group[UUID] = Group;
+            }
+            SaveGroup(oldgroup);
+            SaveGroup(Group);
+        }
+
+        public void SetName(string UUID, string Name)
+        {
+            lock (Lock)
+            {
+                if (UUID_Group.ContainsKey(UUID))
+                {
+                    string group = UUID_Group[UUID];
+                    if (Groups.ContainsKey(group))
+                    {
+                        var obj = Groups[group];
+                        if (obj.List.ContainsKey(UUID))
+                        {
+                            obj.List[UUID].Name = Name;
+                        }
+                    }
+                }
+            }
+            SaveUUID(UUID);
+        }
+
+        public void Start()
+        {
+            if (!Directory.Exists(FilePath))
+            {
+                Directory.CreateDirectory(FilePath);
+            }
+            var files = Directory.GetFiles(FilePath);
+            foreach (var item in files)
+            {
+                var obj = JsonConvert.DeserializeObject<DataSaveObj>(File.ReadAllText(item));
+                Groups.Add(obj.Name, obj);
+                foreach (var item1 in obj.List)
+                {
+                    UUID_Group.Add(item1.Key, obj.Name);
+                }
+            }
+            if (!Groups.ContainsKey(EmptyGroup))
+            {
+                Groups.Add(EmptyGroup, new DataSaveObj
+                {
+                    Name = EmptyGroup
+                });
+                SaveGroup(EmptyGroup);
+            }
+        }
+
+        public void SaveGroup(string group)
+        {
+            lock (Lock)
+            {
+                if (Groups.ContainsKey(group))
+                {
+                    var obj = Groups[group];
+                    var data = JsonConvert.SerializeObject(obj);
+                    File.WriteAllText($"{FilePath}{obj.Name}.json", data);
+                }
+            }
+        }
+
+        public void SaveUUID(string uuid)
+        {
+            lock (Lock)
+            {
+                if (UUID_Group.ContainsKey(uuid))
+                {
+                    var group = UUID_Group[uuid];
+                    var obj = Groups[group];
+                    var data = JsonConvert.SerializeObject(obj);
+                    File.WriteAllText($"{FilePath}{obj.Name}.json", data);
+                }
+            }
+        }
+
+        public void Save()
+        {
+            lock (Lock)
+            {
+                foreach (var item in Groups.Values)
+                {
+                    var data = JsonConvert.SerializeObject(item);
+                    File.WriteAllText($"{FilePath}{item.Name}.json", data);
+                }
+            }
         }
     }
 }
