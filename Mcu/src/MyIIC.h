@@ -15,6 +15,11 @@
 class MyIIC
 {
 private:
+    void Write(uint8_t reg, uint8_t address);
+    void Write(uint8_t *reg, uint32_t size1, uint8_t address);
+    void Read(uint8_t address, uint8_t *data, uint32_t size);
+    uint8_t Read(uint8_t address);
+
 public:
     MyIIC();
     void Write(uint8_t reg, uint8_t address, uint8_t *data, uint32_t size);
