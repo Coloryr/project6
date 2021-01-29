@@ -24,13 +24,21 @@ class VL53L0
 {
 private:
     int en;
-    int nowdata;
-    void Start();
-    void Close();
+    bool ok;
+    char index;
+    uint8_t buff[12];
+    uint8_t status;
+    uint16_t count[3];
+    void start();
+    void close();
 
 public:
-    VL53L0(int open);
+    VL53L0(int arg0, char arg1);
+    void check();
     bool isok();
+    bool isready();
+    void update();
+    char getindex();
 };
 
 #endif

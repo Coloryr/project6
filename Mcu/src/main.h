@@ -13,5 +13,6 @@ extern class NBIoT *IoT;
 extern class MyIIC *IIC;
 extern class VL53L0 *VL53L0A;
 extern class VL53L0 *VL53L0B;
+extern class EEPROM* ThisEEPROM;
 
 #endif

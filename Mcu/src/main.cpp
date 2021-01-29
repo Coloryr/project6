@@ -5,6 +5,7 @@
 #include "NBIoT.h"
 #include "MyIIC.h"
 #include "VL53L0.h"
+#include "EEPROM.h"
 
 uint8_t mode;
 bool Bluetooth_State;
@@ -17,26 +18,12 @@ void setup()
     ThisServo = new Servo();
     IoT = new NBIoT();
     IIC = new MyIIC();
-    VL53L0A = new VL53L0(VL53L0_A);
-    VL53L0B = new VL53L0(VL53L0_B);
+    ThisEEPROM = new EEPROM();
+    VL53L0A = new VL53L0(VL53L0_A, '0');
+    VL53L0B = new VL53L0(VL53L0_B, '1');
 
-    if (VL53L0A->isok())
-    {
-        Serial.println("VL53L0 0 Start Done");
-    }
-    else
-    {
-        Serial.println("VL53L0 0 Start Fail");
-    }
-
-    if (VL53L0B->isok())
-    {
-        Serial.println("VL53L0 1 Start Done");
-    }
-    else
-    {
-        Serial.println("VL53L0 1 Start Fail");
-    }
+    VL53L0A->check();
+    VL53L0B->check();
 
     // if (NetWork_State)
     // {
@@ -50,6 +37,9 @@ void setup()
 
 void loop()
 {
+    VL53L0A->update();
+    VL53L0B->update();
+    delay(2000);
     // BLE->Tick();
     // for (int d = 1; d < 180; d += 1)
     // {
