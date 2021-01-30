@@ -3,6 +3,8 @@
 #include "main.h"
 #include "tools.h"
 
+uint16_t maxsize;
+
 VL53L0 *VL53L0A;
 VL53L0 *VL53L0B;
 

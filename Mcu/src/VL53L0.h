@@ -20,6 +20,8 @@
 #define VL53L0X_STOP 0x00
 #define VL53L0X_START 0x01
 
+extern uint16_t maxsize;
+
 class VL53L0
 {
 private:

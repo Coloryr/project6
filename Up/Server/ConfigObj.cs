@@ -24,5 +24,6 @@ namespace Server
         public double Y { get; set; }
         public int Capacity { get; set; }
         public string Time { get; set; }
+        public bool Open { get; set; }
     }
 }

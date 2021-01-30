@@ -24,7 +24,7 @@ void MyIIC::Write(uint8_t reg, uint8_t address)
     i2c_master_write_byte(cmd, (address << 1) | I2C_MASTER_WRITE, true);
     i2c_master_write_byte(cmd, reg, true);
     i2c_master_stop(cmd);
-    i2c_master_cmd_begin(I2C_MASTER_NUM, cmd, 1000 / portTICK_RATE_MS);
+    i2c_master_cmd_begin(I2C_MASTER_NUM, cmd, 10 / portTICK_RATE_MS);
     i2c_cmd_link_delete(cmd);
 }
 
@@ -35,7 +35,7 @@ void MyIIC::Write(uint8_t *reg, uint32_t size1, uint8_t address)
     i2c_master_write_byte(cmd, (address << 1) | I2C_MASTER_WRITE, true);
     i2c_master_write(cmd, reg, size1, true);
     i2c_master_stop(cmd);
-    i2c_master_cmd_begin(I2C_MASTER_NUM, cmd, 1000 / portTICK_RATE_MS);
+    i2c_master_cmd_begin(I2C_MASTER_NUM, cmd, 10 / portTICK_RATE_MS);
     i2c_cmd_link_delete(cmd);
 }
 
@@ -47,7 +47,7 @@ void MyIIC::Write(uint8_t reg, uint8_t address, uint8_t *data, uint32_t size)
     i2c_master_write_byte(cmd, reg, true);
     i2c_master_write(cmd, data, size, true);
     i2c_master_stop(cmd);
-    i2c_master_cmd_begin(I2C_MASTER_NUM, cmd, 1000 / portTICK_RATE_MS);
+    i2c_master_cmd_begin(I2C_MASTER_NUM, cmd, 10 / portTICK_RATE_MS);
     i2c_cmd_link_delete(cmd);
 }
 
@@ -59,7 +59,7 @@ void MyIIC::WriteBit(uint8_t reg, uint8_t address, uint8_t data)
     i2c_master_write_byte(cmd, reg, true);
     i2c_master_write_byte(cmd, data, true);
     i2c_master_stop(cmd);
-    i2c_master_cmd_begin(I2C_MASTER_NUM, cmd, 1000 / portTICK_RATE_MS);
+    i2c_master_cmd_begin(I2C_MASTER_NUM, cmd, 10 / portTICK_RATE_MS);
     i2c_cmd_link_delete(cmd);
 }
 

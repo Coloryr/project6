@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Server
 {
@@ -71,6 +73,9 @@ namespace Server
         public readonly Dictionary<string, DataSaveObj> Groups = new();
         public readonly Dictionary<string, string> UUID_Group = new();
 
+        private static Task thread;
+        private static CancellationTokenSource token;
+
         private const string EmptyGroup = "*";
         private object Lock = new object();
 
@@ -97,7 +102,6 @@ namespace Server
                         Y = -1
                     });
                 }
-                SaveGroup(EmptyGroup);
             }
             else
             {
@@ -108,13 +112,24 @@ namespace Server
                     var item = obj.List[UUID];
                     item.Time = Time;
                 }
-                SaveUUID(UUID);
             }
         }
 
-        public void UpData(string UUID, int x, int y, int a)
-        { 
-            
+        public void UpData(string UUID, int x, int y, int capacity, bool open)
+        {
+            if (UUID_Group.ContainsKey(UUID))
+            {
+                lock (Lock)
+                {
+                    string group = UUID_Group[UUID];
+                    var obj = Groups[group];
+                    var item = obj.List[UUID];
+                    item.Capacity = capacity;
+                    item.X = x;
+                    item.Y = y;
+                    item.Open = open;
+                }
+            }
         }
 
         public void MoveGroup(string UUID, string Group)
@@ -131,8 +146,6 @@ namespace Server
                 obj1.List.Add(UUID, item);
                 UUID_Group[UUID] = Group;
             }
-            SaveGroup(oldgroup);
-            SaveGroup(Group);
         }
 
         public void SetName(string UUID, string Name)
@@ -152,7 +165,6 @@ namespace Server
                     }
                 }
             }
-            SaveUUID(UUID);
         }
 
         public void Start()
@@ -179,6 +191,19 @@ namespace Server
                 });
                 SaveGroup(EmptyGroup);
             }
+
+            thread = Task.Run(() =>
+            {
+                while (true)
+                {
+
+                }
+            }, token.Token);
+        }
+
+        public void Stop()
+        {
+            token.Cancel();
         }
 
         public void SaveGroup(string group)

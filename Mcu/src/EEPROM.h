@@ -23,6 +23,7 @@ private:
     void readall();
     void readuuid();
     void readip();
+    void readset();
     
 public:
     EEPROM();
@@ -30,6 +31,7 @@ public:
     void saveall();
     void saveuuid();
     void saveip();
+    void saveset();
     bool isok();
 };
 

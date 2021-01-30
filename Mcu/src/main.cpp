@@ -25,6 +25,8 @@ void setup()
     VL53L0A->check();
     VL53L0B->check();
 
+    ThisEEPROM->init();
+
     // if (NetWork_State)
     // {
     //     BLE = new MyBLE(Server);

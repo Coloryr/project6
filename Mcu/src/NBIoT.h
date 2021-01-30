@@ -10,7 +10,6 @@ extern uint8_t Port[2];
 class NBIoT
 {
 private:
-    
 public:
     NBIoT();
 };
