@@ -14,10 +14,9 @@ bool NetWork_State;
 void setup()
 {
     Serial.begin(115200);
-    //
+
     ThisServo = new Servo();
     IoT = new NBIoT();
-    IIC = new MyIIC();
     ThisEEPROM = new EEPROM();
     VL53L0A = new VL53L0(VL53L0_A, '0');
     VL53L0B = new VL53L0(VL53L0_B, '1');

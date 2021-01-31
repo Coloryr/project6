@@ -6,6 +6,10 @@
 
 #define EEPROM_Add 0xA0
 
+#define I2C_EEPROM_SCL GPIO_NUM_26
+#define I2C_EEPROM_SDA GPIO_NUM_25
+#define I2C_EEPROM_NUM I2C_NUM_1
+
 #define UUID_Add 0x00
 #define SET_Add 0x10
 #define IP_Add 0x20

@@ -14,7 +14,7 @@ class Servo
 private:
 public:
     Servo();
-    void SetServo(int degree);
+    void SetServo(uint8_t degree);
 };
 
 #endif
