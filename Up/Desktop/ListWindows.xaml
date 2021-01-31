@@ -8,7 +8,7 @@
         Title="垃圾桶列表" Height="450" Width="800">
     <Grid>
         <Rectangle Fill="#FFF4F4F5" Stroke="#FF5ABED6" StrokeThickness="2"/>
-        <ListView Margin="4,28,4,4">
+        <ListView Margin="4,28,4,4" Name="List">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="UUID" Width="100" DisplayMemberBinding="{Binding UUID}"/>
@@ -28,7 +28,7 @@
                 </ContextMenu>
             </ListView.ContextMenu>
         </ListView>
-        <ComboBox Margin="60,5,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="20" Width="448"/>
+        <ComboBox Margin="60,5,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="20" Width="448" Name="GroupList"/>
         <Label Content="选择分区" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="2,2,0,0"/>
         <Button Content="清空" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="513,5,0,0" Height="20" Width="60"/>
         <Button Content="搜索" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="578,5,0,0" Height="20" Width="60"/>

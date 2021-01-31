@@ -29,6 +29,7 @@ namespace Server
                     string time = date.ToLongTimeString().ToString();
                     string write = "[" + year + "]" + "[" + time + "]" + a;
                     File.AppendAllText(RunLocal + log, write + Environment.NewLine, Encoding.UTF8);
+                    Console.WriteLine(write);
                 }
                 catch
                 { }

@@ -23,9 +23,13 @@ namespace Server
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             ConfigUtil.Start();
             SaveData = new();
+            SaveData.Start();
             //创建日志文件
             Logs = new Logs(RunLocal);
             Logs.LogOut("服务器启动中");
+
+            WebSocket.Start();
+
             while (true)
             {
                 string data = Console.ReadLine();
@@ -41,7 +45,7 @@ namespace Server
         private static void Stop()
         {
             isGo = false;
-            SaveData.Save();
+            SaveData.Stop();
         }
 
         /// <summary>

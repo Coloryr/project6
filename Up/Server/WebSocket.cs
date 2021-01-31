@@ -116,8 +116,8 @@ namespace Server
                                 Send(client, new DataPackObj
                                 {
                                     Type = DataType.Login,
-                                    Data = false,
-                                    Data1 = "账户或密码错误"
+                                    Res = false,
+                                    Data = "账户或密码错误"
                                 });
                             }
                             else
@@ -126,8 +126,8 @@ namespace Server
                                 Send(client, new DataPackObj
                                 {
                                     Type = DataType.Login,
-                                    Data = true,
-                                    Data1 = uuid
+                                    Res = true,
+                                    Data = uuid
                                 });
                                 if (Tokens.ContainsKey(User))
                                 {
@@ -145,33 +145,64 @@ namespace Server
                             Send(client, new DataPackObj
                             {
                                 Type = DataType.Login,
-                                Data = false,
-                                Data1 = "账户或密码错误"
+                                Res = false,
+                                Data = "账户或密码错误"
                             });
                         }
                         break;
-                    case DataType.GetList:
+                    case DataType.GetGroups:
                         if (!CheckLogin(list))
                         {
                             Send(client, new DataPackObj
                             {
-                                Type = DataType.GetList,
-                                Data = false,
-                                Data1 = "账户错误"
+                                Type = DataType.GetGroups,
+                                Res = false,
+                                Data = "账户错误"
                             });
                         }
                         else
                         {
                             Send(client, new DataPackObj
                             {
-                                Type = DataType.GetList,
-                                Data = true,
-                                Data1 = "账户错误"
+                                Type = DataType.GetGroups,
+                                Res = true,
+                                Data = ServerMain.SaveData.Groups
                             });
                         }
                         break;
-                    case DataType.GetInfo:
-
+                    case DataType.GetGroupInfo:
+                        if (!CheckLogin(list))
+                        {
+                            Send(client, new DataPackObj
+                            {
+                                Type = DataType.GetGroups,
+                                Res = false,
+                                Data = "账户错误"
+                            });
+                        }
+                        else
+                        {
+                            string temp = (string)obj.Data1;
+                            if (ServerMain.SaveData.Groups.ContainsKey(temp))
+                            {
+                                var group = ServerMain.SaveData.Groups[temp];
+                                Send(client, new DataPackObj
+                                {
+                                    Type = DataType.GetGroupInfo,
+                                    Res = true,
+                                    Data = group
+                                });
+                            }
+                            else
+                            {
+                                Send(client, new DataPackObj
+                                {
+                                    Type = DataType.GetGroupInfo,
+                                    Res = false,
+                                    Data = $"没有组{temp}"
+                                });
+                            }
+                        }
                         break;
                 }
             }

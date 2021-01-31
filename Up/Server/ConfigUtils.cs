@@ -7,6 +7,11 @@ using System.Threading.Tasks;
 
 namespace Server
 {
+    public record ConfigResObj
+    { 
+        public bool Res { get; set; }
+        public string Message { get; set; }
+    }
     class ConfigSave
     {
         private static object Locker = new object();
@@ -55,9 +60,18 @@ namespace Server
                 IP = "127.0.0.1",
                 Port = 80,
                 ThreadNumber = 100,
-                User = new Dictionary<string, string>()
+                User = new()
                 {
-                    { "Admin" , "4e7afebcfbae000b22c7c85e5560f89a2a0280b4" }
+                    { "Admin", "4e7afebcfbae000b22c7c85e5560f89a2a0280b4" }
+                },
+                Mysql = new()
+                {
+                    Enable = false,
+                    IP = "127.0.0.1",
+                    Port = 3306,
+                    User = "root",
+                    Password = "123456",
+                    Database = "test"
                 }
             }, FilePath);
         }
@@ -73,17 +87,41 @@ namespace Server
         public readonly Dictionary<string, DataSaveObj> Groups = new();
         public readonly Dictionary<string, string> UUID_Group = new();
 
-        private static Task thread;
-        private static CancellationTokenSource token;
+        private Task thread;
+        private CancellationTokenSource token = new();
 
-        private const string EmptyGroup = "*";
+        private const string EmptyGroup = "@";
         private object Lock = new object();
 
-        private static bool Save = false;
+        private bool Save = false;
 
-        public void AddGroup(string Name)
-        { 
-        
+        public ConfigResObj AddGroup(string Name)
+        {
+            if (Groups.ContainsKey(Name))
+            {
+                return new ConfigResObj
+                {
+                    Res = false,
+                    Message = $"组{Name}已存在"
+                };
+            }
+            else
+            {
+                lock (Lock)
+                {
+                    Groups.Add(Name, new DataSaveObj
+                    {
+                        Name = Name,
+                        List = new()
+                    });
+                }
+                SaveGroup(Name);
+                return new ConfigResObj
+                {
+                    Res = true,
+                    Message = $"组{Name}已创建"
+                };
+            }
         }
 
         public void AddItem(string UUID)
@@ -190,7 +228,8 @@ namespace Server
             {
                 Groups.Add(EmptyGroup, new DataSaveObj
                 {
-                    Name = EmptyGroup
+                    Name = EmptyGroup,
+                    List = new()
                 });
                 SaveGroup(EmptyGroup);
             }
