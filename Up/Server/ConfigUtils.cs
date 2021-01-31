@@ -79,6 +79,8 @@ namespace Server
         private const string EmptyGroup = "*";
         private object Lock = new object();
 
+        private static bool Save = false;
+
         public void AddGroup(string Name)
         { 
         
@@ -102,6 +104,7 @@ namespace Server
                         Y = -1
                     });
                 }
+                SaveGroup(EmptyGroup);
             }
             else
             {
@@ -196,7 +199,12 @@ namespace Server
             {
                 while (true)
                 {
-
+                    if (Save)
+                    {
+                        SaveAll();
+                        Save = false;
+                    }
+                    Thread.Sleep(30000);
                 }
             }, token.Token);
         }
@@ -204,6 +212,7 @@ namespace Server
         public void Stop()
         {
             token.Cancel();
+            SaveAll();
         }
 
         public void SaveGroup(string group)
@@ -233,7 +242,7 @@ namespace Server
             }
         }
 
-        public void Save()
+        public void SaveAll()
         {
             lock (Lock)
             {

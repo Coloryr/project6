@@ -9,6 +9,9 @@
 #define Open_IN 12
 #define Close_IN 14
 
+extern uint16_t ADC_Low;
+extern uint16_t ADC_HIGH;
+
 class IOInput
 {
 private:

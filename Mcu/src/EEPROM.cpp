@@ -5,6 +5,8 @@
 #include "NBIoT.h"
 #include "tools.h"
 #include "VL53L0.h"
+#include "IOInput.h"
+#include "tools.h"
 
 EEPROM *ThisEEPROM;
 MyIIC *EEPROMIIC = NULL;
@@ -95,9 +97,12 @@ void EEPROM::readip()
 }
 void EEPROM::readset()
 {
-    Mytow tow;
-    EEPROMIIC->Read(SET_Add, EEPROM_Add, tow.u8, 2);
-    maxsize = tow.u16;
+    uint8_t *buff = new uint8_t[6];
+    EEPROMIIC->Read(SET_Add, EEPROM_Add, buff, 6);
+    maxsize = makeuint16(buff[1], buff[0]);
+    ADC_Low = makeuint16(buff[3], buff[2]);
+    ADC_HIGH = makeuint16(buff[5], buff[4]);
+    delete (buff);
 }
 
 void EEPROM::saveall()
@@ -124,9 +129,19 @@ void EEPROM::saveip()
 }
 void EEPROM::saveset()
 {
+    uint8_t *buff = new uint8_t[6];
     Mytow tow;
     tow.u16 = maxsize;
-    EEPROMIIC->Write(SET_Add, EEPROM_Add, tow.u8, 2);
+    buff[0] = tow.u8[0];
+    buff[1] = tow.u8[1];
+    tow.u16 = ADC_Low;
+    buff[2] = tow.u8[0];
+    buff[3] = tow.u8[1];
+    tow.u16 = ADC_HIGH;
+    buff[4] = tow.u8[0];
+    buff[5] = tow.u8[1];
+    EEPROMIIC->Write(SET_Add, EEPROM_Add, buff, 6);
+    delete (buff);
 }
 bool EEPROM::isok()
 {
