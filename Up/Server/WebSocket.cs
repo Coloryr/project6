@@ -17,22 +17,16 @@ namespace Server
 
         public static bool CheckHand(IDictionary<string, string> list)
         {
-            if (!list.ContainsKey(LoginArg.Key) || list[LoginArg.Key] == LoginArg.Value)
+            if (list.ContainsKey(LoginArg.Key) && list[LoginArg.Key] == LoginArg.Value)
             {
-                return false;
+                return true;
             }
-            if (!list.ContainsKey(LoginArg.UserKey) && !list.ContainsKey(LoginArg.TokenKey))
-            {
-                return false;
-            }
-            return true;
+            return false;
         }
 
-        public static bool CheckLogin(IDictionary<string, string> list)
+        public static bool CheckLogin(string user, string token)
         {
-            string User = list[LoginArg.UserKey];
-            string Token = list[LoginArg.TokenKey];
-            if (Tokens.ContainsKey(User) && Tokens[User] == Token)
+            if (Tokens.ContainsKey(user) && Tokens[user] == token)
                 return true;
             return false;
         }
@@ -52,7 +46,9 @@ namespace Server
                         if (!CheckHand(list))
                         {
                             Socket.Close();
+                            return;
                         }
+                        Clients.TryAdd(Socket.ConnectionInfo.ClientPort, Socket);
                     };
                     Socket.OnClose = () =>
                     {
@@ -115,14 +111,14 @@ namespace Server
             });
         }
 
-        public static void MoveGroup(string UUID, string group)
+        public static void MoveGroup(string uuid, string group)
         {
             var send = new DataPackObj
             {
                 Type = DataType.MoveGroup,
                 Res = true,
                 Data = group,
-                Data1 = UUID
+                Data1 = uuid
             };
             Task.Run(() =>
             {
@@ -156,11 +152,30 @@ namespace Server
             try
             {
                 var obj = JsonConvert.DeserializeObject<DataPackObj>(data);
-                IDictionary<string, string> list = client.ConnectionInfo.Headers;
+                string User = obj.User;
+                string Token = obj.Token;
                 switch (obj.Type)
                 {
+                    case DataType.CheckLogin:
+                        if (ServerMain.Config.User.ContainsKey(User))
+                        {
+                            if (Tokens.ContainsKey(User))
+                            {
+                                Send(client, new DataPackObj
+                                {
+                                    Type = DataType.CheckLogin,
+                                    Res = Tokens[User] == Token
+                                });
+                                break;
+                            }
+                        }
+                        Send(client, new DataPackObj
+                        {
+                            Type = DataType.CheckLogin,
+                            Res = false
+                        });
+                        break;
                     case DataType.Login:
-                        string User = list[LoginArg.UserKey];
                         if (ServerMain.Config.User.ContainsKey(User))
                         {
                             string data1 = (string)obj.Data;
@@ -205,7 +220,7 @@ namespace Server
                         }
                         break;
                     case DataType.GetGroups:
-                        if (!CheckLogin(list))
+                        if (!CheckLogin(User, Token))
                         {
                             Send(client, new DataPackObj
                             {
@@ -225,7 +240,7 @@ namespace Server
                         }
                         break;
                     case DataType.GetGroupInfo:
-                        if (!CheckLogin(list))
+                        if (!CheckLogin(User, Token))
                         {
                             Send(client, new DataPackObj
                             {

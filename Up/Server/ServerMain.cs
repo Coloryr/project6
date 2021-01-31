@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Lib;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -54,12 +55,7 @@ namespace Server
         /// <param name="e">Exception</param>
         public static void LogError(Exception e)
         {
-            Task.Factory.StartNew(() =>
-            {
-                string a = "[错误]" + e.ToString();
-                Logs.LogWrite(a);
-                Console.WriteLine(a);
-            });
+            Logs.LogOut(e.ToString());
         }
         /// <summary>
         /// 写错误到日志中
@@ -67,9 +63,7 @@ namespace Server
         /// <param name="a">信息</param>
         public static void LogError(string a)
         {
-            a = "[错误]" + a;
-            Task.Factory.StartNew(() => Logs.LogWrite(a));
-            Console.WriteLine(a);
+            Logs.LogOut(a);
         }
         /// <summary>
         /// 写信息到日志中
@@ -77,9 +71,7 @@ namespace Server
         /// <param name="a">信息</param>
         public static void LogOut(string a)
         {
-            a = "[信息]" + a;
-            Task.Factory.StartNew(() => Logs.LogWrite(a));
-            Console.WriteLine(a);
+            Logs.LogOut(a);
         }
     }
 }

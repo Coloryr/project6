@@ -3,12 +3,12 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Server
+namespace Lib
 {
     public class Logs
     {
-        public string log = "logs.log";
-        public string RunLocal;
+        private string log = "logs.log";
+        private string RunLocal;
         private readonly object lockobject = new object();
 
         public Logs(string RunLocal)
@@ -18,7 +18,7 @@ namespace Server
                 File.Create(RunLocal + log);
         }
 
-        public void LogWrite(string a)
+        private void LogWrite(string a)
         {
             lock (lockobject)
             {

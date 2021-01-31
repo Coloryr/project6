@@ -11,5 +11,6 @@
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)DataPackObj.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)LoginArg.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Logs.cs" />
   </ItemGroup>
 </Project>

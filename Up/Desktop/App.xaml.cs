@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Lib;
+using System;
 using System.IO;
 using System.Net;
 using System.Text;
@@ -16,37 +17,69 @@ namespace Desktop
         public const string Version = "1.0.0";
         private static HttpListener HttpServer = new();
         public static ConfigObj Config;
-        public static HttpUtils HttpUtils;
-        public static string Local;
+        public static WebSocketUtils HttpUtils;
+        public static Login LoginWindows;
+        private static Logs Logs;
+        public static string RunLocal;
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-            Local = AppDomain.CurrentDomain.BaseDirectory;
-            Config = ConfigSave.Config(new ConfigObj()
-            {
-                AutoLogin = false,
-                Port = 10000,
-                Token = "",
-                Url = "https://",
-                User = ""
-            }, Local + "MainConfig.json");
-            HttpServer.Prefixes.Add($"http://127.0.0.1:{Config.Port}/");
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
-            DispatcherUnhandledException += new DispatcherUnhandledExceptionEventHandler(App_DispatcherUnhandledException);
-            TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
-            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
-            HttpUtils = new();
-
             try
             {
+                Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+                RunLocal = AppDomain.CurrentDomain.BaseDirectory;
+                Config = ConfigSave.Config(new ConfigObj()
+                {
+                    AutoLogin = false,
+                    Port = 10000,
+                    Token = "",
+                    Url = "https://",
+                    User = ""
+                }, RunLocal + "MainConfig.json");
+                Logs = new Logs(RunLocal);
+                HttpServer.Prefixes.Add($"http://127.0.0.1:{Config.Port}/");
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
+                DispatcherUnhandledException += new DispatcherUnhandledExceptionEventHandler(App_DispatcherUnhandledException);
+                TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
+                AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
+                LoginWindows = new Login();
+                LoginWindows.ShowDialog();
+
                 HttpServer.Start();
                 HttpServer.BeginGetContext(ContextReady, null);
             }
-            catch
+            catch(Exception ex)
             {
+                LogError(ex);
                 MessageBox.Show("内置服务器启动失败");
                 Shutdown();
             }
+        }
+        public static void CheckLogin(bool login)
+        {
+            if (login)
+            {
+                Logs.LogOut("自动登录成功");
+            }
+            else
+            {
+                Logs.LogOut("自动登录失败");
+                new Login().ShowDialog();
+            }
+        }
+
+        public static void Log(string data)
+        {
+            Logs.LogOut(data);
+        }
+
+        public static void LogError(string data)
+        {
+            Logs.LogError(data);
+        }
+
+        public static void LogError(Exception e)
+        {
+            Logs.LogError(e);
         }
 
         private void ContextReady(IAsyncResult ar)
@@ -70,6 +103,12 @@ namespace Desktop
         {
             HttpServer.Stop();
         }
+
+        public static void Save()
+        {
+            ConfigSave.Save(Config, RunLocal + "MainConfig.json");
+        }
+
         private void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
             try
