@@ -72,6 +72,21 @@ namespace Server
                     User = "root",
                     Password = "123456",
                     Database = "test"
+                },
+                Socket = new()
+                {
+                    Enable = true,
+                    IP = "127.0.0.1",
+                    Port = 2678
+                },
+                MQTT = new()
+                {
+                    Enable = false,
+                    IP = "127.0.0.1",
+                    Port = 3345,
+                    User = "Admin",
+                    Password = "123456",
+                    Topic = "Topic/Server/#"
                 }
             }, FilePath);
         }
@@ -114,6 +129,7 @@ namespace Server
                         Name = Name,
                         List = new()
                     });
+                    WebSocket.AddGroup(Name);
                 }
                 SaveGroup(Name);
                 return new ConfigResObj
@@ -131,16 +147,18 @@ namespace Server
             {
                 lock (Lock)
                 {
-                    var item = Groups[EmptyGroup];
-                    item.List.Add(UUID, new ItemSaveObj
+                    var group = Groups[EmptyGroup];
+                    var item = new ItemSaveObj
                     {
                         Capacity = 0,
                         UUID = UUID,
-                        Name = "新的垃圾桶",
+                        Nick = "新的垃圾桶",
                         Time = Time,
                         X = -1,
                         Y = -1
-                    });
+                    };
+                    group.List.Add(UUID, item);
+                    WebSocket.UpdateItem(EmptyGroup, item);
                 }
                 SaveGroup(EmptyGroup);
             }
@@ -152,11 +170,12 @@ namespace Server
                     var obj = Groups[group];
                     var item = obj.List[UUID];
                     item.Time = Time;
+                    WebSocket.UpdateItem(group, item);
                 }
             }
         }
 
-        public void UpData(string UUID, int x, int y, int capacity, bool open)
+        public void UpData(string UUID, int x, int y, int capacity, bool open, ItemState state)
         {
             if (UUID_Group.ContainsKey(UUID))
             {
@@ -169,39 +188,44 @@ namespace Server
                     item.X = x;
                     item.Y = y;
                     item.Open = open;
+                    item.State = state;
+                    WebSocket.UpdateItem(group, item);
                 }
             }
         }
 
-        public void MoveGroup(string UUID, string Group)
+        public void MoveGroup(string uuid, string group)
         {
-            string oldgroup = UUID_Group[UUID];
-            if (oldgroup == Group)
+            string oldgroup = UUID_Group[uuid];
+            if (oldgroup == group)
                 return;
             lock (Lock)
             {
                 var obj = Groups[oldgroup];
-                var item = obj.List[UUID];
-                obj.List.Remove(UUID);
-                var obj1 = Groups[Group];
-                obj1.List.Add(UUID, item);
-                UUID_Group[UUID] = Group;
+                var item = obj.List[uuid];
+                obj.List.Remove(uuid);
+                var obj1 = Groups[group];
+                obj1.List.Add(uuid, item);
+                UUID_Group[uuid] = group;
+                WebSocket.MoveGroup(uuid, group);
             }
         }
 
-        public void SetName(string UUID, string Name)
+        public void SetNick(string uuid, string nick)
         {
             lock (Lock)
             {
-                if (UUID_Group.ContainsKey(UUID))
+                if (UUID_Group.ContainsKey(uuid))
                 {
-                    string group = UUID_Group[UUID];
+                    string group = UUID_Group[uuid];
                     if (Groups.ContainsKey(group))
                     {
                         var obj = Groups[group];
-                        if (obj.List.ContainsKey(UUID))
+                        if (obj.List.ContainsKey(uuid))
                         {
-                            obj.List[UUID].Name = Name;
+                            var item = obj.List[uuid];
+                            item.Nick = nick;
+                            WebSocket.UpdateItem(group, item);
                         }
                     }
                 }

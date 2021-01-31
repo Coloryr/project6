@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Server
 {
@@ -95,6 +96,59 @@ namespace Server
                 Server.Dispose();
                 ServerMain.LogOut("WebSocket服务器已关闭");
             }
+        }
+
+        public static void AddGroup(string group)
+        {
+            var send = new DataPackObj
+            {
+                Type = DataType.AddGroup,
+                Res = true,
+                Data = group
+            };
+            Task.Run(() =>
+            {
+                foreach (var item in Clients.Values)
+                {
+                    Send(item, send);
+                }
+            });
+        }
+
+        public static void MoveGroup(string UUID, string group)
+        {
+            var send = new DataPackObj
+            {
+                Type = DataType.MoveGroup,
+                Res = true,
+                Data = group,
+                Data1 = UUID
+            };
+            Task.Run(() =>
+            {
+                foreach (var item in Clients.Values)
+                {
+                    Send(item, send);
+                }
+            });
+        }
+
+        public static void UpdateItem(string group, ItemSaveObj obj)
+        {
+            var send = new DataPackObj
+            {
+                Type = DataType.Updata,
+                Res = true,
+                Data = group,
+                Data1 = obj
+            };
+            Task.Run(() =>
+            {
+                foreach (var item in Clients.Values)
+                {
+                    Send(item, send);
+                }
+            });
         }
 
         public static void Do(IWebSocketConnection client, string data)

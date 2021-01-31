@@ -2,7 +2,10 @@
 {
     public enum DataType
     {
-        Login, GetGroups, GetGroupInfo, Move
+        Login, GetGroups, GetGroupInfo, Move,
+        Updata,
+        AddGroup,
+        MoveGroup
     }
     public record DataPackObj
     {
