@@ -1,4 +1,6 @@
 ﻿using MQTTnet;
+using MQTTnet.Client.Receiving;
+using MQTTnet.Protocol;
 using MQTTnet.Server;
 using System;
 using System.Collections.Generic;
@@ -10,49 +12,86 @@ namespace Server
 {
     class ThisMqttServer
     {
-        private static MqttServer server;
-        public static void Start()
+        private static MqttServer Server;
+        public static async void Start()
         {
             var optionsBuilder = new MqttServerOptionsBuilder()
-   .WithDefaultEndpoint().WithDefaultEndpointPort(ServerMain.Config.MQTT.Port).WithConnectionValidator(
-       c =>
-       {
-           var currentUser = config["Users"][0]["UserName"].ToString();
-           var currentPWD = config["Users"][0]["Password"].ToString();
+                .WithDefaultEndpoint()
+                .WithDefaultEndpointPort(ServerMain.Config.MQTT.Port)
+                .WithConnectionValidator(Check)
+                .WithSubscriptionInterceptor(c => c.AcceptSubscription = true)
+                .WithApplicationMessageInterceptor(c => c.AcceptPublish = true);
 
-           if (currentUser == null || currentPWD == null)
-           {
-               c.ReasonCode = MqttConnectReasonCode.BadUserNameOrPassword;
-               return;
-           }
+            Server = new MqttFactory().CreateMqttServer() as MqttServer;
 
-           if (c.Username != currentUser)
-           {
-               c.ReasonCode = MqttConnectReasonCode.BadUserNameOrPassword;
-               return;
-           }
+            Server.ClientConnectedHandler = new MqttServerClientConnectedHandlerDelegate(OnConnected);
+            Server.ClientDisconnectedHandler = new MqttServerClientDisconnectedHandlerDelegate(OnDisconnected);
+            Server.ClientSubscribedTopicHandler = new MqttServerClientSubscribedHandlerDelegate(OnSubscribedTopic);
+            Server.ClientUnsubscribedTopicHandler = new MqttServerClientUnsubscribedTopicHandlerDelegate(OnUnsubscribedTopic);
+            Server.ApplicationMessageReceivedHandler = new MqttApplicationMessageReceivedHandlerDelegate(OnMessageReceived);
 
-           if (c.Password != currentPWD)
-           {
-               c.ReasonCode = MqttConnectReasonCode.BadUserNameOrPassword;
-               return;
-           }
-
-           c.ReasonCode = MqttConnectReasonCode.Success;
-       }).WithSubscriptionInterceptor(
-       c =>
-       {
-           c.AcceptSubscription = true;
-       }).WithApplicationMessageInterceptor(
-       c =>
-       {
-           c.AcceptPublish = true;
-       });
-            server = new MqttFactory().CreateMqttServer() as MqttServer;
+            await Server.StartAsync(optionsBuilder.Build());
         }
-        public static void Stop()
-        { 
+
+        private static void OnMessageReceived(MqttApplicationMessageReceivedEventArgs obj)
+        {
             
+        }
+
+        private static void OnUnsubscribedTopic(MqttServerClientUnsubscribedTopicEventArgs obj)
+        {
+            
+        }
+
+        private static void OnSubscribedTopic(MqttServerClientSubscribedTopicEventArgs obj)
+        {
+            
+        }
+
+        private static void OnDisconnected(MqttServerClientDisconnectedEventArgs obj)
+        {
+            
+        }
+
+        private static void OnConnected(MqttServerClientConnectedEventArgs obj)
+        {
+            
+        }
+
+        public static void Stop()
+        {
+
+        }
+
+        public async void Send(string topic, string data)
+        {
+            var message = new MqttApplicationMessage()
+            {
+                Topic = topic,
+                Payload = Encoding.UTF8.GetBytes(data)
+            };
+            await Server.PublishAsync(message);
+        }
+
+        private static void Check(MqttConnectionValidatorContext arg)
+        {
+            string user = arg.Username;
+            if (ServerMain.Config.User.ContainsKey(user))
+            {
+                arg.ReasonCode = MqttConnectReasonCode.Success;
+            }
+            else
+            {
+                string pass = arg.Password;
+                if (user == ServerMain.Config.MQTT.User && pass == ServerMain.Config.MQTT.Password)
+                {
+                    arg.ReasonCode = MqttConnectReasonCode.Success;
+                }
+                else
+                {
+                    arg.ReasonCode = MqttConnectReasonCode.BadUserNameOrPassword;
+                }
+            }
         }
     }
 }

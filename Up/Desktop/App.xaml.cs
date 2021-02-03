@@ -1,5 +1,6 @@
 ﻿using Lib;
 using System;
+using System.Drawing;
 using System.IO;
 using System.Net;
 using System.Text;
@@ -22,6 +23,7 @@ namespace Desktop
         
         public static string RunLocal;
 
+        private static bool IconSet;
         private static HttpListener HttpServer = new();
         private static System.Windows.Forms.NotifyIcon notifyIcon;
         private static Logs Logs;
@@ -63,32 +65,43 @@ namespace Desktop
                 HttpServer.Start();
                 HttpServer.BeginGetContext(ContextReady, null);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 LogError(ex);
-                MessageBox.Show("内置服务器启动失败");
+                ShowB("启动", "内置服务器启动失败");
                 Shutdown();
             }
         }
+
+        internal static void SetIcon(Icon icon)
+        {
+            if (!IconSet)
+            {
+                IconSet = true;
+                notifyIcon.Icon = icon;
+            }
+        }
+
         public static void ShowA(string title, string data)
         {
             notifyIcon.ShowBalloonTip(300, title, data, System.Windows.Forms.ToolTipIcon.Info);
+            Log(title + "|" + data);
         }
         public static void ShowB(string title, string data)
         {
             notifyIcon.ShowBalloonTip(300, title, data, System.Windows.Forms.ToolTipIcon.Error);
+            LogError(title + "|" + data);
         }
 
         public static void CheckLogin(bool login)
         {
             if (login)
             {
-                Logs.LogOut("自动登录成功");
+                ShowA("登录", "自动登录成功");
             }
             else
             {
-                Logs.LogOut("自动登录失败");
-                new Login().ShowDialog();
+                ShowB("登录", "自动登录失败");
             }
         }
 

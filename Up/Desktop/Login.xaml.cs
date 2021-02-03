@@ -1,5 +1,8 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
+using System.Drawing.Imaging;
 using System.Windows;
+using System.Windows.Media.Imaging;
 
 namespace Desktop
 {
@@ -33,7 +36,7 @@ namespace Desktop
             IntPtr iconHandle = bmp.GetHicon();
             System.Drawing.Icon icon = System.Drawing.Icon.FromHandle(iconHandle);
 
-            App.notifyIcon.Icon = icon;
+            App.SetIcon(icon);
         }
 
         private async void Start()
