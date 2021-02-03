@@ -58,8 +58,6 @@ namespace Server
         {
             ServerMain.Config = ConfigSave.Config(new ConfigObj
             {
-                IP = "127.0.0.1",
-                Port = 80,
                 ThreadNumber = 100,
                 User = new()
                 {
@@ -74,17 +72,9 @@ namespace Server
                     Password = "123456",
                     Database = "test"
                 },
-                Socket = new()
-                {
-                    Enable = true,
-                    IP = "127.0.0.1",
-                    Port = 2678
-                },
                 MQTT = new()
                 {
-                    Enable = false,
-                    IP = "127.0.0.1",
-                    Port = 3345,
+                    Port = 12345,
                     User = "Admin",
                     Password = "123456",
                     Topic = "Topic/Server/#"

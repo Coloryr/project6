@@ -5,8 +5,9 @@ namespace Desktop
 {
     public record ConfigObj
     {
+        public int HttpPort { get; set; }
+        public string IP { get; set; }
         public int Port { get; set; }
-        public string Url { get; set; }
         public string User { get; set; }
         public string Token { get; set; }
         public bool AutoLogin { get; set; }

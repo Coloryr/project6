@@ -29,7 +29,7 @@ namespace Server
             Logs = new Logs(RunLocal);
             Logs.LogOut("服务器启动中");
 
-            WebSocket.Start();
+            ThisMqttServer.Start();
 
             while (true)
             {

@@ -32,9 +32,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="CefSharp.Wpf.NETCore" Version="87.1.131-pre" />
+    <PackageReference Include="CefSharp.Wpf.NETCore" Version="87.1.132" />
+    <PackageReference Include="MQTTnet" Version="3.0.14" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-    <PackageReference Include="WebSocket4Net" Version="0.15.2" />
+    <PackageReference Include="NotifyIconWpf" Version="1.0.0" />
   </ItemGroup>
 
   <Import Project="..\Lib\Lib.projitems" Label="Shared" />

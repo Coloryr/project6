@@ -22,7 +22,7 @@ namespace Desktop
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            Map.Load($"http://127.0.0.1:{App.Config.Port}/");
+            Map.Load($"http://127.0.0.1:{App.Config.HttpPort}/");
             Task.Run(() =>
             {
                 Thread.Sleep(2000);

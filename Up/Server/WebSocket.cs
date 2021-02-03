@@ -17,7 +17,7 @@ namespace Server
 
         public static bool CheckHand(IDictionary<string, string> list)
         {
-            if (list.ContainsKey(LoginArg.Key) && list[LoginArg.Key] == LoginArg.Value)
+            if (list.ContainsKey(DataArg.Key) && list[DataArg.Key] == DataArg.Value)
             {
                 return true;
             }

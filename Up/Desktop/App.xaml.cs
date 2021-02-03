@@ -15,32 +15,48 @@ namespace Desktop
     public partial class App : Application
     {
         public const string Version = "1.0.0";
-        private static HttpListener HttpServer = new();
+        
         public static ConfigObj Config;
-        public static WebSocketUtils HttpUtils;
+        public static MqttUtils HttpUtils;
         public static Login LoginWindows;
-        private static Logs Logs;
+        
         public static string RunLocal;
+
+        private static HttpListener HttpServer = new();
+        private static System.Windows.Forms.NotifyIcon notifyIcon;
+        private static Logs Logs;
         private void Application_Startup(object sender, StartupEventArgs e)
         {
             try
             {
                 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
                 RunLocal = AppDomain.CurrentDomain.BaseDirectory;
+
                 Config = ConfigSave.Config(new ConfigObj()
                 {
                     AutoLogin = false,
-                    Port = 10000,
+                    HttpPort = 10000,
                     Token = "",
-                    Url = "https://",
+                    IP = "127.0.0.1",
+                    Port = 12345,
                     User = ""
                 }, RunLocal + "MainConfig.json");
+
                 Logs = new Logs(RunLocal);
-                HttpServer.Prefixes.Add($"http://127.0.0.1:{Config.Port}/");
+
+                HttpServer.Prefixes.Add($"http://127.0.0.1:{Config.HttpPort}/");
+
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
                 DispatcherUnhandledException += new DispatcherUnhandledExceptionEventHandler(App_DispatcherUnhandledException);
                 TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
                 AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
+
+                notifyIcon = new();
+                notifyIcon.Visible = true;
+                notifyIcon.BalloonTipText = "ColoryrTrash";
+
+                HttpUtils = new MqttUtils();
+
                 LoginWindows = new Login();
                 LoginWindows.ShowDialog();
 
@@ -54,6 +70,15 @@ namespace Desktop
                 Shutdown();
             }
         }
+        public static void ShowA(string title, string data)
+        {
+            notifyIcon.ShowBalloonTip(300, title, data, System.Windows.Forms.ToolTipIcon.Info);
+        }
+        public static void ShowB(string title, string data)
+        {
+            notifyIcon.ShowBalloonTip(300, title, data, System.Windows.Forms.ToolTipIcon.Error);
+        }
+
         public static void CheckLogin(bool login)
         {
             if (login)
@@ -65,6 +90,12 @@ namespace Desktop
                 Logs.LogOut("自动登录失败");
                 new Login().ShowDialog();
             }
+        }
+
+        public static void DisConnect()
+        {
+            LoginWindows = new Login();
+            LoginWindows.ShowDialog();
         }
 
         public static void Log(string data)

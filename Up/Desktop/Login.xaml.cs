@@ -12,29 +12,36 @@ namespace Desktop
         {
             InitializeComponent();
             Token.IsChecked = App.Config.AutoLogin;
-            Addr.Text = App.Config.Url;
-            User.Text = App.Config.User;
+            DataContext = App.Config;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             Start();
+
+            BitmapSource m = (BitmapSource)Icon;
+            System.Drawing.Bitmap bmp = new System.Drawing.Bitmap(m.PixelWidth, m.PixelHeight,
+                PixelFormat.Format32bppPArgb);
+            BitmapData data = bmp.LockBits(
+            new System.Drawing.Rectangle(System.Drawing.Point.Empty, bmp.Size),
+                ImageLockMode.WriteOnly,
+                PixelFormat.Format32bppPArgb);
+
+            m.CopyPixels(Int32Rect.Empty, data.Scan0, data.Height * data.Stride, data.Stride);
+            bmp.UnlockBits(data);
+
+            IntPtr iconHandle = bmp.GetHicon();
+            System.Drawing.Icon icon = System.Drawing.Icon.FromHandle(iconHandle);
+
+            App.notifyIcon.Icon = icon;
         }
 
-        private void Start()
+        private async void Start()
         {
-            App.HttpUtils = new WebSocketUtils();
-            if (!App.HttpUtils.isok)
-            {
-                App.HttpUtils = null;
-                return;
-            }
-            var res = App.HttpUtils.Start();
+            var res = await App.HttpUtils.Start();
             if (!res)
             {
                 MessageBox.Show("服务器连接失败");
-                App.HttpUtils.Stop();
-                App.HttpUtils = null;
             }
             else
             {
@@ -47,26 +54,15 @@ namespace Desktop
             App.LoginWindows = null;
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private async void Button_Click(object sender, RoutedEventArgs e)
         {
-            App.Config.Url = Addr.Text;
+            App.Config.IP = IP.Text;
             App.Config.User = User.Text;
-            if (App.HttpUtils == null)
+            bool res = await App.HttpUtils.Start();
+            if (!res)
             {
-                App.HttpUtils = new WebSocketUtils();
-                if (!App.HttpUtils.isok)
-                {
-                    MessageBox.Show("地址错误");
-                    App.HttpUtils = null;
-                    return;
-                }
-                bool res = App.HttpUtils.Start();
-                if (!res)
-                {
-                    MessageBox.Show("地址错误");
-                    App.HttpUtils = null;
-                    return;
-                }
+                MessageBox.Show("地址错误");
+                return;
             }
             App.HttpUtils.Login(User.Text, Pass.Password);
         }

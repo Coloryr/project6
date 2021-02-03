@@ -1,6 +1,6 @@
 ﻿namespace Lib
 {
-    class LoginArg
+    class DataArg
     {
         public const string Topic = "test/server";
     }

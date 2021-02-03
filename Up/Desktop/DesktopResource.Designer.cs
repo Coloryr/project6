@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Desktop {
+namespace ColoryrTrashDesktop {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace Desktop {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Desktop.DesktopResource", typeof(DesktopResource).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("ColoryrTrashDesktop.DesktopResource", typeof(DesktopResource).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -63,25 +63,22 @@ namespace Desktop {
         /// <summary>
         ///   查找类似 &lt;!DOCTYPE html&gt;
         ///&lt;html lang=&quot;zh-CN&quot;&gt;
+        ///
         ///&lt;head&gt;
         ///    &lt;meta charset=&quot;utf-8&quot;&gt;
-        ///    &lt;title&gt;异步加载地图&lt;/title&gt;
+        ///    &lt;title&gt;寮傛鍔犺浇鍦板浘&lt;/title&gt;
         ///    &lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=utf-8&quot;&gt;
         ///    &lt;meta name=&quot;viewport&quot; content=&quot;initial-scale=1.0, user-scalable=no&quot;&gt;
         ///    &lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;IE=Edge&quot;&gt;
         ///    &lt;style&gt;
-        ///    body,
-        ///    html,
-        ///    #container {
-        ///        overflow: hidden;
-        ///        width: 100%;
-        ///        height: 100%;
-        ///        margin: 0;
-        ///        font-family: &quot;微软雅黑&quot;;
-        ///    }
-        ///    &lt;/style&gt;
-        ///&lt;/head&gt;
-        /// [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        ///        body,
+        ///        html,
+        ///        #container {
+        ///            overflow: hidden;
+        ///            width: 100%;
+        ///            height: 100%;
+        ///            margin: 0;
+        ///            font-family: &quot;寰 [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
         internal static string web {
             get {
