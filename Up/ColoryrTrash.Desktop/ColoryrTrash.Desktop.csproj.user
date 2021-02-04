@@ -16,6 +16,9 @@
     <Compile Update="MakeHardway.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="SearchWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Page Update="ChoseWindow.xaml">
@@ -31,6 +34,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="MakeHardway.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="SearchWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Style\Button.xaml">

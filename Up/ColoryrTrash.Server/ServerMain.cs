@@ -23,12 +23,14 @@ namespace ColoryrTrash.Server
             //设置编码
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             ConfigUtil.Start();
-            SaveData = new();
-            SaveData.Start();
-            //创建日志文件
+
             Logs = new Logs(RunLocal);
             Logs.LogOut("服务器启动中");
 
+            SaveData = new();
+            SaveData.Start();
+            //创建日志文件
+            
             ThisMqttServer.Start();
 
             while (true)

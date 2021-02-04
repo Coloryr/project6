@@ -83,7 +83,7 @@
                             <ControlTemplate TargetType="ComboBoxItem">
                                 <Border Name="Back" Background="Transparent" BorderThickness="0,0,0,0" BorderBrush="#335EBDD3">
                                     <TextBlock Margin="3 0 3 0" VerticalAlignment="Center" HorizontalAlignment="Left"
-                                               Foreground="Black" Text="{Binding Content.名字,RelativeSource={RelativeSource TemplatedParent}}"/>
+                                               Foreground="Black" Text="{Binding Content,RelativeSource={RelativeSource TemplatedParent}}"/>
                                 </Border>
                                 <ControlTemplate.Triggers>
                                     <Trigger Property="IsMouseOver" Value="True">

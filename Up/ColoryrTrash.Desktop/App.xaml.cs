@@ -25,6 +25,7 @@ namespace ColoryrTrash.Desktop
         public static ListWindows ListWindows_;
         
         public static string RunLocal;
+        public static bool IsLogin;
 
         private static App ThisApp;
         private static bool IconSet;
@@ -67,8 +68,7 @@ namespace ColoryrTrash.Desktop
                 HttpServer.Start();
                 HttpServer.BeginGetContext(ContextReady, null);
 
-                LoginWindows = new Login();
-                LoginWindows.Show();
+                Login();
             }
             catch (Exception ex)
             {
@@ -76,6 +76,18 @@ namespace ColoryrTrash.Desktop
                 MessageBox.Show("内置服务器启动失败", "启动");
                 Shutdown();
             }
+        }
+
+        public static void Login()
+        {
+            ThisApp.Dispatcher.Invoke(() =>
+            {
+                if (LoginWindows == null)
+                {
+                    LoginWindows = new Login();
+                }
+                LoginWindows.Show();
+            });
         }
 
         public static void Start()
@@ -144,7 +156,7 @@ namespace ColoryrTrash.Desktop
             {
                 HttpServer.BeginGetContext(ContextReady, null);
                 var res = HttpServer.EndGetContext(ar);
-                var data = Encoding.UTF8.GetBytes(File.ReadAllText(@"E:\MCU's_src\project6\Up\Desktop\Resources\web.txt"));
+                var data = Encoding.UTF8.GetBytes(File.ReadAllText(@"E:\MCU's_src\project6\Up\ColoryrTrash.Desktop\Resources\web.txt"));
                 res.Response.ContentType = "text/html; charset=utf-8";
                 res.Response.OutputStream.Write(data);
                 res.Response.Close();

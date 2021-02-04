@@ -84,7 +84,7 @@ namespace ColoryrTrash.Server
                     case DataType.Login:
                         if (ServerMain.Config.User.ContainsKey(User))
                         {
-                            string data1 = (string)obj.Data;
+                            string data1 = obj.Data as string;
                             if(string.IsNullOrWhiteSpace(data1))
                             {
                                 SendItem(arg.ClientId, new DataPackObj
@@ -149,7 +149,7 @@ namespace ColoryrTrash.Server
                             {
                                 Type = DataType.GetGroups,
                                 Res = true,
-                                Data = ServerMain.SaveData.Groups
+                                Data = JsonConvert.SerializeObject(ServerMain.SaveData.Groups.Keys)
                             });
                         }
                         break;
@@ -165,7 +165,7 @@ namespace ColoryrTrash.Server
                         }
                         else
                         {
-                            string temp = (string)obj.Data1;
+                            string temp = obj.Data as string;
                             if (ServerMain.SaveData.Groups.ContainsKey(temp))
                             {
                                 var group = ServerMain.SaveData.Groups[temp];
@@ -173,7 +173,7 @@ namespace ColoryrTrash.Server
                                 {
                                     Type = DataType.GetGroupInfo,
                                     Res = true,
-                                    Data = group
+                                    Data = JsonConvert.SerializeObject(group)
                                 });
                             }
                             else
@@ -181,8 +181,8 @@ namespace ColoryrTrash.Server
                                 SendItem(arg.ClientId, new DataPackObj
                                 {
                                     Type = DataType.GetGroupInfo,
-                                    Res = false,
-                                    Data = $"没有组{temp}"
+                                    Res = true,
+                                    Data1 = $"没有组[{temp}]"
                                 });
                             }
                         }
@@ -197,22 +197,22 @@ namespace ColoryrTrash.Server
 
         private static void OnUnsubscribedTopic(MqttServerClientUnsubscribedTopicEventArgs arg)
         {
-            
+            ServerMain.LogOut($"客户端[{arg.ClientId}]，取消订阅频道[{arg.TopicFilter}]");
         }
 
         private static void OnSubscribedTopic(MqttServerClientSubscribedTopicEventArgs arg)
         {
-            
+            ServerMain.LogOut($"客户端[{arg.ClientId}]，订阅频道[{arg.TopicFilter.Topic}]");
         }
 
         private static void OnDisconnected(MqttServerClientDisconnectedEventArgs arg)
         {
-            
+            ServerMain.LogOut($"客户端[{arg.ClientId}]断开连接");
         }
 
         private static void OnConnected(MqttServerClientConnectedEventArgs arg)
         {
-            
+            ServerMain.LogOut($"客户端[{arg.ClientId}]连接");
         }
 
         public static async void Stop()

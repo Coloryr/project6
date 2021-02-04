@@ -54,30 +54,61 @@ namespace ColoryrTrash.Desktop
                             {
                                 App.ShowB("自动登录", "自动登录失败");
                             }
+                            else
+                            {
+                                App.Start();
+                                App.IsLogin = true;
+                                App.LoginWindows.LoginClose();
+                                App.ShowB("自动登录", "已自动登录");
+                            }
                             break;
                         case DataType.Login:
                             if (obj.Res)
                             {
-                                App.Config.Token = (string)obj.Data;
+                                App.Config.Token = obj.Data as string;
                                 App.Save();
-                                App.LoginWindows.LoginClose();
                                 App.Start();
+                                App.IsLogin = true;
+                                App.LoginWindows.LoginClose();
                                 App.ShowA("登录", "登录成功");
                             }
                             else
                             {
-                                App.ShowB("登录", (string)obj.Data);
+                                App.IsLogin = false;
+                                App.ShowB("登录", obj.Data as string);
                             }
                             break;
                         case DataType.GetGroups:
                             if (obj.Res == true)
                             {
-
+                                var list = JsonConvert.DeserializeObject<List<string>>(obj.Data as string);
+                                App.ListWindows_?.SetList(list);
                             }
                             else 
                             {
-                                App.ShowB("获取群组错误", (string)obj.Data);
-
+                                App.IsLogin = false;
+                                App.ShowB("获取群组错误", obj.Data as string);
+                                App.Login();
+                            }
+                            break;
+                        case DataType.GetGroupInfo:
+                            if (obj.Res == true)
+                            {
+                                if (obj.Data == null)
+                                {
+                                    App.ShowB("获取群组内容错误", obj.Data1 as string);
+                                }
+                                else
+                                {
+                                    var list = JsonConvert.DeserializeObject<DataSaveObj>(obj.Data as string);
+                                    App.ListWindows_?.SetInfo(list);
+                                }
+                            }
+                            else
+                            {
+                                App.IsLogin = false;
+                                App.ShowB("获取群组错误", obj.Data as string);
+                                App.Login();
                             }
                             break;
                     }
@@ -211,6 +242,16 @@ namespace ColoryrTrash.Desktop
             {
                 Token = App.Config.Token,
                 Type = DataType.GetGroups
+            };
+            Send(JsonConvert.SerializeObject(obj));
+        }
+        public void GetGroupInfo(string group)
+        {
+            var obj = new DataPackObj
+            {
+                Token = App.Config.Token,
+                Type = DataType.GetGroupInfo,
+                Data = group
             };
             Send(JsonConvert.SerializeObject(obj));
         }

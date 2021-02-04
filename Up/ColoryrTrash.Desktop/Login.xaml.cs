@@ -83,5 +83,22 @@ namespace ColoryrTrash.Desktop
         {
             Dispatcher.Invoke(() => Close());
         }
+
+        private void Window_Closing(object sender, CancelEventArgs e)
+        {
+            if (App.IsLogin)
+            {
+                return;
+            }
+            var res = new ChoseWindow("你还没有登录", "关闭后会直接关闭软件，你确定吗？").Set();
+            if (res)
+            {
+                App.Stop();
+            }
+            else
+            {
+                e.Cancel = true;
+            }
+        }
     }
 }
