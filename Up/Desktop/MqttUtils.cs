@@ -41,26 +41,36 @@ namespace Desktop
         {
             try
             {
-                if (arg.ApplicationMessage.Topic != SelfTopic)
-                    return;
-                string Message = Encoding.UTF8.GetString(arg.ApplicationMessage.Payload);
-                var obj = JsonConvert.DeserializeObject<DataPackObj>(Message);
-                switch (obj.Type)
+                if (arg.ApplicationMessage.Topic == SelfTopic)
                 {
-                    case DataType.CheckLogin:
-                        if (obj.Res == false)
-                        {
-                            App.Log("自动登录失败");
-                        }
-                        break;
-                    case DataType.Login:
-                        if (obj.Res)
-                        {
-                            App.Config.Token = (string)obj.Data;
-                            App.Save();
-                        }
-                        App.LoginWindows?.LoginRes(obj.Res);
-                        break;
+                    string Message = Encoding.UTF8.GetString(arg.ApplicationMessage.Payload);
+                    var obj = JsonConvert.DeserializeObject<DataPackObj>(Message);
+                    switch (obj.Type)
+                    {
+                        case DataType.CheckLogin:
+                            if (obj.Res == false)
+                            {
+                                App.Log("自动登录失败");
+                            }
+                            break;
+                        case DataType.Login:
+                            if (obj.Res)
+                            {
+                                App.Config.Token = (string)obj.Data;
+                                App.Save();
+                            }
+                            App.LoginWindows?.LoginRes(obj.Res);
+                            break;
+                    }
+                }
+                else if(arg.ApplicationMessage.Topic == DataArg.Topic)
+                {
+                    string Message = Encoding.UTF8.GetString(arg.ApplicationMessage.Payload);
+                    var obj = JsonConvert.DeserializeObject<DataPackObj>(Message);
+                    switch (obj.Type)
+                    { 
+                        
+                    }
                 }
             }
             catch (Exception ex)
@@ -129,6 +139,7 @@ namespace Desktop
                 await Client.ConnectAsync(options);
                 SelfTopic = DataArg.Topic + "/" + App.Config.User;
                 await Client.SubscribeAsync(SelfTopic);
+                await Client.SubscribeAsync(DataArg.Topic);
                 return true;
             }
             catch (Exception e)

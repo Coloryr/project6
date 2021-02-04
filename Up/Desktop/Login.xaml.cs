@@ -16,11 +16,6 @@ namespace Desktop
             InitializeComponent();
             Token.IsChecked = App.Config.AutoLogin;
             DataContext = App.Config;
-        }
-
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            Start();
 
             BitmapSource m = (BitmapSource)Icon;
             System.Drawing.Bitmap bmp = new System.Drawing.Bitmap(m.PixelWidth, m.PixelHeight,
@@ -39,12 +34,17 @@ namespace Desktop
             App.SetIcon(icon);
         }
 
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            Start();
+        }
+
         private async void Start()
         {
             var res = await App.HttpUtils.Start();
             if (!res)
             {
-                MessageBox.Show("服务器连接失败");
+                App.ShowB("登录", "服务器连接失败");
             }
             else
             {
@@ -64,7 +64,7 @@ namespace Desktop
             bool res = await App.HttpUtils.Start();
             if (!res)
             {
-                MessageBox.Show("地址错误");
+                App.ShowB("登录", "服务器连接失败");
                 return;
             }
             App.HttpUtils.Login(User.Text, Pass.Password);
@@ -83,7 +83,7 @@ namespace Desktop
             }
             else
             {
-                MessageBox.Show("登录失败");
+                App.ShowB("登录", "登录失败");
             }
         }
     }

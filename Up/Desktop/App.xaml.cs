@@ -23,6 +23,7 @@ namespace Desktop
         
         public static string RunLocal;
 
+        private static App ThisApp;
         private static bool IconSet;
         private static HttpListener HttpServer = new();
         private static System.Windows.Forms.NotifyIcon notifyIcon;
@@ -31,6 +32,7 @@ namespace Desktop
         {
             try
             {
+                ThisApp = this;
                 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
                 RunLocal = AppDomain.CurrentDomain.BaseDirectory;
 
@@ -107,8 +109,18 @@ namespace Desktop
 
         public static void DisConnect()
         {
-            LoginWindows = new Login();
-            LoginWindows.ShowDialog();
+            ThisApp.Dispatcher.Invoke(() =>
+            {
+                if (LoginWindows == null)
+                {
+                    LoginWindows = new Login();
+                    LoginWindows.ShowDialog();
+                }
+                else
+                {
+                    LoginWindows.Activate();
+                }
+            });
         }
 
         public static void Log(string data)

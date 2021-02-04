@@ -46,6 +46,7 @@ namespace Server
         private static void Stop()
         {
             isGo = false;
+            ThisMqttServer.Stop();
             SaveData.Stop();
         }
 

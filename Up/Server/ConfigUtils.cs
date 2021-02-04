@@ -72,6 +72,12 @@ namespace Server
                     Password = "123456",
                     Database = "test"
                 },
+                Socket = new()
+                {
+                    Enable = true,
+                    IP = "127.0.0.1",
+                    Port = 2678
+                },
                 MQTT = new()
                 {
                     Port = 12345,
@@ -120,7 +126,7 @@ namespace Server
                         Name = Name,
                         List = new()
                     });
-                    WebSocket.AddGroup(Name);
+                    ThisMqttServer.AddGroup(Name);
                 }
                 SaveGroup(Name);
                 return new ConfigResObj
@@ -149,7 +155,7 @@ namespace Server
                         Y = -1
                     };
                     group.List.Add(UUID, item);
-                    WebSocket.UpdateItem(EmptyGroup, item);
+                    ThisMqttServer.UpdateItem(EmptyGroup, item);
                 }
                 SaveGroup(EmptyGroup);
             }
@@ -161,7 +167,7 @@ namespace Server
                     var obj = Groups[group];
                     var item = obj.List[UUID];
                     item.Time = Time;
-                    WebSocket.UpdateItem(group, item);
+                    ThisMqttServer.UpdateItem(group, item);
                 }
             }
         }
@@ -180,7 +186,7 @@ namespace Server
                     item.Y = y;
                     item.Open = open;
                     item.State = state;
-                    WebSocket.UpdateItem(group, item);
+                    ThisMqttServer.UpdateItem(group, item);
                 }
             }
         }
@@ -198,7 +204,7 @@ namespace Server
                 var obj1 = Groups[group];
                 obj1.List.Add(uuid, item);
                 UUID_Group[uuid] = group;
-                WebSocket.MoveGroup(uuid, group);
+                ThisMqttServer.MoveGroup(uuid, group);
             }
         }
 
@@ -216,7 +222,7 @@ namespace Server
                         {
                             var item = obj.List[uuid];
                             item.Nick = nick;
-                            WebSocket.UpdateItem(group, item);
+                            ThisMqttServer.UpdateItem(group, item);
                         }
                     }
                 }

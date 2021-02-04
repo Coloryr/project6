@@ -7,9 +7,15 @@ namespace Server
         public int ThreadNumber { get; set; }
         public Dictionary<string, string> User { get; set; }
         public Mysql Mysql { get; set; }
+        public SocketConfig Socket { get; set; }
         public MQTTConfig MQTT { get; set; }
     }
-
+    public record SocketConfig
+    {
+        public bool Enable { get; set; }
+        public string IP { get; set; }
+        public int Port { get; set; }
+    }
     public record Mysql
     {
         public bool Enable { get; set; }

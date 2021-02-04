@@ -5,12 +5,17 @@
     <TargetFramework>net5.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <Platforms>x64</Platforms>
+    <ApplicationIcon>icon.ico</ApplicationIcon>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutputPath>..\build_out\Desktop</OutputPath>
     <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="icon.png" />
+  </ItemGroup>
 
   <ItemGroup>
     <Compile Update="DesktopResource.Designer.cs">
@@ -36,6 +41,10 @@
     <PackageReference Include="MQTTnet" Version="3.0.14" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="NotifyIconWpf" Version="1.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="icon.png" />
   </ItemGroup>
 
   <Import Project="..\Lib\Lib.projitems" Label="Shared" />
