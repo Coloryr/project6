@@ -59,7 +59,7 @@ namespace ColoryrTrash.Desktop
                                 App.Start();
                                 App.IsLogin = true;
                                 App.LoginWindows.LoginClose();
-                                App.ShowB("自动登录", "已自动登录");
+                                App.ShowA("自动登录", "已自动登录");
                             }
                             break;
                         case DataType.Login:

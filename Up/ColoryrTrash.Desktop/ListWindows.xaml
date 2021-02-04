@@ -23,7 +23,7 @@
             </ListView.View>
             <ListView.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Header="追踪"/>
+                    <MenuItem Header="追踪" Click="Track_Click"/>
                     <MenuItem Header="创建分区"/>
                     <MenuItem Header="修改分区"/>
                     <MenuItem Header="下发指令"/>

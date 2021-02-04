@@ -5,8 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ColoryrTrash.Desktop"
         mc:Ignorable="d"
-        Title="SearchWindow" Height="450" Width="800">
+        Title="搜索" Height="80" Width="180" ResizeMode="NoResize" Icon="/icon.png">
     <Grid>
-        
+        <Rectangle Fill="#FFF4F4F5" Stroke="#FF5ABED6" StrokeThickness="2"/>
+        <Label Content="UUID：" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="2,2,0,0"/>
+        <TextBox Text="{Binding UUID}" TextWrapping="Wrap" Width="120" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="48,6,0,0"/>
+        <Label Content="备注：" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="2,23,0,0"/>
+        <TextBox Text="{Binding Nick}" TextWrapping="Wrap" Width="120" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="48,27,0,0"/>
+
     </Grid>
 </Window>

@@ -15,6 +15,7 @@ namespace ColoryrTrash.Desktop
         public MainWindow()
         {
             InitializeComponent();
+            App.MainWindow_ = this;
             Map.IsBrowserInitializedChanged += Map_IsBrowserInitializedChanged;
         }
 
@@ -49,6 +50,20 @@ namespace ColoryrTrash.Desktop
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             
+        }
+
+        public async void AddPoint(double x, double y, string title, string text)
+        {
+            double X = x / 1000;
+            double Y = y / 1000;
+            string temp = $"addpoint({X}, {Y},'{title}','{text}')";
+            var res = await Map.EvaluateScriptAsync(temp);
+            App.Log(res.Message + "|" + res.Result + "|" + temp);
+        }
+
+        public void ClearPoint()
+        {
+            Map.EvaluateScriptAsync("clearpoint()");
         }
     }
 }

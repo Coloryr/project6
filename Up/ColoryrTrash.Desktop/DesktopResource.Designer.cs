@@ -61,12 +61,22 @@ namespace ColoryrTrash.Desktop {
         }
         
         /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap map {
+            get {
+                object obj = ResourceManager.GetObject("map", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 &lt;!DOCTYPE html&gt;
         ///&lt;html lang=&quot;zh-CN&quot;&gt;
         ///
         ///&lt;head&gt;
         ///    &lt;meta charset=&quot;utf-8&quot;&gt;
-        ///    &lt;title&gt;寮傛鍔犺浇鍦板浘&lt;/title&gt;
+        ///    &lt;title&gt;鍨冨溇妗跺湴鍥?/title&gt;
         ///    &lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=utf-8&quot;&gt;
         ///    &lt;meta name=&quot;viewport&quot; content=&quot;initial-scale=1.0, user-scalable=no&quot;&gt;
         ///    &lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;IE=Edge&quot;&gt;
@@ -78,7 +88,7 @@ namespace ColoryrTrash.Desktop {
         ///            width: 100%;
         ///            height: 100%;
         ///            margin: 0;
-        ///            font-family: &quot;寰 [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        ///            font-family: &quot;寰蒋 [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
         internal static string web {
             get {

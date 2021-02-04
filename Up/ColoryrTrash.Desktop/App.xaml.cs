@@ -1,6 +1,7 @@
 ﻿using Lib;
 using System;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Net;
 using System.Text;
@@ -32,6 +33,7 @@ namespace ColoryrTrash.Desktop
         private static HttpListener HttpServer = new();
         private static System.Windows.Forms.NotifyIcon notifyIcon;
         private static Logs Logs;
+        private static byte[] ImgData;
         private void Application_Startup(object sender, StartupEventArgs e)
         {
             try
@@ -64,6 +66,14 @@ namespace ColoryrTrash.Desktop
                 notifyIcon.BalloonTipText = "ColoryrTrash";
 
                 HttpUtils = new MqttUtils();
+
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    DesktopResource.map.Save(stream, ImageFormat.Png);
+                    ImgData = new byte[stream.Length];
+                    stream.Seek(0, SeekOrigin.Begin);
+                    stream.Read(ImgData, 0, Convert.ToInt32(stream.Length));
+                }
 
                 HttpServer.Start();
                 HttpServer.BeginGetContext(ContextReady, null);
@@ -156,10 +166,19 @@ namespace ColoryrTrash.Desktop
             {
                 HttpServer.BeginGetContext(ContextReady, null);
                 var res = HttpServer.EndGetContext(ar);
-                var data = Encoding.UTF8.GetBytes(File.ReadAllText(@"E:\MCU's_src\project6\Up\ColoryrTrash.Desktop\Resources\web.txt"));
-                res.Response.ContentType = "text/html; charset=utf-8";
-                res.Response.OutputStream.Write(data);
-                res.Response.Close();
+                if (res.Request.RawUrl == "/icon.png")
+                {
+                    res.Response.ContentType = "image/png";
+                    res.Response.OutputStream.Write(ImgData);
+                    res.Response.Close();
+                }
+                else
+                {
+                    var data = Encoding.UTF8.GetBytes(File.ReadAllText(@"E:\MCU's_src\project6\Up\ColoryrTrash.Desktop\Resources\web.txt"));
+                    res.Response.ContentType = "text/html; charset=utf-8";
+                    res.Response.OutputStream.Write(data);
+                    res.Response.Close();
+                }
             }
             catch
             {
