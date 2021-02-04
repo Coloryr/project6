@@ -14,6 +14,9 @@ namespace Desktop
         public Login()
         {
             InitializeComponent();
+
+            App.LoginWindows = this;
+
             Token.IsChecked = App.Config.AutoLogin;
             DataContext = App.Config;
 
@@ -41,33 +44,34 @@ namespace Desktop
 
         private async void Start()
         {
-            var res = await App.HttpUtils.Start();
-            if (!res)
+            if (!App.HttpUtils.Check())
             {
-                App.ShowB("登录", "服务器连接失败");
+                var res = await App.HttpUtils.Start();
+                if (!res)
+                {
+                    App.ShowB("登录", "服务器连接失败");
+                    return;
+                }
             }
-            else
-            {
-                App.HttpUtils.CheckLogin(App.Config.User, App.Config.Token);
-            }
-        }
-
-        private void Window_Closing(object sender, CancelEventArgs e)
-        {
-            App.LoginWindows = null;
+            App.HttpUtils.CheckLogin(App.Config.Token);
         }
 
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
             App.Config.IP = IP.Text;
             App.Config.User = User.Text;
+            if (string.IsNullOrWhiteSpace(Pass.Password))
+            {
+                App.ShowB("登录", "请输入密码");
+                return;
+            }
             bool res = await App.HttpUtils.Start();
             if (!res)
             {
                 App.ShowB("登录", "服务器连接失败");
                 return;
             }
-            App.HttpUtils.Login(User.Text, Pass.Password);
+            App.HttpUtils.Login(Pass.Password);
         }
 
         private void Token_Checked(object sender, RoutedEventArgs e)
@@ -75,16 +79,9 @@ namespace Desktop
             App.Config.AutoLogin = Token.IsChecked == true;
         }
 
-        public void LoginRes(bool res)
+        public void LoginClose()
         {
-            if (res)
-            {
-                Close();
-            }
-            else
-            {
-                App.ShowB("登录", "登录失败");
-            }
+            Dispatcher.Invoke(() => Close());
         }
     }
 }

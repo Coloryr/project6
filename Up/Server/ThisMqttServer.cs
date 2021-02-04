@@ -56,7 +56,9 @@ namespace Server
             {
                 string data = Encoding.UTF8.GetString(arg.ApplicationMessage.Payload);
                 var obj = JsonConvert.DeserializeObject<DataPackObj>(data);
-                string User = obj.User;
+                string User = arg.ClientId;
+                if (User == null)
+                    return;
                 string Token = obj.Token;
                 switch (obj.Type)
                 {
@@ -65,7 +67,7 @@ namespace Server
                         {
                             if (Tokens.ContainsKey(User))
                             {
-                                SendItem(arg.ApplicationMessage.Topic, new DataPackObj
+                                SendItem(arg.ClientId, new DataPackObj
                                 {
                                     Type = DataType.CheckLogin,
                                     Res = Tokens[User] == Token
@@ -73,7 +75,7 @@ namespace Server
                                 break;
                             }
                         }
-                        SendItem(arg.ApplicationMessage.Topic, new DataPackObj
+                        SendItem(arg.ClientId, new DataPackObj
                         {
                             Type = DataType.CheckLogin,
                             Res = false
@@ -83,10 +85,19 @@ namespace Server
                         if (ServerMain.Config.User.ContainsKey(User))
                         {
                             string data1 = (string)obj.Data;
-                            string data2 = ServerMain.Config.User[data1];
+                            if(string.IsNullOrWhiteSpace(data1))
+                            {
+                                SendItem(arg.ClientId, new DataPackObj
+                                {
+                                    Type = DataType.Login,
+                                    Res = false,
+                                    Data = "账户或密码错误"
+                                });
+                            }
+                            string data2 = ServerMain.Config.User[User];
                             if (data2 != data1)
                             {
-                                SendItem(arg.ApplicationMessage.Topic, new DataPackObj
+                                SendItem(arg.ClientId, new DataPackObj
                                 {
                                     Type = DataType.Login,
                                     Res = false,
@@ -95,8 +106,8 @@ namespace Server
                             }
                             else
                             {
-                                string uuid = new Guid().ToString();
-                                SendItem(arg.ApplicationMessage.Topic, new DataPackObj
+                                string uuid = Guid.NewGuid().ToString();
+                                SendItem(arg.ClientId, new DataPackObj
                                 {
                                     Type = DataType.Login,
                                     Res = true,
@@ -114,7 +125,7 @@ namespace Server
                         }
                         else
                         {
-                            SendItem(arg.ApplicationMessage.Topic, new DataPackObj
+                            SendItem(arg.ClientId, new DataPackObj
                             {
                                 Type = DataType.Login,
                                 Res = false,
@@ -125,7 +136,7 @@ namespace Server
                     case DataType.GetGroups:
                         if (!CheckLogin(User, Token))
                         {
-                            SendItem(arg.ApplicationMessage.Topic, new DataPackObj
+                            SendItem(arg.ClientId, new DataPackObj
                             {
                                 Type = DataType.GetGroups,
                                 Res = false,
@@ -134,7 +145,7 @@ namespace Server
                         }
                         else
                         {
-                            SendItem(arg.ApplicationMessage.Topic, new DataPackObj
+                            SendItem(arg.ClientId, new DataPackObj
                             {
                                 Type = DataType.GetGroups,
                                 Res = true,
@@ -145,7 +156,7 @@ namespace Server
                     case DataType.GetGroupInfo:
                         if (!CheckLogin(User, Token))
                         {
-                            SendItem(arg.ApplicationMessage.Topic, new DataPackObj
+                            SendItem(arg.ClientId, new DataPackObj
                             {
                                 Type = DataType.GetGroups,
                                 Res = false,
@@ -158,7 +169,7 @@ namespace Server
                             if (ServerMain.SaveData.Groups.ContainsKey(temp))
                             {
                                 var group = ServerMain.SaveData.Groups[temp];
-                                SendItem(arg.ApplicationMessage.Topic, new DataPackObj
+                                SendItem(arg.ClientId, new DataPackObj
                                 {
                                     Type = DataType.GetGroupInfo,
                                     Res = true,
@@ -167,7 +178,7 @@ namespace Server
                             }
                             else
                             {
-                                SendItem(arg.ApplicationMessage.Topic, new DataPackObj
+                                SendItem(arg.ClientId, new DataPackObj
                                 {
                                     Type = DataType.GetGroupInfo,
                                     Res = false,
@@ -216,7 +227,7 @@ namespace Server
         {
             var message = new MqttApplicationMessage()
             {
-                Topic = DataArg.Topic,
+                Topic = DataArg.TopicServer,
                 Payload = Encoding.UTF8.GetBytes(data)
             };
             await Server.PublishAsync(message);
@@ -227,7 +238,7 @@ namespace Server
             string data = JsonConvert.SerializeObject(obj);
             var message = new MqttApplicationMessage()
             {
-                Topic = DataArg.Topic + "/" + uuid,
+                Topic = DataArg.TopicServer + "/" + uuid,
                 Payload = Encoding.UTF8.GetBytes(data)
             };
             await Server.PublishAsync(message);
@@ -237,7 +248,7 @@ namespace Server
         {
             var message = new MqttApplicationMessage()
             {
-                Topic = DataArg.Topic + "/" + uuid,
+                Topic = DataArg.TopicServer + "/" + uuid,
                 Payload = Encoding.UTF8.GetBytes(data)
             };
             await Server.PublishAsync(message);

@@ -4,6 +4,7 @@ using System.Drawing;
 using System.IO;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
@@ -20,6 +21,8 @@ namespace Desktop
         public static ConfigObj Config;
         public static MqttUtils HttpUtils;
         public static Login LoginWindows;
+        public static MainWindow MainWindow_;
+        public static ListWindows ListWindows_;
         
         public static string RunLocal;
 
@@ -61,18 +64,27 @@ namespace Desktop
 
                 HttpUtils = new MqttUtils();
 
-                LoginWindows = new Login();
-                LoginWindows.ShowDialog();
-
                 HttpServer.Start();
                 HttpServer.BeginGetContext(ContextReady, null);
+
+                LoginWindows = new Login();
+                LoginWindows.Show();
             }
             catch (Exception ex)
             {
                 LogError(ex);
-                ShowB("启动", "内置服务器启动失败");
+                MessageBox.Show("内置服务器启动失败", "启动");
                 Shutdown();
             }
+        }
+
+        public static void Start()
+        {
+            ThisApp.Dispatcher.Invoke(() =>
+            {
+                ListWindows_ = new();
+                ListWindows_.Show();
+            });
         }
 
         internal static void SetIcon(Icon icon)
@@ -93,18 +105,6 @@ namespace Desktop
         {
             notifyIcon.ShowBalloonTip(300, title, data, System.Windows.Forms.ToolTipIcon.Error);
             LogError(title + "|" + data);
-        }
-
-        public static void CheckLogin(bool login)
-        {
-            if (login)
-            {
-                ShowA("登录", "自动登录成功");
-            }
-            else
-            {
-                ShowB("登录", "自动登录失败");
-            }
         }
 
         public static void DisConnect()
@@ -158,6 +158,7 @@ namespace Desktop
         public static void Stop()
         {
             HttpServer.Stop();
+            ThisApp.Shutdown();
         }
 
         public static void Save()
@@ -202,6 +203,11 @@ namespace Desktop
         {
             MessageBox.Show("捕获线程内未处理异常：" + e.Exception.ToString());
             e.SetObserved();
+        }
+
+        private void Application_Exit(object sender, ExitEventArgs e)
+        {
+            notifyIcon?.Dispose();
         }
     }
 }

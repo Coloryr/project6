@@ -2,6 +2,7 @@
 {
     class DataArg
     {
-        public const string Topic = "test/server";
+        public const string TopicServer = "test/server";
+        public const string TopicClient = "test/client";
     }
 }

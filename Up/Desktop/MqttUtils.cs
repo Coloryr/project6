@@ -18,7 +18,9 @@ namespace Desktop
     public class MqttUtils
     {
         private readonly MqttClient Client;
-        private string SelfTopic;
+        private string SelfServerTopic;
+        private string SelfClientTopic;
+        private bool IsConnecting;
 
         public bool isok;
         public MqttUtils()
@@ -41,7 +43,7 @@ namespace Desktop
         {
             try
             {
-                if (arg.ApplicationMessage.Topic == SelfTopic)
+                if (arg.ApplicationMessage.Topic == SelfServerTopic)
                 {
                     string Message = Encoding.UTF8.GetString(arg.ApplicationMessage.Payload);
                     var obj = JsonConvert.DeserializeObject<DataPackObj>(Message);
@@ -50,7 +52,7 @@ namespace Desktop
                         case DataType.CheckLogin:
                             if (obj.Res == false)
                             {
-                                App.Log("自动登录失败");
+                                App.ShowB("自动登录", "自动登录失败");
                             }
                             break;
                         case DataType.Login:
@@ -58,18 +60,24 @@ namespace Desktop
                             {
                                 App.Config.Token = (string)obj.Data;
                                 App.Save();
+                                App.LoginWindows.LoginClose();
+                                App.Start();
+                                App.ShowA("登录", "登录成功");
                             }
-                            App.LoginWindows?.LoginRes(obj.Res);
+                            else
+                            {
+                                App.ShowB("登录", (string)obj.Data);
+                            }
                             break;
                     }
                 }
-                else if(arg.ApplicationMessage.Topic == DataArg.Topic)
+                else if (arg.ApplicationMessage.Topic == DataArg.TopicServer)
                 {
                     string Message = Encoding.UTF8.GetString(arg.ApplicationMessage.Payload);
                     var obj = JsonConvert.DeserializeObject<DataPackObj>(Message);
                     switch (obj.Type)
-                    { 
-                        
+                    {
+
                     }
                 }
             }
@@ -82,7 +90,8 @@ namespace Desktop
         private void OnMqttClientDisConnected(MqttClientDisconnectedEventArgs arg)
         {
             App.Log("服务器连接断开");
-            App.DisConnect();
+            if (!IsConnecting)
+                App.DisConnect();
         }
 
         private void OnMqttClientConnected(MqttClientConnectedEventArgs arg)
@@ -95,7 +104,7 @@ namespace Desktop
             if (Client.IsConnected)
             {
                 var obj = new MqttApplicationMessageBuilder()
-                    .WithTopic(SelfTopic)
+                    .WithTopic(SelfClientTopic)
                     .WithPayload(Encoding.UTF8.GetBytes(message))
                     .WithExactlyOnceQoS()
                     .WithRetainFlag()
@@ -104,7 +113,7 @@ namespace Desktop
             }
         }
 
-        private bool Check()
+        public bool Check()
         {
             return Client.IsConnected;
         }
@@ -113,6 +122,7 @@ namespace Desktop
         {
             try
             {
+                IsConnecting = true;
                 if (Client.IsConnected)
                     await Stop();
                 var options = new MqttClientOptions
@@ -135,11 +145,14 @@ namespace Desktop
 
                 options.CleanSession = true;
                 options.KeepAlivePeriod = TimeSpan.FromSeconds(5);
+                options.ClientId = App.Config.User;
 
                 await Client.ConnectAsync(options);
-                SelfTopic = DataArg.Topic + "/" + App.Config.User;
-                await Client.SubscribeAsync(SelfTopic);
-                await Client.SubscribeAsync(DataArg.Topic);
+                SelfServerTopic = DataArg.TopicServer + "/" + App.Config.User;
+                SelfClientTopic = DataArg.TopicClient + "/" + App.Config.User;
+                await Client.SubscribeAsync(SelfServerTopic);
+                await Client.SubscribeAsync(DataArg.TopicServer);
+                IsConnecting = false;
                 return true;
             }
             catch (Exception e)
@@ -161,24 +174,22 @@ namespace Desktop
             }
         }
 
-        public void CheckLogin(string user, string token)
+        public void CheckLogin(string token)
         {
             var obj = new DataPackObj
             {
-                User = user,
                 Token = token,
                 Type = DataType.CheckLogin
             };
             Send(JsonConvert.SerializeObject(obj));
         }
 
-        public void Login(string user, string pass)
+        public void Login(string pass)
         {
             var obj = new DataPackObj
             {
-                User = user,
                 Type = DataType.Login,
-                Data = pass
+                Data = Tools.GenSHA1(pass)
             };
             Send(JsonConvert.SerializeObject(obj));
         }
