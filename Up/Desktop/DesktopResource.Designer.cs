@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ColoryrTrashDesktop {
+namespace ColoryrTrash.Desktop {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace ColoryrTrashDesktop {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("ColoryrTrashDesktop.DesktopResource", typeof(DesktopResource).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("ColoryrTrash.Desktop.DesktopResource", typeof(DesktopResource).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

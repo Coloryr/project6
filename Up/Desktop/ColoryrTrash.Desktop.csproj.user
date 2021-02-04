@@ -18,6 +18,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Page Update="ChoseWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="ListWindows.xaml">
       <SubType>Designer</SubType>
     </Page>

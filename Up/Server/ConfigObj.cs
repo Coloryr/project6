@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Server
+namespace ColoryrTrash.Server
 {
     public record ConfigObj
     {

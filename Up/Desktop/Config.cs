@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.IO;
 
-namespace Desktop
+namespace ColoryrTrash.Desktop
 {
     public record ConfigObj
     {

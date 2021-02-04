@@ -6,7 +6,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Server
+namespace ColoryrTrash.Server
 {
     public record ConfigResObj
     { 

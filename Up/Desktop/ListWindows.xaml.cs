@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace Desktop
+namespace ColoryrTrash.Desktop
 {
     /// <summary>
     /// ListWindows.xaml 的交互逻辑

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 
-namespace Desktop
+namespace ColoryrTrash.Desktop
 {
     /// <summary>
     /// Interaction logic for App.xaml

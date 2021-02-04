@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace Desktop
+namespace ColoryrTrash.Desktop
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -18,7 +18,6 @@ namespace Desktop
 
         private void Window_Closing(object sender, CancelEventArgs e)
         {
-            //e.Cancel = true;
             App.Stop();
         }
 
