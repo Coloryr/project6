@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:ColoryrBuild.Windows"
+        xmlns:local="clr-namespace:ColoryrTrash.Desktop"
         mc:Ignorable="d"
         Title="标题" Height="116" Width="194" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
     <Grid>
