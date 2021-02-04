@@ -12,14 +12,14 @@ namespace ColoryrTrash.Desktop
             InitializeComponent();
         }
 
-        private void ReList()
-        { 
-            
-        }
-
         private void GetList()
         {
+            App.HttpUtils.GetGroups();
+        }
 
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            GetList();
         }
     }
 }

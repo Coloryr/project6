@@ -69,6 +69,17 @@ namespace ColoryrTrash.Desktop
                                 App.ShowB("登录", (string)obj.Data);
                             }
                             break;
+                        case DataType.GetGroups:
+                            if (obj.Res == true)
+                            {
+
+                            }
+                            else 
+                            {
+                                App.ShowB("获取群组错误", (string)obj.Data);
+
+                            }
+                            break;
                     }
                 }
                 else if (arg.ApplicationMessage.Topic == DataArg.TopicServer)
@@ -194,9 +205,14 @@ namespace ColoryrTrash.Desktop
             Send(JsonConvert.SerializeObject(obj));
         }
 
-        public Dictionary<string, DataSaveObj> GetGroups()
+        public void GetGroups()
         {
-            return null;
+            var obj = new DataPackObj
+            {
+                Token = App.Config.Token,
+                Type = DataType.GetGroups
+            };
+            Send(JsonConvert.SerializeObject(obj));
         }
     }
 }

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ColoryrTrash.Desktop"
         mc:Ignorable="d"
-        Title="垃圾桶列表" Height="450" Width="800">
+        Title="垃圾桶列表" Height="450" Width="800" Icon="/icon.png" Loaded="Window_Loaded">
     <Grid>
         <Rectangle Fill="#FFF4F4F5" Stroke="#FF5ABED6" StrokeThickness="2"/>
         <ListView Margin="4,28,4,4" Name="List">

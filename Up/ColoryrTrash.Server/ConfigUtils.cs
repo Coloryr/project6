@@ -102,7 +102,7 @@ namespace ColoryrTrash.Server
         private Task thread;
         private CancellationTokenSource token = new();
 
-        private const string EmptyGroup = "@";
+        private const string EmptyGroup = "空的组";
         private object Lock = new object();
 
         private bool Save = false;
@@ -233,20 +233,30 @@ namespace ColoryrTrash.Server
         {
             if (!Directory.Exists(FilePath))
             {
+                ServerMain.LogOut("正在创建默认文件夹");
                 Directory.CreateDirectory(FilePath);
             }
             var files = Directory.GetFiles(FilePath);
             foreach (var item in files)
             {
-                var obj = JsonConvert.DeserializeObject<DataSaveObj>(File.ReadAllText(item));
-                Groups.Add(obj.Name, obj);
-                foreach (var item1 in obj.List)
+                try
                 {
-                    UUID_Group.Add(item1.Key, obj.Name);
+                    var obj = JsonConvert.DeserializeObject<DataSaveObj>(File.ReadAllText(item));
+                    ServerMain.LogOut($"正在加载组[{obj.Name}]");
+                    Groups.Add(obj.Name, obj);
+                    foreach (var item1 in obj.List)
+                    {
+                        UUID_Group.Add(item1.Key, obj.Name);
+                    }
+                }
+                catch
+                {
+                    ServerMain.LogError($"文件{item}加载失败");
                 }
             }
             if (!Groups.ContainsKey(EmptyGroup))
             {
+                ServerMain.LogOut("正在创建默认组");
                 Groups.Add(EmptyGroup, new DataSaveObj
                 {
                     Name = EmptyGroup,
@@ -281,6 +291,7 @@ namespace ColoryrTrash.Server
             {
                 if (Groups.ContainsKey(group))
                 {
+                    ServerMain.LogOut($"正在保存组[{group}]");
                     var obj = Groups[group];
                     var data = JsonConvert.SerializeObject(obj);
                     File.WriteAllText($"{FilePath}{obj.Name}.json", data);
@@ -295,6 +306,7 @@ namespace ColoryrTrash.Server
                 if (UUID_Group.ContainsKey(uuid))
                 {
                     var group = UUID_Group[uuid];
+                    ServerMain.LogOut($"正在保存组[{group}]");
                     var obj = Groups[group];
                     var data = JsonConvert.SerializeObject(obj);
                     File.WriteAllText($"{FilePath}{obj.Name}.json", data);
@@ -308,6 +320,7 @@ namespace ColoryrTrash.Server
             {
                 foreach (var item in Groups.Values)
                 {
+                    ServerMain.LogOut($"正在保存组[{item.Name}]");
                     var data = JsonConvert.SerializeObject(item);
                     File.WriteAllText($"{FilePath}{item.Name}.json", data);
                 }
