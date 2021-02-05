@@ -83,6 +83,36 @@ namespace ColoryrTrash.Desktop.Windows
         private void TestConnect()
         {
             Serial.Write(HardPack.TestPack, 0, 9);
+            Thread.Sleep(1000);
+            if (Serial.BytesToRead > 0)
+            {
+                var data = new byte[Serial.BytesToRead];
+                Serial.Read(data, 0, Serial.BytesToRead);
+                if (HardPack.CheckPack(data))
+                {
+                    Dispatcher.Invoke(() =>
+                    {
+                        State.Content = "已连接";
+                        State_Led.Fill = Brushes.LawnGreen;
+                    });
+                }
+                else
+                {
+                    Dispatcher.Invoke(() =>
+                    {
+                        State.Content = "未连接";
+                        State_Led.Fill = Brushes.Gray;
+                    });
+                }
+            }
+            else
+            {
+                Dispatcher.Invoke(() =>
+                {
+                    State.Content = "未连接";
+                    State_Led.Fill = Brushes.Gray;
+                });
+            }
         }
     }
 }
