@@ -5,18 +5,19 @@ namespace Lib
     public enum DataType
     {
         CheckLogin, Login, GetGroups, GetGroupInfo, Updata,
-        AddGroup, MoveGroup, RenameGroup
+        AddGroup, MoveGroup, RenameGroup,
+        SetNick
     }
     public record PackBase
-    { 
+    {
         public string Token { get; set; }
     }
     public record DataPackObj : PackBase
     {
         public DataType Type { get; set; }
         public bool Res { get; set; }
-        public object Data { get; set; }
-        public object Data1 { get; set; }
+        public string Data { get; set; }
+        public string Data1 { get; set; }
     }
     public record DataSaveObj
     {

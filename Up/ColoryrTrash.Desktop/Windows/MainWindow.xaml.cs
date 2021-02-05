@@ -1,7 +1,5 @@
 ﻿using CefSharp;
 using System.ComponentModel;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace ColoryrTrash.Desktop.Windows
@@ -44,7 +42,7 @@ namespace ColoryrTrash.Desktop.Windows
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            
+
         }
 
         public async void AddPoint(double x, double y, string title, string text)

@@ -89,7 +89,7 @@ namespace ColoryrTrash.Server
         }
     }
     public class SaveDataUtil
-    { 
+    {
         public string FilePath = ServerMain.RunLocal + "Save\\";
         public readonly Dictionary<string, DataSaveObj> Groups = new();
         public readonly Dictionary<string, string> UUID_Group = new();
@@ -243,7 +243,7 @@ namespace ColoryrTrash.Server
 
         public bool SetNick(string uuid, string nick)
         {
-            if (UUID_Group.ContainsKey(uuid))
+            if (!UUID_Group.ContainsKey(uuid))
             {
                 return false;
             }

@@ -6,7 +6,6 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Net;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
@@ -19,13 +18,13 @@ namespace ColoryrTrash.Desktop
     public partial class App : Application
     {
         public const string Version = "1.0.0";
-        
+
         public static ConfigObj Config;
         public static MqttUtils MqttUtils;
         public static Login LoginWindows;
         public static MainWindow MainWindow_;
         public static ListWindows ListWindows_;
-        
+
         public static string RunLocal;
         public static bool IsLogin;
 

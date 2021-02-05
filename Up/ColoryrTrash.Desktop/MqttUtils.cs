@@ -6,7 +6,6 @@ using MQTTnet.Client.Disconnecting;
 using MQTTnet.Client.Options;
 using MQTTnet.Client.Receiving;
 using MQTTnet.Formatter;
-using MQTTnet.Protocol;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -135,6 +134,18 @@ namespace ColoryrTrash.Desktop
                                 App.Login();
                             }
                             break;
+                        case DataType.SetNick:
+                            if (obj.Res == true)
+                            {
+                                App.ShowA("设置备注", obj.Data as string);
+                            }
+                            else
+                            {
+                                App.IsLogin = false;
+                                App.ShowB("登录", obj.Data as string);
+                                App.Login();
+                            }
+                            break;
                     }
                 }
                 else if (arg.ApplicationMessage.Topic == DataArg.TopicServer)
@@ -151,6 +162,10 @@ namespace ColoryrTrash.Desktop
                             break;
                         case DataType.MoveGroup:
                             App.ListWindows_.MoveGroup(obj.Data as string, obj.Data1 as string);
+                            break;
+                        case DataType.Updata:
+                            var obj1 = JsonConvert.DeserializeObject<ItemSaveObj>(obj.Data1 as string);
+                            App.ListWindows_.Updata(obj.Data as string, obj1);
                             break;
                     }
                 }
@@ -314,6 +329,17 @@ namespace ColoryrTrash.Desktop
             {
                 Token = App.Config.Token,
                 Type = DataType.MoveGroup,
+                Data = uuid,
+                Data1 = res
+            };
+            Send(JsonConvert.SerializeObject(obj));
+        }
+        public void SetNick(string uuid, string res)
+        {
+            var obj = new DataPackObj
+            {
+                Token = App.Config.Token,
+                Type = DataType.SetNick,
                 Data = uuid,
                 Data1 = res
             };

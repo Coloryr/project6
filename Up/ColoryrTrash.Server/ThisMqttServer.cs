@@ -6,8 +6,6 @@ using MQTTnet.Server;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -18,13 +16,6 @@ namespace ColoryrTrash.Server
         private static MqttServer Server;
         private static readonly ConcurrentDictionary<string, string> Tokens = new();
         public static bool IsRun { get; set; }//是否在运行
-
-        public static bool CheckLogin(string user, string token)
-        {
-            if (Tokens.ContainsKey(user) && Tokens[user] == token)
-                return true;
-            return false;
-        }
 
         public static async void Start()
         {
@@ -59,239 +50,183 @@ namespace ColoryrTrash.Server
                 string User = arg.ClientId;
                 if (User == null)
                     return;
-                string Token = obj.Token;
-                switch (obj.Type)
+                if (!ServerMain.Config.User.ContainsKey(User))
                 {
-                    case DataType.CheckLogin:
-                        if (ServerMain.Config.User.ContainsKey(User))
-                        {
-                            if (Tokens.ContainsKey(User))
-                            {
-                                SendItem(arg.ClientId, new DataPackObj
-                                {
-                                    Type = DataType.CheckLogin,
-                                    Res = Tokens[User] == Token
-                                });
-                                break;
-                            }
-                        }
+                    SendItem(arg.ClientId, new DataPackObj
+                    {
+                        Type = obj.Type,
+                        Res = false
+                    });
+                    return;
+                }
+                string Token = obj.Token;
+                if (obj.Type == DataType.CheckLogin)
+                {
+                    var res = false;
+                    if (Tokens.ContainsKey(User))
+                    {
+                        res = Tokens[User] == Token;
+                    }
+                    SendItem(arg.ClientId, new DataPackObj
+                    {
+                        Type = DataType.CheckLogin,
+                        Res = res
+                    });
+                    return;
+                }
+                else if (obj.Type == DataType.Login)
+                {
+                    if (obj.Data != ServerMain.Config.User[User])
+                    {
                         SendItem(arg.ClientId, new DataPackObj
                         {
-                            Type = DataType.CheckLogin,
-                            Res = false
+                            Type = DataType.Login,
+                            Res = false,
+                            Data = "账户或密码错误"
+                        });
+                    }
+                    else
+                    {
+                        string uuid = Guid.NewGuid().ToString();
+                        if (Tokens.ContainsKey(User))
+                            Tokens[User] = uuid;
+                        else
+                            Tokens.TryAdd(User, uuid);
+                        SendItem(arg.ClientId, new DataPackObj
+                        {
+                            Type = DataType.Login,
+                            Res = true,
+                            Data = uuid
+                        });
+                    }
+                    return;
+                }
+                if (!Tokens.ContainsKey(User) || Tokens[User] == Token)
+                {
+                    SendItem(arg.ClientId, new DataPackObj
+                    {
+                        Type = DataType.GetGroups,
+                        Res = false,
+                        Data = "账户错误"
+                    });
+                    return;
+                }
+                string temp = obj.Data;
+                string temp1 = obj.Data1;
+                switch (obj.Type)
+                {
+                    case DataType.GetGroups:
+                        SendItem(arg.ClientId, new DataPackObj
+                        {
+                            Type = DataType.GetGroups,
+                            Res = true,
+                            Data = JsonConvert.SerializeObject(ServerMain.SaveData.Groups.Keys)
                         });
                         break;
-                    case DataType.Login:
-                        if (ServerMain.Config.User.ContainsKey(User))
-                        {
-                            string data1 = obj.Data as string;
-                            if(string.IsNullOrWhiteSpace(data1))
-                            {
-                                SendItem(arg.ClientId, new DataPackObj
-                                {
-                                    Type = DataType.Login,
-                                    Res = false,
-                                    Data = "账户或密码错误"
-                                });
-                            }
-                            string data2 = ServerMain.Config.User[User];
-                            if (data2 != data1)
-                            {
-                                SendItem(arg.ClientId, new DataPackObj
-                                {
-                                    Type = DataType.Login,
-                                    Res = false,
-                                    Data = "账户或密码错误"
-                                });
-                            }
-                            else
-                            {
-                                string uuid = Guid.NewGuid().ToString();
-                                SendItem(arg.ClientId, new DataPackObj
-                                {
-                                    Type = DataType.Login,
-                                    Res = true,
-                                    Data = uuid
-                                });
-                                if (Tokens.ContainsKey(User))
-                                {
-                                    Tokens[User] = uuid;
-                                }
-                                else
-                                {
-                                    Tokens.TryAdd(User, uuid);
-                                }
-                            }
-                        }
-                        else
-                        {
-                            SendItem(arg.ClientId, new DataPackObj
-                            {
-                                Type = DataType.Login,
-                                Res = false,
-                                Data = "账户或密码错误"
-                            });
-                        }
-                        break;
-                    case DataType.GetGroups:
-                        if (!CheckLogin(User, Token))
-                        {
-                            SendItem(arg.ClientId, new DataPackObj
-                            {
-                                Type = DataType.GetGroups,
-                                Res = false,
-                                Data = "账户错误"
-                            });
-                        }
-                        else
-                        {
-                            SendItem(arg.ClientId, new DataPackObj
-                            {
-                                Type = DataType.GetGroups,
-                                Res = true,
-                                Data = JsonConvert.SerializeObject(ServerMain.SaveData.Groups.Keys)
-                            });
-                        }
-                        break;
                     case DataType.GetGroupInfo:
-                        if (!CheckLogin(User, Token))
+                        if (ServerMain.SaveData.Groups.ContainsKey(temp))
                         {
+                            var group = ServerMain.SaveData.Groups[temp];
                             SendItem(arg.ClientId, new DataPackObj
                             {
-                                Type = DataType.GetGroups,
-                                Res = false,
-                                Data = "账户错误"
+                                Type = DataType.GetGroupInfo,
+                                Res = true,
+                                Data = JsonConvert.SerializeObject(group)
                             });
                         }
                         else
                         {
-                            string temp = obj.Data as string;
-                            if (ServerMain.SaveData.Groups.ContainsKey(temp))
+                            SendItem(arg.ClientId, new DataPackObj
                             {
-                                var group = ServerMain.SaveData.Groups[temp];
-                                SendItem(arg.ClientId, new DataPackObj
-                                {
-                                    Type = DataType.GetGroupInfo,
-                                    Res = true,
-                                    Data = JsonConvert.SerializeObject(group)
-                                });
-                            }
-                            else
-                            {
-                                SendItem(arg.ClientId, new DataPackObj
-                                {
-                                    Type = DataType.GetGroupInfo,
-                                    Res = true,
-                                    Data1 = $"没有组[{temp}]"
-                                });
-                            }
+                                Type = DataType.GetGroupInfo,
+                                Res = true,
+                                Data1 = $"没有组[{temp}]"
+                            });
                         }
                         break;
                     case DataType.AddGroup:
-                        if (!CheckLogin(User, Token))
+                        var res = ServerMain.SaveData.AddGroup(temp);
+                        if (res)
                         {
+                            ServerMain.UserLogOut($"用户[{User}]创建组[{temp}]");
                             SendItem(arg.ClientId, new DataPackObj
                             {
-                                Type = DataType.GetGroups,
-                                Res = false,
-                                Data = "账户错误"
+                                Type = DataType.AddGroup,
+                                Res = true,
+                                Data = $"组[{temp}]创建成功"
                             });
                         }
                         else
                         {
-                            string temp = obj.Data as string;
-                            var res = ServerMain.SaveData.AddGroup(temp);
-                            if (res)
+                            SendItem(arg.ClientId, new DataPackObj
                             {
-                                ServerMain.UserLogOut($"用户[{User}]创建组[{temp}]");
-                                SendItem(arg.ClientId, new DataPackObj
-                                {
-                                    Type = DataType.AddGroup,
-                                    Res = true,
-                                    Data = $"组[{temp}]创建成功"
-                                });
-                            }
-                            else
-                            {
-                                SendItem(arg.ClientId, new DataPackObj
-                                {
-                                    Type = DataType.AddGroup,
-                                    Res = true,
-                                    Data = $"组[{temp}]创建失败"
-                                });
-                            }
+                                Type = DataType.AddGroup,
+                                Res = true,
+                                Data = $"组[{temp}]创建失败"
+                            });
                         }
                         break;
                     case DataType.RenameGroup:
-                        if (!CheckLogin(User, Token))
+                        if (ServerMain.SaveData.RenameGroup(temp, temp1))
                         {
+                            ServerMain.UserLogOut($"用户[{User}]修改组[{temp}]为[{temp1}]");
                             SendItem(arg.ClientId, new DataPackObj
                             {
-                                Type = DataType.GetGroups,
-                                Res = false,
-                                Data = "账户错误"
+                                Type = DataType.RenameGroup,
+                                Res = true,
+                                Data = $"组[{temp}]已重命名为[{temp1}]"
                             });
                         }
                         else
                         {
-                            string temp = obj.Data as string;
-                            string temp1 = obj.Data1 as string;
-                            var res = ServerMain.SaveData.RenameGroup(temp, temp1);
-                            if (res)
+                            SendItem(arg.ClientId, new DataPackObj
                             {
-                                ServerMain.UserLogOut($"用户[{User}]修改组[{temp}]为[{temp1}]");
-                                SendItem(arg.ClientId, new DataPackObj
-                                {
-                                    Type = DataType.AddGroup,
-                                    Res = true,
-                                    Data = $"组[{temp}]已重命名为[{temp1}]"
-                                });
-                            }
-                            else
-                            {
-                                SendItem(arg.ClientId, new DataPackObj
-                                {
-                                    Type = DataType.AddGroup,
-                                    Res = true,
-                                    Data = $"组[{temp}]重命名失败"
-                                });
-                            }
+                                Type = DataType.RenameGroup,
+                                Res = true,
+                                Data = $"组[{temp}]重命名失败"
+                            });
                         }
                         break;
                     case DataType.MoveGroup:
-                        if (!CheckLogin(User, Token))
+                        if (ServerMain.SaveData.MoveGroup(temp, temp1))
                         {
+                            ServerMain.UserLogOut($"用户[{User}]移动[{temp}]到组[{temp1}]");
                             SendItem(arg.ClientId, new DataPackObj
                             {
-                                Type = DataType.GetGroups,
-                                Res = false,
-                                Data = "账户错误"
+                                Type = DataType.MoveGroup,
+                                Res = true,
+                                Data = $"[{temp}]已移动到[{temp1}]"
                             });
                         }
                         else
                         {
-                            string temp = obj.Data as string;
-                            string temp1 = obj.Data1 as string;
-                            var res = ServerMain.SaveData.MoveGroup(temp, temp1);
-                            if (res)
+                            SendItem(arg.ClientId, new DataPackObj
                             {
-                                ServerMain.UserLogOut($"用户[{User}]移动[{temp}]到组[{temp1}]");
-                                SendItem(arg.ClientId, new DataPackObj
-                                {
-                                    Type = DataType.AddGroup,
-                                    Res = true,
-                                    Data = $"[{temp}]已移动到[{temp1}]"
-                                });
-                            }
-                            else
+                                Type = DataType.MoveGroup,
+                                Res = true,
+                                Data = $"[{temp}]移动失败"
+                            });
+                        }
+                        break;
+                    case DataType.SetNick:
+                        if (ServerMain.SaveData.SetNick(temp, temp1))
+                        {
+                            ServerMain.UserLogOut($"用户[{User}]设置[{temp}]的备注为[{temp1}]");
+                            SendItem(arg.ClientId, new DataPackObj
                             {
-                                SendItem(arg.ClientId, new DataPackObj
-                                {
-                                    Type = DataType.AddGroup,
-                                    Res = true,
-                                    Data = $"[{temp}]移动失败"
-                                });
-                            }
+                                Type = DataType.SetNick,
+                                Res = true,
+                                Data = $"[{temp}]已设置备注[{temp1}]"
+                            });
+                        }
+                        else
+                        {
+                            SendItem(arg.ClientId, new DataPackObj
+                            {
+                                Type = DataType.SetNick,
+                                Res = true,
+                                Data = $"[{temp}]设置备注失败"
+                            });
                         }
                         break;
                 }
@@ -400,7 +335,7 @@ namespace ColoryrTrash.Server
             {
                 Type = DataType.RenameGroup,
                 Res = true,
-                Data = old, 
+                Data = old,
                 Data1 = group
             };
             Task.Run(() => SendAll(JsonConvert.SerializeObject(send)));
@@ -425,7 +360,7 @@ namespace ColoryrTrash.Server
                 Type = DataType.Updata,
                 Res = true,
                 Data = group,
-                Data1 = obj
+                Data1 = JsonConvert.SerializeObject(obj)
             };
             Task.Run(() => SendAll(JsonConvert.SerializeObject(send)));
         }

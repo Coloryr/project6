@@ -11,7 +11,7 @@ namespace ColoryrTrash.Desktop.Windows
     /// </summary>
     public partial class ListWindows : Window
     {
-        private DataSaveObj obj; 
+        private DataSaveObj obj;
         private List<string> list;
         public ListWindows()
         {
@@ -201,7 +201,11 @@ namespace ColoryrTrash.Desktop.Windows
         {
             if (List.SelectedItem == null)
                 return;
-
+            var obj = List.SelectedItem as ItemSaveObj;
+            var res = new InputWindow("设置备注", obj.Nick).Set();
+            if (string.IsNullOrWhiteSpace(res))
+                return;
+            App.MqttUtils.SetNick(obj.UUID, res);
         }
 
         public void MoveGroup(string uuid, string group)
@@ -223,6 +227,28 @@ namespace ColoryrTrash.Desktop.Windows
                 else
                 {
                     GetInfo(group);
+                }
+            });
+        }
+
+        public void Updata(string group, ItemSaveObj item)
+        {
+            Dispatcher.Invoke(() =>
+            {
+                if (GroupList.SelectedItem as string == group)
+                {
+                    foreach (var item1 in List.Items)
+                    {
+                        var obj = item1 as ItemSaveObj;
+                        if (obj.UUID == item.UUID)
+                        {
+                            List.Items.Remove(item1);
+                            List.Items.Add(item);
+                            List.SelectedItem = item;
+                            List.ScrollIntoView(item);
+                            return;
+                        }
+                    }
                 }
             });
         }

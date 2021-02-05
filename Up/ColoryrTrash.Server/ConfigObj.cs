@@ -26,7 +26,7 @@ namespace ColoryrTrash.Server
         public string Database { get; set; }
     }
     public record MQTTConfig
-    { 
+    {
         public int Port { get; set; }
         public string User { get; set; }
         public string Password { get; set; }
