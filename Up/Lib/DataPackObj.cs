@@ -4,12 +4,8 @@ namespace Lib
 {
     public enum DataType
     {
-        Login, GetGroups, GetGroupInfo, Move,
-        Updata,
-        AddGroup,
-        MoveGroup,
-        CheckLogin,
-        RenameGroup
+        CheckLogin, Login, GetGroups, GetGroupInfo, Updata,
+        AddGroup, MoveGroup, RenameGroup
     }
     public record PackBase
     { 

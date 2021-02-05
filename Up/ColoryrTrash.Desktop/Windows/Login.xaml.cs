@@ -44,16 +44,16 @@ namespace ColoryrTrash.Desktop.Windows
 
         private async void Start()
         {
-            if (!App.HttpUtils.Check())
+            if (!App.MqttUtils.Check())
             {
-                var res = await App.HttpUtils.Start();
+                var res = await App.MqttUtils.Start();
                 if (!res)
                 {
                     App.ShowB("登录", "服务器连接失败");
                     return;
                 }
             }
-            App.HttpUtils.CheckLogin(App.Config.Token);
+            App.MqttUtils.CheckLogin(App.Config.Token);
         }
 
         private async void Button_Click(object sender, RoutedEventArgs e)
@@ -65,13 +65,13 @@ namespace ColoryrTrash.Desktop.Windows
                 App.ShowB("登录", "请输入密码");
                 return;
             }
-            bool res = await App.HttpUtils.Start();
+            bool res = await App.MqttUtils.Start();
             if (!res)
             {
                 App.ShowB("登录", "服务器连接失败");
                 return;
             }
-            App.HttpUtils.Login(Pass.Password);
+            App.MqttUtils.Login(Pass.Password);
         }
 
         private void Token_Checked(object sender, RoutedEventArgs e)

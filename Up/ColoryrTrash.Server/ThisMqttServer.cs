@@ -258,6 +258,42 @@ namespace ColoryrTrash.Server
                             }
                         }
                         break;
+                    case DataType.MoveGroup:
+                        if (!CheckLogin(User, Token))
+                        {
+                            SendItem(arg.ClientId, new DataPackObj
+                            {
+                                Type = DataType.GetGroups,
+                                Res = false,
+                                Data = "账户错误"
+                            });
+                        }
+                        else
+                        {
+                            string temp = obj.Data as string;
+                            string temp1 = obj.Data1 as string;
+                            var res = ServerMain.SaveData.MoveGroup(temp, temp1);
+                            if (res)
+                            {
+                                ServerMain.UserLogOut($"用户[{User}]移动[{temp}]到组[{temp1}]");
+                                SendItem(arg.ClientId, new DataPackObj
+                                {
+                                    Type = DataType.AddGroup,
+                                    Res = true,
+                                    Data = $"[{temp}]已移动到[{temp1}]"
+                                });
+                            }
+                            else
+                            {
+                                SendItem(arg.ClientId, new DataPackObj
+                                {
+                                    Type = DataType.AddGroup,
+                                    Res = true,
+                                    Data = $"[{temp}]移动失败"
+                                });
+                            }
+                        }
+                        break;
                 }
             }
             catch (Exception e)
@@ -376,8 +412,8 @@ namespace ColoryrTrash.Server
             {
                 Type = DataType.MoveGroup,
                 Res = true,
-                Data = group,
-                Data1 = uuid
+                Data = uuid,
+                Data1 = group
             };
             Task.Run(() => SendAll(JsonConvert.SerializeObject(send)));
         }

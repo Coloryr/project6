@@ -11,7 +11,8 @@ namespace ColoryrTrash.Desktop.Windows
     /// </summary>
     public partial class ListWindows : Window
     {
-        private DataSaveObj obj;
+        private DataSaveObj obj; 
+        private List<string> list;
         public ListWindows()
         {
             InitializeComponent();
@@ -19,12 +20,12 @@ namespace ColoryrTrash.Desktop.Windows
 
         public void GetList()
         {
-            App.HttpUtils.GetGroups();
+            App.MqttUtils.GetGroups();
         }
 
         private void GetInfo(string group)
         {
-            App.HttpUtils.GetGroupInfo(group);
+            App.MqttUtils.GetGroupInfo(group);
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -49,6 +50,7 @@ namespace ColoryrTrash.Desktop.Windows
         {
             Dispatcher.Invoke(() =>
             {
+                this.list = list;
                 GroupList.Items.Clear();
                 foreach (var item in list)
                 {
@@ -139,7 +141,7 @@ namespace ColoryrTrash.Desktop.Windows
         {
             var res = new InputWindow("创建组").Set();
             if (!string.IsNullOrWhiteSpace(res))
-                App.HttpUtils.AddGroup(res);
+                App.MqttUtils.AddGroup(res);
         }
 
         private void RenameGroup_Click(object sender, RoutedEventArgs e)
@@ -148,13 +150,14 @@ namespace ColoryrTrash.Desktop.Windows
                 return;
             var res = new InputWindow("设置组名字", GroupList.SelectedItem as string).Set();
             if (!string.IsNullOrWhiteSpace(res))
-                App.HttpUtils.RenameGroup(GroupList.SelectedItem as string, res);
+                App.MqttUtils.RenameGroup(GroupList.SelectedItem as string, res);
         }
 
         public void AddGroup(string data)
         {
             Dispatcher.Invoke(() =>
             {
+                list.Add(data);
                 GroupList.Items.Add(data);
             });
         }
@@ -165,6 +168,8 @@ namespace ColoryrTrash.Desktop.Windows
             {
                 if (GroupList.Items.Contains(old))
                 {
+                    list.Remove(old);
+                    list.Add(group);
                     bool chose = false;
                     if (GroupList.SelectedItem as string == old)
                     {
@@ -182,12 +187,42 @@ namespace ColoryrTrash.Desktop.Windows
 
         private void MoveGroup_Click(object sender, RoutedEventArgs e)
         {
-
+            if (List.SelectedItem == null)
+                return;
+            var obj = List.SelectedItem as ItemSaveObj;
+            var res = new GroupChose(list, obj.UUID, GroupList.SelectedItem as string).Set();
+            if (res != GroupList.SelectedItem as string)
+            {
+                App.MqttUtils.MoveGroup(obj.UUID, res);
+            }
         }
 
         private void MenuItem_Click_1(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        public void MoveGroup(string uuid, string group)
+        {
+            Dispatcher.Invoke(() =>
+            {
+                if (GroupList.SelectedItem as string != group)
+                {
+                    foreach (var item in List.Items)
+                    {
+                        var obj = item as ItemSaveObj;
+                        if (obj.UUID == uuid)
+                        {
+                            List.Items.Remove(obj);
+                            return;
+                        }
+                    }
+                }
+                else
+                {
+                    GetInfo(group);
+                }
+            });
         }
     }
 }

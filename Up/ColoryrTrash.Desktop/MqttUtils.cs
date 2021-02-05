@@ -149,6 +149,9 @@ namespace ColoryrTrash.Desktop
                         case DataType.RenameGroup:
                             App.ListWindows_.RenameGroup(obj.Data as string, obj.Data1 as string);
                             break;
+                        case DataType.MoveGroup:
+                            App.ListWindows_.MoveGroup(obj.Data as string, obj.Data1 as string);
+                            break;
                     }
                 }
             }
@@ -301,6 +304,17 @@ namespace ColoryrTrash.Desktop
                 Token = App.Config.Token,
                 Type = DataType.RenameGroup,
                 Data = old,
+                Data1 = res
+            };
+            Send(JsonConvert.SerializeObject(obj));
+        }
+        public void MoveGroup(string uuid, string res)
+        {
+            var obj = new DataPackObj
+            {
+                Token = App.Config.Token,
+                Type = DataType.MoveGroup,
+                Data = uuid,
                 Data1 = res
             };
             Send(JsonConvert.SerializeObject(obj));

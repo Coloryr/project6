@@ -21,7 +21,7 @@ namespace ColoryrTrash.Desktop
         public const string Version = "1.0.0";
         
         public static ConfigObj Config;
-        public static MqttUtils HttpUtils;
+        public static MqttUtils MqttUtils;
         public static Login LoginWindows;
         public static MainWindow MainWindow_;
         public static ListWindows ListWindows_;
@@ -66,7 +66,7 @@ namespace ColoryrTrash.Desktop
                 notifyIcon.Visible = true;
                 notifyIcon.BalloonTipText = "ColoryrTrash";
 
-                HttpUtils = new MqttUtils();
+                MqttUtils = new MqttUtils();
 
                 using (MemoryStream stream = new MemoryStream())
                 {

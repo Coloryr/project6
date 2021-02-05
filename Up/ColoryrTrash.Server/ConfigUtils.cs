@@ -221,11 +221,11 @@ namespace ColoryrTrash.Server
             }
         }
 
-        public void MoveGroup(string uuid, string group)
+        public bool MoveGroup(string uuid, string group)
         {
             string oldgroup = UUID_Group[uuid];
-            if (oldgroup == group)
-                return;
+            if (oldgroup == group || !Groups.ContainsKey(group))
+                return false;
             lock (Lock)
             {
                 var obj = Groups[oldgroup];
@@ -236,6 +236,9 @@ namespace ColoryrTrash.Server
                 UUID_Group[uuid] = group;
                 ThisMqttServer.MoveGroup(uuid, group);
             }
+            SaveGroup(oldgroup);
+            SaveGroup(group);
+            return true;
         }
 
         public void SetNick(string uuid, string nick)
