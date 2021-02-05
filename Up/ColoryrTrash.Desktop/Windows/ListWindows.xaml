@@ -1,9 +1,9 @@
-﻿<Window x:Class="ColoryrTrash.Desktop.ListWindows"
+﻿<Window x:Class="ColoryrTrash.Desktop.Windows.ListWindows"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:ColoryrTrash.Desktop"
+        xmlns:local="clr-namespace:ColoryrTrash.Desktop.Windows"
         mc:Ignorable="d"
         Title="垃圾桶列表" Height="450" Width="800" Icon="/icon.png" Loaded="Window_Loaded" Closing="Window_Closing">
     <Grid>
@@ -24,18 +24,19 @@
             <ListView.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="追踪" Click="Track_Click"/>
-                    <MenuItem Header="创建分区"/>
-                    <MenuItem Header="修改分区"/>
+                    <MenuItem Header="修改组" Click="MoveGroup_Click"/>
+                    <MenuItem Header="修改备注" Click="MenuItem_Click_1"/>
                     <MenuItem Header="下发指令"/>
                 </ContextMenu>
             </ListView.ContextMenu>
         </ListView>
-        <ComboBox Margin="60,5,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="20" Width="448" Name="GroupList" 
+        <ComboBox Margin="48,5,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="20" Width="417" Name="GroupList" 
                   SelectionChanged="GroupList_SelectionChanged"/>
-        <Label Content="选择分区" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="2,2,0,0"/>
-        <Button Content="清空" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="513,5,0,0" Height="20" Width="60" Click="Clear_Click"/>
-        <Button Content="搜索" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="578,5,0,0" Height="20" Width="60" Click="Search_Click"/>
-        <Button Content="批量分区" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="643,5,0,0" Height="20" Width="60"/>
-        <Button Content="刷新" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="708,5,0,0" Height="20" Width="60" Click="Re_Click"/>
+        <Label Content="选择组" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="2,2,0,0"/>
+        <Button Content="创建组" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="470,5,0,0" Height="20" Width="60" Click="AddGroup_Click"/>
+        <Button Content="搜索" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="600,5,0,0" Height="20" Width="60" Click="Search_Click"/>
+        <Button Content="批量分组" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="665,5,0,0" Height="20" Width="60"/>
+        <Button Content="刷新" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="730,5,0,0" Height="20" Width="60" Click="Re_Click"/>
+        <Button Content="修改组" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="535,5,0,0" Height="20" Width="60" Click="RenameGroup_Click"/>
     </Grid>
 </Window>

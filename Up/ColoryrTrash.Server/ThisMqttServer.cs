@@ -187,6 +187,77 @@ namespace ColoryrTrash.Server
                             }
                         }
                         break;
+                    case DataType.AddGroup:
+                        if (!CheckLogin(User, Token))
+                        {
+                            SendItem(arg.ClientId, new DataPackObj
+                            {
+                                Type = DataType.GetGroups,
+                                Res = false,
+                                Data = "账户错误"
+                            });
+                        }
+                        else
+                        {
+                            string temp = obj.Data as string;
+                            var res = ServerMain.SaveData.AddGroup(temp);
+                            if (res)
+                            {
+                                ServerMain.UserLogOut($"用户[{User}]创建组[{temp}]");
+                                SendItem(arg.ClientId, new DataPackObj
+                                {
+                                    Type = DataType.AddGroup,
+                                    Res = true,
+                                    Data = $"组[{temp}]创建成功"
+                                });
+                            }
+                            else
+                            {
+                                SendItem(arg.ClientId, new DataPackObj
+                                {
+                                    Type = DataType.AddGroup,
+                                    Res = true,
+                                    Data = $"组[{temp}]创建失败"
+                                });
+                            }
+                        }
+                        break;
+                    case DataType.RenameGroup:
+                        if (!CheckLogin(User, Token))
+                        {
+                            SendItem(arg.ClientId, new DataPackObj
+                            {
+                                Type = DataType.GetGroups,
+                                Res = false,
+                                Data = "账户错误"
+                            });
+                        }
+                        else
+                        {
+                            string temp = obj.Data as string;
+                            string temp1 = obj.Data1 as string;
+                            var res = ServerMain.SaveData.RenameGroup(temp, temp1);
+                            if (res)
+                            {
+                                ServerMain.UserLogOut($"用户[{User}]修改组[{temp}]为[{temp1}]");
+                                SendItem(arg.ClientId, new DataPackObj
+                                {
+                                    Type = DataType.AddGroup,
+                                    Res = true,
+                                    Data = $"组[{temp}]已重命名为[{temp1}]"
+                                });
+                            }
+                            else
+                            {
+                                SendItem(arg.ClientId, new DataPackObj
+                                {
+                                    Type = DataType.AddGroup,
+                                    Res = true,
+                                    Data = $"组[{temp}]重命名失败"
+                                });
+                            }
+                        }
+                        break;
                 }
             }
             catch (Exception e)
@@ -197,12 +268,12 @@ namespace ColoryrTrash.Server
 
         private static void OnUnsubscribedTopic(MqttServerClientUnsubscribedTopicEventArgs arg)
         {
-            ServerMain.LogOut($"客户端[{arg.ClientId}]，取消订阅频道[{arg.TopicFilter}]");
+            ServerMain.LogOut($"客户端[{arg.ClientId}]取消订阅频道[{arg.TopicFilter}]");
         }
 
         private static void OnSubscribedTopic(MqttServerClientSubscribedTopicEventArgs arg)
         {
-            ServerMain.LogOut($"客户端[{arg.ClientId}]，订阅频道[{arg.TopicFilter.Topic}]");
+            ServerMain.LogOut($"客户端[{arg.ClientId}]订阅频道[{arg.TopicFilter.Topic}]");
         }
 
         private static void OnDisconnected(MqttServerClientDisconnectedEventArgs arg)
@@ -283,6 +354,18 @@ namespace ColoryrTrash.Server
                 Type = DataType.AddGroup,
                 Res = true,
                 Data = group
+            };
+            Task.Run(() => SendAll(JsonConvert.SerializeObject(send)));
+        }
+
+        public static void RenameGroup(string old, string group)
+        {
+            var send = new DataPackObj
+            {
+                Type = DataType.RenameGroup,
+                Res = true,
+                Data = old, 
+                Data1 = group
             };
             Task.Run(() => SendAll(JsonConvert.SerializeObject(send)));
         }

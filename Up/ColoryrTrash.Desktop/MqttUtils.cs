@@ -84,10 +84,10 @@ namespace ColoryrTrash.Desktop
                                 var list = JsonConvert.DeserializeObject<List<string>>(obj.Data as string);
                                 App.ListWindows_?.SetList(list);
                             }
-                            else 
+                            else
                             {
                                 App.IsLogin = false;
-                                App.ShowB("获取群组错误", obj.Data as string);
+                                App.ShowB("登录", obj.Data as string);
                                 App.Login();
                             }
                             break;
@@ -107,7 +107,31 @@ namespace ColoryrTrash.Desktop
                             else
                             {
                                 App.IsLogin = false;
-                                App.ShowB("获取群组错误", obj.Data as string);
+                                App.ShowB("登录", obj.Data as string);
+                                App.Login();
+                            }
+                            break;
+                        case DataType.AddGroup:
+                            if (obj.Res == true)
+                            {
+                                App.ShowA("添加组", obj.Data as string);
+                            }
+                            else
+                            {
+                                App.IsLogin = false;
+                                App.ShowB("登录", obj.Data as string);
+                                App.Login();
+                            }
+                            break;
+                        case DataType.RenameGroup:
+                            if (obj.Res == true)
+                            {
+                                App.ShowA("修改组", obj.Data as string);
+                            }
+                            else
+                            {
+                                App.IsLogin = false;
+                                App.ShowB("登录", obj.Data as string);
                                 App.Login();
                             }
                             break;
@@ -119,7 +143,12 @@ namespace ColoryrTrash.Desktop
                     var obj = JsonConvert.DeserializeObject<DataPackObj>(Message);
                     switch (obj.Type)
                     {
-
+                        case DataType.AddGroup:
+                            App.ListWindows_.AddGroup(obj.Data as string);
+                            break;
+                        case DataType.RenameGroup:
+                            App.ListWindows_.RenameGroup(obj.Data as string, obj.Data1 as string);
+                            break;
                     }
                 }
             }
@@ -252,6 +281,27 @@ namespace ColoryrTrash.Desktop
                 Token = App.Config.Token,
                 Type = DataType.GetGroupInfo,
                 Data = group
+            };
+            Send(JsonConvert.SerializeObject(obj));
+        }
+        public void AddGroup(string group)
+        {
+            var obj = new DataPackObj
+            {
+                Token = App.Config.Token,
+                Type = DataType.AddGroup,
+                Data = group
+            };
+            Send(JsonConvert.SerializeObject(obj));
+        }
+        public void RenameGroup(string old, string res)
+        {
+            var obj = new DataPackObj
+            {
+                Token = App.Config.Token,
+                Type = DataType.RenameGroup,
+                Data = old,
+                Data1 = res
             };
             Send(JsonConvert.SerializeObject(obj));
         }

@@ -1,11 +1,12 @@
-﻿<Window x:Class="ColoryrTrash.Desktop.Login"
+﻿<Window x:Class="ColoryrTrash.Desktop.Windows.Login"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:ColoryrTrash.Desktop"
+        xmlns:local="clr-namespace:ColoryrTrash.Desktop.Windows"
         mc:Ignorable="d"
-        Title="控制台登录" Height="140" Width="248" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Loaded="Window_Loaded" Icon="/icon.png" Topmost="True" Closing="Window_Closing">
+        Title="控制台登录" Height="140" Width="248" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Loaded="Window_Loaded" Icon="/icon.png"
+        Topmost="True" Closing="Window_Closing">
     <Grid>
         <Rectangle Fill="#FFF4F4F5" Stroke="#FF5ABED6" StrokeThickness="2"/>
         <Label Content="账户：" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="3,35,0,0"/>

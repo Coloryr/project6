@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace ColoryrTrash.Desktop
+namespace ColoryrTrash.Desktop.Windows
 {
     /// <summary>
     /// ListWindows.xaml 的交互逻辑
@@ -17,7 +17,7 @@ namespace ColoryrTrash.Desktop
             InitializeComponent();
         }
 
-        private void GetList()
+        public void GetList()
         {
             App.HttpUtils.GetGroups();
         }
@@ -84,14 +84,9 @@ namespace ColoryrTrash.Desktop
 
         private void Re_Click(object sender, RoutedEventArgs e)
         {
-            Clear_Click(sender, e);
-            GetList();
-        }
-
-        private void Clear_Click(object sender, RoutedEventArgs e)
-        {
             GroupList.Items.Clear();
             List.Items.Clear();
+            GetList();
         }
 
         private void Search_Click(object sender, RoutedEventArgs e)
@@ -138,6 +133,61 @@ namespace ColoryrTrash.Desktop
                 App.MainWindow_.ClearPoint();
                 App.MainWindow_.AddPoint(obj.X, obj.Y, obj.UUID, GetString(obj));
             }
+        }
+
+        private void AddGroup_Click(object sender, RoutedEventArgs e)
+        {
+            var res = new InputWindow("创建组").Set();
+            if (!string.IsNullOrWhiteSpace(res))
+                App.HttpUtils.AddGroup(res);
+        }
+
+        private void RenameGroup_Click(object sender, RoutedEventArgs e)
+        {
+            if (GroupList.SelectedItem == null)
+                return;
+            var res = new InputWindow("设置组名字", GroupList.SelectedItem as string).Set();
+            if (!string.IsNullOrWhiteSpace(res))
+                App.HttpUtils.RenameGroup(GroupList.SelectedItem as string, res);
+        }
+
+        public void AddGroup(string data)
+        {
+            Dispatcher.Invoke(() =>
+            {
+                GroupList.Items.Add(data);
+            });
+        }
+
+        public void RenameGroup(string old, string group)
+        {
+            Dispatcher.Invoke(() =>
+            {
+                if (GroupList.Items.Contains(old))
+                {
+                    bool chose = false;
+                    if (GroupList.SelectedItem as string == old)
+                    {
+                        chose = true;
+                    }
+                    GroupList.Items.Add(group);
+                    if (chose)
+                    {
+                        GroupList.SelectedItem = group;
+                    }
+                    GroupList.Items.Remove(old);
+                }
+            });
+        }
+
+        private void MoveGroup_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void MenuItem_Click_1(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

@@ -13,6 +13,7 @@ namespace ColoryrTrash.Server
         public static SaveDataUtil SaveData;
 
         private static Logs Logs;
+        private static Logs UserLog;
         private static bool isGo;
 
         static void Main(string[] args)
@@ -26,6 +27,11 @@ namespace ColoryrTrash.Server
 
             Logs = new Logs(RunLocal);
             Logs.LogOut("服务器启动中");
+
+            UserLog = new Logs(RunLocal)
+            {
+                log = "UserLog.log"
+            };
 
             SaveData = new();
             SaveData.Start();
@@ -43,6 +49,11 @@ namespace ColoryrTrash.Server
                         break;
                 }
             }
+        }
+
+        public static void UserLogOut(string data)
+        {
+            UserLog.LogOut(data);
         }
 
         private static void Stop()

@@ -12,16 +12,25 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace ColoryrTrash.Desktop
+namespace ColoryrTrash.Desktop.Windows
 {
     /// <summary>
-    /// MakeHardway.xaml 的交互逻辑
+    /// SearchWindow.xaml 的交互逻辑
     /// </summary>
-    public partial class MakeHardway : Window
+    public partial class SearchWindow : Window
     {
-        public MakeHardway()
+        public SearchObj obj { get; set; }
+        public SearchWindow()
         {
             InitializeComponent();
+            obj = new SearchObj();
+            DataContext = obj;
+        }
+
+        public SearchObj Set()
+        {
+            ShowDialog();
+            return obj;
         }
     }
 }

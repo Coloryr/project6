@@ -7,13 +7,15 @@ namespace Lib
 {
     public class Logs
     {
-        private string log = "logs.log";
+        public string log { get; set; }
         private string RunLocal;
         private readonly object lockobject = new object();
 
         public Logs(string RunLocal)
         {
             this.RunLocal = RunLocal;
+            if (string.IsNullOrWhiteSpace(log))
+                log = "logs.log";
             if (!File.Exists(RunLocal + log))
                 File.Create(RunLocal + log);
         }

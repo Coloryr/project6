@@ -1,4 +1,5 @@
-﻿using Lib;
+﻿using ColoryrTrash.Desktop.Windows;
+using Lib;
 using System;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -104,8 +105,15 @@ namespace ColoryrTrash.Desktop
         {
             ThisApp.Dispatcher.Invoke(() =>
             {
-                ListWindows_ = new();
-                ListWindows_.Show();
+                if (ListWindows_ == null)
+                {
+                    ListWindows_ = new();
+                    ListWindows_.Show();
+                }
+                else
+                {
+                    ListWindows_.GetList();
+                }
             });
         }
 
@@ -131,12 +139,13 @@ namespace ColoryrTrash.Desktop
 
         public static void DisConnect()
         {
+            ShowB("连接", "服务器连接断开");
             ThisApp.Dispatcher.Invoke(() =>
             {
                 if (LoginWindows == null)
                 {
                     LoginWindows = new Login();
-                    LoginWindows.ShowDialog();
+                    LoginWindows.Show();
                 }
                 else
                 {

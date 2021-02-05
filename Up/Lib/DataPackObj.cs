@@ -8,7 +8,8 @@ namespace Lib
         Updata,
         AddGroup,
         MoveGroup,
-        CheckLogin
+        CheckLogin,
+        RenameGroup
     }
     public record PackBase
     { 

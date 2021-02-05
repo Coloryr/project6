@@ -4,7 +4,7 @@ using System.Drawing.Imaging;
 using System.Windows;
 using System.Windows.Media.Imaging;
 
-namespace ColoryrTrash.Desktop
+namespace ColoryrTrash.Desktop.Windows
 {
     /// <summary>
     /// Login.xaml 的交互逻辑
@@ -88,6 +88,7 @@ namespace ColoryrTrash.Desktop
         {
             if (App.IsLogin)
             {
+                App.LoginWindows = null;
                 return;
             }
             var res = new ChoseWindow("你还没有登录", "关闭后会直接关闭软件，你确定吗？").Set();

@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace ColoryrTrash.Desktop
+namespace ColoryrTrash.Desktop.Windows
 {
     /// <summary>
     /// ChoseWindow.xaml 的交互逻辑

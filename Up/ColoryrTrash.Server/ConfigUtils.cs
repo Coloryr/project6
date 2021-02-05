@@ -8,11 +8,6 @@ using System.Threading.Tasks;
 
 namespace ColoryrTrash.Server
 {
-    public record ConfigResObj
-    { 
-        public bool Res { get; set; }
-        public string Message { get; set; }
-    }
     class ConfigSave
     {
         private static object Locker = new object();
@@ -107,15 +102,32 @@ namespace ColoryrTrash.Server
 
         private bool Save = false;
 
-        public ConfigResObj AddGroup(string Name)
+        private string[] errorStr = new string[] { "/", "\\", ":", ",", "*", "?", "\"", "<", ">", "|" };
+
+        private bool IsFileNameValid(string name)
         {
-            if (Groups.ContainsKey(Name))
+            if (string.IsNullOrWhiteSpace(name))
             {
-                return new ConfigResObj
+                return false;
+            }
+            else
+            {
+                for (int i = 0; i < errorStr.Length; i++)
                 {
-                    Res = false,
-                    Message = $"组{Name}已存在"
-                };
+                    if (name.Contains(errorStr[i]))
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        public bool AddGroup(string Name)
+        {
+            if (!IsFileNameValid(Name) || Groups.ContainsKey(Name))
+            {
+                return false;
             }
             else
             {
@@ -129,11 +141,29 @@ namespace ColoryrTrash.Server
                     ThisMqttServer.AddGroup(Name);
                 }
                 SaveGroup(Name);
-                return new ConfigResObj
+                return true;
+            }
+        }
+
+        internal bool RenameGroup(string temp, string temp1)
+        {
+            if (!IsFileNameValid(temp1) || temp == EmptyGroup || !Groups.ContainsKey(temp))
+            {
+                return false;
+            }
+            else
+            {
+                lock (Lock)
                 {
-                    Res = true,
-                    Message = $"组{Name}已创建"
-                };
+                    var item = Groups[temp];
+                    item.Name = temp1;
+                    Groups.Remove(temp);
+                    Groups.Add(temp1, item);
+                    ThisMqttServer.RenameGroup(temp, temp1);
+                }
+                SaveGroup(temp1);
+                DeleteGroup(temp);
+                return true;
             }
         }
 
@@ -298,7 +328,10 @@ namespace ColoryrTrash.Server
                 }
             }
         }
-
+        private void DeleteGroup(string temp)
+        {
+            File.Delete($"{FilePath}{temp}.json");
+        }
         public void SaveUUID(string uuid)
         {
             lock (Lock)
@@ -313,7 +346,6 @@ namespace ColoryrTrash.Server
                 }
             }
         }
-
         public void SaveAll()
         {
             lock (Lock)

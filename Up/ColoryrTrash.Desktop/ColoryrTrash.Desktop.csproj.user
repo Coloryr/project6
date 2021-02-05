@@ -7,36 +7,45 @@
     </ApplicationDefinition>
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="ListWindows.xaml.cs">
+    <Compile Update="Windows\GroupChose.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Login.xaml.cs">
+    <Compile Update="Windows\ListWindows.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="MakeHardway.xaml.cs">
+    <Compile Update="Windows\Login.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="SearchWindow.xaml.cs">
+    <Compile Update="Windows\MakeHardway.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Windows\SearchWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Page Update="ChoseWindow.xaml">
+    <Page Update="Windows\ChoseWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="ListWindows.xaml">
+    <Page Update="Windows\GroupChose.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Login.xaml">
+    <Page Update="Windows\InputWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="MainWindow.xaml">
+    <Page Update="Windows\ListWindows.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="MakeHardway.xaml">
+    <Page Update="Windows\Login.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="SearchWindow.xaml">
+    <Page Update="Windows\MainWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Windows\MakeHardway.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Windows\SearchWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Style\Button.xaml">
