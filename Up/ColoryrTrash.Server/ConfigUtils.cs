@@ -241,25 +241,28 @@ namespace ColoryrTrash.Server
             return true;
         }
 
-        public void SetNick(string uuid, string nick)
+        public bool SetNick(string uuid, string nick)
         {
+            if (UUID_Group.ContainsKey(uuid))
+            {
+                return false;
+            }
+            string group = UUID_Group[uuid];
             lock (Lock)
             {
-                if (UUID_Group.ContainsKey(uuid))
+                if (Groups.ContainsKey(group))
                 {
-                    string group = UUID_Group[uuid];
-                    if (Groups.ContainsKey(group))
+                    var obj = Groups[group];
+                    if (obj.List.ContainsKey(uuid))
                     {
-                        var obj = Groups[group];
-                        if (obj.List.ContainsKey(uuid))
-                        {
-                            var item = obj.List[uuid];
-                            item.Nick = nick;
-                            ThisMqttServer.UpdateItem(group, item);
-                        }
+                        var item = obj.List[uuid];
+                        item.Nick = nick;
+                        ThisMqttServer.UpdateItem(group, item);
                     }
                 }
             }
+            SaveGroup(group);
+            return true;
         }
 
         public void Start()
