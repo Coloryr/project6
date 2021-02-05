@@ -35,7 +35,7 @@
         <Label Content="选择组" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="2,2,0,0"/>
         <Button Content="创建组" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="470,5,0,0" Height="20" Width="60" Click="AddGroup_Click"/>
         <Button Content="搜索" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="600,5,0,0" Height="20" Width="60" Click="Search_Click"/>
-        <Button Content="批量分组" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="665,5,0,0" Height="20" Width="60"/>
+        <Button Content="硬件编辑" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="665,5,0,0" Height="20" Width="60" Click="Flash_Click"/>
         <Button Content="刷新" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="730,5,0,0" Height="20" Width="60" Click="Re_Click"/>
         <Button Content="修改组" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="535,5,0,0" Height="20" Width="60" Click="RenameGroup_Click"/>
     </Grid>

@@ -132,7 +132,7 @@ namespace ColoryrTrash.Desktop
         }
         public static void ShowB(string title, string data)
         {
-            notifyIcon.ShowBalloonTip(300, title, data, System.Windows.Forms.ToolTipIcon.Error);
+            notifyIcon.ShowBalloonTip(300, title, data, System.Windows.Forms.ToolTipIcon.Warning);
             LogError(title + "|" + data);
         }
 

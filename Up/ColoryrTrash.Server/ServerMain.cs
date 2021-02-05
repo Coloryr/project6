@@ -12,11 +12,9 @@ namespace ColoryrTrash.Server
 
         private static Logs Logs;
         private static Logs UserLog;
-        private static bool isGo;
 
         static void Main(string[] args)
         {
-            isGo = true;
             //初始化运行路径
             RunLocal = AppDomain.CurrentDomain.BaseDirectory;
             //设置编码
@@ -35,6 +33,7 @@ namespace ColoryrTrash.Server
             SaveData.Start();
             //创建日志文件
 
+            SocketServer.Start();
             ThisMqttServer.Start();
 
             while (true)
@@ -56,7 +55,7 @@ namespace ColoryrTrash.Server
 
         private static void Stop()
         {
-            isGo = false;
+            SocketServer.Stop();
             ThisMqttServer.Stop();
             SaveData.Stop();
         }

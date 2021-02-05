@@ -5,8 +5,29 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ColoryrTrash.Desktop.Windows"
         mc:Ignorable="d"
-        Title="MakeHardway" Height="450" Width="800">
+        Title="硬件编辑" Height="450" Width="800" ResizeMode="NoResize">
     <Grid>
-        
+        <Rectangle Fill="#FFF4F4F5" Stroke="#FF5ABED6" StrokeThickness="2"/>
+        <GroupBox Header="串口信息" Margin="4,4,0,0" HorizontalAlignment="Left" Width="231" Height="100" VerticalAlignment="Top">
+            <Grid>
+                <ComboBox Width="166" HorizontalAlignment="Left" VerticalAlignment="Top" Height="20" Margin="58,3,0,0"
+                          Name="ComList"/>
+                <Label Content="选择串口" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                <Label Content="波特率" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="6,25,0,0"/>
+                <ComboBox Width="166" HorizontalAlignment="Left" VerticalAlignment="Top" Height="20" Margin="58,28,0,0"
+                          Name="BaudRate" ItemsSource="{Binding BaudRates}"/>
+                <Label Content="当前状态" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,50,0,0"/>
+                <Label Content="断开" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="58,50,0,0" Name="State"/>
+                <Ellipse Margin="95,55,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Height="15" Width="15"
+                         Name="State_Led" Fill="Red" Stroke="#CC5EBDD3" StrokeThickness="0.5"/>
+                <Button Content="打开" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="174,52,0,0" Height="20" 
+                        Width="50" Click="Open_Click" Name="Open_Button"/>
+                <Button Content="刷新" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="119,52,0,0" Height="20" 
+                        Width="50" Click="Refresh_Click"/>
+
+            </Grid>
+        </GroupBox>
+
+
     </Grid>
 </Window>

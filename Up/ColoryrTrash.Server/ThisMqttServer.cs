@@ -101,7 +101,7 @@ namespace ColoryrTrash.Server
                     }
                     return;
                 }
-                if (!Tokens.ContainsKey(User) || Tokens[User] == Token)
+                if (!Tokens.ContainsKey(User) || Tokens[User] != Token)
                 {
                     SendItem(arg.ClientId, new DataPackObj
                     {

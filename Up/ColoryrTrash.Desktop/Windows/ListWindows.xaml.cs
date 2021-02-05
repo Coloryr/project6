@@ -252,5 +252,10 @@ namespace ColoryrTrash.Desktop.Windows
                 }
             });
         }
+
+        private void Flash_Click(object sender, RoutedEventArgs e)
+        {
+            new MakeHardway().Show();
+        }
     }
 }
