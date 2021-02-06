@@ -24,6 +24,7 @@ namespace ColoryrTrash.Desktop.Windows
         private bool Open;
         private bool IsConnect;
         private bool IsRead;
+        private bool IsSend;
         public MakeHardway()
         {
             InitializeComponent();
@@ -80,6 +81,7 @@ namespace ColoryrTrash.Desktop.Windows
                     Cancel = new();
                     Task.Run(() => TestConnect(), Cancel.Token);
                     Open = true;
+                    Group1.IsEnabled = true;
                 }
                 catch (InvalidOperationException)
                 {
@@ -102,6 +104,7 @@ namespace ColoryrTrash.Desktop.Windows
                 State_Led.Fill = Brushes.Gray;
                 Open = false;
                 IsConnect = false;
+                Group1.IsEnabled = false;
             }
         }
 
@@ -317,7 +320,7 @@ namespace ColoryrTrash.Desktop.Windows
             {
                 IsRead = true;
                 ReadUUID_Button.IsEnabled = false;
-                var data = HardPack.MakePack(PackType.UUID);
+                var data = HardPack.MakeReadPack(PackType.UUID);
                 Serial.Write(data, 0, 6);
                 Task.Run(() =>
                 {
@@ -334,7 +337,7 @@ namespace ColoryrTrash.Desktop.Windows
                             Array.Copy(temp, 6, temp1, 0, len);
                             ReadUUID(temp1);
                         }
-                        App.ShowB("读信息", "UUID已读取");
+                        App.ShowA("读信息", "UUID已读取");
                     }
                     else
                     {
@@ -358,7 +361,54 @@ namespace ColoryrTrash.Desktop.Windows
 
         private void CheckUUID_Click(object sender, RoutedEventArgs e)
         {
-
+            string temp = UUIDSplicing();
+            if (temp == null)
+            {
+                App.ShowB("设置", "UUID填写错误");
+                return;
+            }
+            App.MqttUtils.CheckUUID(temp);
+        }
+        private void SetUUID_Click(object sender, RoutedEventArgs e)
+        {
+            if (IsSend)
+                return;
+            if (!IsConnect)
+            {
+                App.ShowB("设置", "设备未连接");
+                return;
+            }
+            string temp = UUIDSplicing();
+            if (temp == null)
+            {
+                App.ShowB("设置", "UUID填写错误");
+                    return;
+            }
+            IsSend = true;
+            SetUUID_Button.IsEnabled = false;
+            Task.Run(() =>
+            {
+                var data = HardPack.MakeSetPack(PackType.UUID, Encoding.UTF8.GetBytes(temp));
+                Serial.Write(data, 0, data.Length);
+                Thread.Sleep(100);
+                if (Serial.BytesToRead <= 0)
+                {
+                    App.ShowB("设置", "UUID设置失败");
+                    IsSend = false;
+                    return;
+                }
+                data = new byte[Serial.BytesToRead];
+                if (HardPack.CheckOK(data))
+                {
+                    App.ShowA("设置", "UUID已设置");
+                }
+                else
+                {
+                    App.ShowB("设置", "UUID设置失败");
+                }
+                Dispatcher.Invoke(() => SetUUID_Button.IsEnabled = true);
+                IsSend = false;
+            });
         }
     }
 }

@@ -16,5 +16,6 @@ extern class VL53L0 *VL53L0A;
 extern class VL53L0 *VL53L0B;
 extern class EEPROM* ThisEEPROM;
 extern class IOInput *IO;
+extern class Upload *Up;
 
 #endif

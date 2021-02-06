@@ -7,10 +7,17 @@
 #include "VL53L0.h"
 #include "EEPROM.h"
 #include "IOInput.h"
+#include "Upload.h"
 
 uint8_t mode;
 bool Bluetooth_State;
 bool NetWork_State;
+
+void TaskUpload(void *data)
+{
+    Up->tick();
+    delay(100);
+}
 
 void setup()
 {
@@ -28,6 +35,8 @@ void setup()
 
     ThisEEPROM->init();
 
+    Up = new Upload();
+
     // if (NetWork_State)
     // {
     //     BLE = new MyBLE(Server);
@@ -36,6 +45,7 @@ void setup()
     // {
     //     BLE = new MyBLE(Client);
     // }
+    xTaskCreate(TaskUpload, "Upload", 1024, NULL, 3, NULL);
 }
 
 void loop()
