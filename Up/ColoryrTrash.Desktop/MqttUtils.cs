@@ -64,7 +64,7 @@ namespace ColoryrTrash.Desktop
                         case DataType.Login:
                             if (obj.Res)
                             {
-                                App.Config.Token = obj.Data as string;
+                                App.Config.Token = obj.Data;
                                 App.Save();
                                 App.Start();
                                 App.IsLogin = true;
@@ -74,19 +74,19 @@ namespace ColoryrTrash.Desktop
                             else
                             {
                                 App.IsLogin = false;
-                                App.ShowB("登录", obj.Data as string);
+                                App.ShowB("登录", obj.Data);
                             }
                             break;
                         case DataType.GetGroups:
                             if (obj.Res == true)
                             {
-                                var list = JsonConvert.DeserializeObject<List<string>>(obj.Data as string);
+                                var list = JsonConvert.DeserializeObject<List<string>>(obj.Data);
                                 App.ListWindows_?.SetList(list);
                             }
                             else
                             {
                                 App.IsLogin = false;
-                                App.ShowB("登录", obj.Data as string);
+                                App.ShowB("登录", obj.Data);
                                 App.Login();
                             }
                             break;
@@ -95,54 +95,66 @@ namespace ColoryrTrash.Desktop
                             {
                                 if (obj.Data == null)
                                 {
-                                    App.ShowB("获取群组内容错误", obj.Data1 as string);
+                                    App.ShowB("获取群组内容错误", obj.Data1);
                                 }
                                 else
                                 {
-                                    var list = JsonConvert.DeserializeObject<DataSaveObj>(obj.Data as string);
+                                    var list = JsonConvert.DeserializeObject<DataSaveObj>(obj.Data);
                                     App.ListWindows_?.SetInfo(list);
                                 }
                             }
                             else
                             {
                                 App.IsLogin = false;
-                                App.ShowB("登录", obj.Data as string);
+                                App.ShowB("登录", obj.Data);
                                 App.Login();
                             }
                             break;
                         case DataType.AddGroup:
                             if (obj.Res == true)
                             {
-                                App.ShowA("添加组", obj.Data as string);
+                                App.ShowA("添加组", obj.Data);
                             }
                             else
                             {
                                 App.IsLogin = false;
-                                App.ShowB("登录", obj.Data as string);
+                                App.ShowB("登录", obj.Data);
                                 App.Login();
                             }
                             break;
                         case DataType.RenameGroup:
                             if (obj.Res == true)
                             {
-                                App.ShowA("修改组", obj.Data as string);
+                                App.ShowA("修改组", obj.Data);
                             }
                             else
                             {
                                 App.IsLogin = false;
-                                App.ShowB("登录", obj.Data as string);
+                                App.ShowB("登录", obj.Data);
                                 App.Login();
                             }
                             break;
                         case DataType.SetNick:
                             if (obj.Res == true)
                             {
-                                App.ShowA("设置备注", obj.Data as string);
+                                App.ShowA("设置备注", obj.Data);
                             }
                             else
                             {
                                 App.IsLogin = false;
-                                App.ShowB("登录", obj.Data as string);
+                                App.ShowB("登录", obj.Data);
+                                App.Login();
+                            }
+                            break;
+                        case DataType.CheckUUID:
+                            if (obj.Res == true)
+                            {
+                                App.ShowA("UUID检查", obj.Data);
+                            }
+                            else
+                            {
+                                App.IsLogin = false;
+                                App.ShowB("登录", obj.Data);
                                 App.Login();
                             }
                             break;
@@ -155,17 +167,17 @@ namespace ColoryrTrash.Desktop
                     switch (obj.Type)
                     {
                         case DataType.AddGroup:
-                            App.ListWindows_.AddGroup(obj.Data as string);
+                            App.ListWindows_.AddGroup(obj.Data);
                             break;
                         case DataType.RenameGroup:
-                            App.ListWindows_.RenameGroup(obj.Data as string, obj.Data1 as string);
+                            App.ListWindows_.RenameGroup(obj.Data, obj.Data1);
                             break;
                         case DataType.MoveGroup:
-                            App.ListWindows_.MoveGroup(obj.Data as string, obj.Data1 as string);
+                            App.ListWindows_.MoveGroup(obj.Data, obj.Data1);
                             break;
                         case DataType.Updata:
-                            var obj1 = JsonConvert.DeserializeObject<ItemSaveObj>(obj.Data1 as string);
-                            App.ListWindows_.Updata(obj.Data as string, obj1);
+                            var obj1 = JsonConvert.DeserializeObject<ItemSaveObj>(obj.Data1);
+                            App.ListWindows_.Updata(obj.Data, obj1);
                             break;
                     }
                 }
@@ -342,6 +354,17 @@ namespace ColoryrTrash.Desktop
                 Type = DataType.SetNick,
                 Data = uuid,
                 Data1 = res
+            };
+            Send(JsonConvert.SerializeObject(obj));
+        }
+
+        public void CheckUUID(string uuid)
+        {
+            var obj = new DataPackObj
+            {
+                Token = App.Config.Token,
+                Type = DataType.CheckUUID,
+                Data = uuid
             };
             Send(JsonConvert.SerializeObject(obj));
         }

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ColoryrTrash.Desktop.Windows"
         mc:Ignorable="d"
-        Title="硬件编辑" Height="450" Width="800" ResizeMode="NoResize">
+        Title="硬件编辑" Height="450" Width="800" ResizeMode="NoResize" Closing="Window_Closing">
     <Grid>
         <Rectangle Fill="#FFF4F4F5" Stroke="#FF5ABED6" StrokeThickness="2"/>
         <GroupBox Header="串口信息" Margin="4,4,0,0" HorizontalAlignment="Left" Width="231" Height="100" VerticalAlignment="Top">
@@ -14,7 +14,7 @@
                           Name="ComList"/>
                 <Label Content="选择串口" HorizontalAlignment="Left" VerticalAlignment="Top"/>
                 <Label Content="波特率" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="6,25,0,0"/>
-                <ComboBox Width="166" HorizontalAlignment="Left" VerticalAlignment="Top" Height="20" Margin="58,28,0,0"
+                <ComboBox Width="166" HorizontalAlignment="Left" VerticalAlignment="Center" Height="20" Margin="58,0,0,0"
                           Name="BaudRate" ItemsSource="{Binding BaudRates}"/>
                 <Label Content="当前状态" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,50,0,0"/>
                 <Label Content="断开" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="58,50,0,0" Name="State"/>
@@ -27,7 +27,48 @@
 
             </Grid>
         </GroupBox>
+        <GroupBox Header="基本信息" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="4,106,0,0" Height="100" Width="231">
+            <Grid>
+                <Label Content="UUID" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,13,0,0"/>
+                <Button Content="编辑" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="172,52,0,0" Height="20" Width="50"/>
+                <Button Content="读取" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="117,52,0,0" Height="20" Width="50" 
+                        Click="ReadUUID_Click" Name="ReadUUID_Button"/>
+                <TextBox Text="0" TextWrapping="Wrap" VerticalAlignment="Top" Height="20" HorizontalAlignment="Left" Width="20" Margin="41,4,0,0"
+                         TextAlignment="Center" Name="UUID0" TextChanged="UUID0_TextChanged"/>
+                <TextBox Text="0" TextWrapping="Wrap" VerticalAlignment="Top" Height="20" HorizontalAlignment="Left" Width="20" Margin="64,4,0,0" 
+                         TextAlignment="Center" Name="UUID1" TextChanged="UUID0_TextChanged"/>
+                <TextBox Text="0" TextWrapping="Wrap" VerticalAlignment="Top" Height="20" HorizontalAlignment="Left" Width="20" Margin="87,4,0,0" 
+                         TextAlignment="Center" Name="UUID2" TextChanged="UUID0_TextChanged"/>
+                <TextBox Text="0" TextWrapping="Wrap" VerticalAlignment="Top" Height="20" HorizontalAlignment="Left" Width="20" Margin="110,4,0,0" 
+                         TextAlignment="Center" Name="UUID3" TextChanged="UUID0_TextChanged"/>
+                <TextBox Text="0" TextWrapping="Wrap" VerticalAlignment="Top" Height="20" HorizontalAlignment="Left" Width="20" Margin="133,4,0,0" 
+                         TextAlignment="Center" Name="UUID4" TextChanged="UUID0_TextChanged"/>
+                <TextBox Text="0" TextWrapping="Wrap" VerticalAlignment="Top" Height="20" HorizontalAlignment="Left" Width="20" Margin="156,4,0,0"
+                         TextAlignment="Center" Name="UUID5" TextChanged="UUID0_TextChanged"/>
+                <TextBox Text="0" TextWrapping="Wrap" VerticalAlignment="Top" Height="20" HorizontalAlignment="Left" Width="20" Margin="179,4,0,0"
+                         TextAlignment="Center" Name="UUID6" TextChanged="UUID0_TextChanged"/>
+                <TextBox Text="0" TextWrapping="Wrap" VerticalAlignment="Top" Height="20" HorizontalAlignment="Left" Width="20" Margin="202,4,0,0"
+                         TextAlignment="Center" Name="UUID7" TextChanged="UUID0_TextChanged"/>
+                <TextBox Text="0" TextWrapping="Wrap" VerticalAlignment="Center" Height="20" HorizontalAlignment="Left" Width="20" Margin="41,0,0,0" 
+                         TextAlignment="Center" Name="UUID8" TextChanged="UUID0_TextChanged"/>
+                <TextBox Text="0" TextWrapping="Wrap" VerticalAlignment="Center" Height="20" HorizontalAlignment="Left" Width="20" Margin="64,0,0,0"
+                         TextAlignment="Center" Name="UUID9" TextChanged="UUID0_TextChanged"/>
+                <TextBox Text="0" TextWrapping="Wrap" VerticalAlignment="Center" Height="20" HorizontalAlignment="Left" Width="20" Margin="87,0,0,0" 
+                         TextAlignment="Center" Name="UUID10" TextChanged="UUID0_TextChanged"/>
+                <TextBox Text="0" TextWrapping="Wrap" VerticalAlignment="Center" Height="20" HorizontalAlignment="Left" Width="20" Margin="110,0,0,0" 
+                         TextAlignment="Center" Name="UUID11" TextChanged="UUID0_TextChanged"/>
+                <TextBox Text="0" TextWrapping="Wrap" VerticalAlignment="Center" Height="20" HorizontalAlignment="Left" Width="20" Margin="133,0,0,0" 
+                         TextAlignment="Center" Name="UUID12" TextChanged="UUID0_TextChanged"/>
+                <TextBox Text="0" TextWrapping="Wrap" VerticalAlignment="Center" Height="20" HorizontalAlignment="Left" Width="20" Margin="156,0,0,0" 
+                         TextAlignment="Center" Name="UUID13" TextChanged="UUID0_TextChanged"/>
+                <TextBox Text="0" TextWrapping="Wrap" VerticalAlignment="Center" Height="20" HorizontalAlignment="Left" Width="20" Margin="179,0,0,0"
+                         TextAlignment="Center" Name="UUID14" TextChanged="UUID0_TextChanged"/>
+                <TextBox Text="0" TextWrapping="Wrap" VerticalAlignment="Center" Height="20" HorizontalAlignment="Left" Width="20" Margin="202,0,0,0"
+                         TextAlignment="Center" Name="UUID15" TextChanged="UUID0_TextChanged"/>
+                <Button Content="随机" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="62,52,0,0" Height="20" Width="50" Click="Random_Click"/>
+                <Button Content="检查" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="7,52,0,0" Height="20" Width="50" Click="CheckUUID_Click"/>
 
-
+            </Grid>
+        </GroupBox>
     </Grid>
 </Window>

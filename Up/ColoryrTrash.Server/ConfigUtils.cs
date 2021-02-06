@@ -144,8 +144,7 @@ namespace ColoryrTrash.Server
                 return true;
             }
         }
-
-        internal bool RenameGroup(string temp, string temp1)
+        public bool RenameGroup(string temp, string temp1)
         {
             if (!IsFileNameValid(temp1) || temp == EmptyGroup || !Groups.ContainsKey(temp))
             {
@@ -166,7 +165,6 @@ namespace ColoryrTrash.Server
                 return true;
             }
         }
-
         public void AddItem(string UUID)
         {
             string Time = string.Format("{0:s}", DateTime.Now);
@@ -201,7 +199,6 @@ namespace ColoryrTrash.Server
                 }
             }
         }
-
         public void UpData(string UUID, int x, int y, int capacity, bool open, ItemState state)
         {
             if (UUID_Group.ContainsKey(UUID))
@@ -220,7 +217,6 @@ namespace ColoryrTrash.Server
                 }
             }
         }
-
         public bool MoveGroup(string uuid, string group)
         {
             string oldgroup = UUID_Group[uuid];
@@ -240,7 +236,6 @@ namespace ColoryrTrash.Server
             SaveGroup(group);
             return true;
         }
-
         public bool SetNick(string uuid, string nick)
         {
             if (!UUID_Group.ContainsKey(uuid))
@@ -263,6 +258,10 @@ namespace ColoryrTrash.Server
             }
             SaveGroup(group);
             return true;
+        }
+        public bool CheckUUID(string temp)
+        {
+            return UUID_Group.ContainsKey(temp);
         }
 
         public void Start()
@@ -314,7 +313,6 @@ namespace ColoryrTrash.Server
                 }
             }, token.Token);
         }
-
         public void Stop()
         {
             token.Cancel();

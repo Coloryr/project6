@@ -255,7 +255,15 @@ namespace ColoryrTrash.Desktop.Windows
 
         private void Flash_Click(object sender, RoutedEventArgs e)
         {
-            new MakeHardway().Show();
+            if (App.MakeHardway_ == null)
+            {
+                App.MakeHardway_ = new MakeHardway();
+                App.MakeHardway_.Show();
+            }
+            else
+            {
+                App.MakeHardway_.Activate();
+            }
         }
     }
 }

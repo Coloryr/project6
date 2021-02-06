@@ -1,8 +1,14 @@
 ﻿using System;
+using System.ComponentModel;
 using System.IO.Ports;
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 
 namespace ColoryrTrash.Desktop.Windows
@@ -16,15 +22,38 @@ namespace ColoryrTrash.Desktop.Windows
         private readonly SerialPort Serial;
         private CancellationTokenSource Cancel;
         private bool Open;
+        private bool IsConnect;
+        private bool IsRead;
         public MakeHardway()
         {
             InitializeComponent();
             Serial = new();
-            BaudRates = new int[] { 4800, 9600, 115200, 19200, 38400 };
+            BaudRates = new int[] { 4800, 9600, 19200, 38400, 115200 };
             ComList.ItemsSource = SerialPort.GetPortNames();
             DataContext = this;
+            BaudRate.SelectedItem = 19200;
         }
-
+        private void Window_Closing(object sender, CancelEventArgs e)
+        {
+            App.MakeHardway_ = null;
+        }
+        private bool CheckInput(string data)
+        {
+            return Regex.IsMatch(data, "^[A-Za-z0-9]+$");
+        }
+        private string GetRandomString()
+        {
+            byte[] b = new byte[4];
+            new RNGCryptoServiceProvider().GetBytes(b);
+            Random r = new Random(BitConverter.ToInt32(b, 0));
+            string s = null;
+            string str = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            for (int i = 0; i < 16; i++)
+            {
+                s += str.Substring(r.Next(0, str.Length - 1), 1);
+            }
+            return s;
+        }
         private void Open_Click(object sender, RoutedEventArgs e)
         {
             if (!Open)
@@ -70,8 +99,9 @@ namespace ColoryrTrash.Desktop.Windows
                 State.Content = "断开";
                 ComList.IsEnabled = true;
                 BaudRate.IsEnabled = true;
-                State_Led.Fill = Brushes.Red;
+                State_Led.Fill = Brushes.Gray;
                 Open = false;
+                IsConnect = false;
             }
         }
 
@@ -90,6 +120,7 @@ namespace ColoryrTrash.Desktop.Windows
                 Serial.Read(data, 0, Serial.BytesToRead);
                 if (HardPack.CheckPack(data))
                 {
+                    IsConnect = true;
                     Dispatcher.Invoke(() =>
                     {
                         State.Content = "已连接";
@@ -98,21 +129,236 @@ namespace ColoryrTrash.Desktop.Windows
                 }
                 else
                 {
+                    IsConnect = false;
                     Dispatcher.Invoke(() =>
                     {
                         State.Content = "未连接";
-                        State_Led.Fill = Brushes.Gray;
+                        State_Led.Fill = Brushes.Red;
                     });
                 }
             }
             else
             {
+                IsConnect = false;
                 Dispatcher.Invoke(() =>
                 {
                     State.Content = "未连接";
-                    State_Led.Fill = Brushes.Gray;
+                    State_Led.Fill = Brushes.Red;
                 });
             }
+        }
+        private void ReadUUID(byte[] data)
+        {
+            if (data.Length != 16)
+            {
+                App.ShowB("读信息", "数据包错误");
+                return;
+            }
+            string temp = Encoding.UTF8.GetString(data);
+            ToUUIDs(temp);
+        }
+
+        private void ToUUIDs(string data)
+        {
+            int index = 0;
+            string temp;
+            for (int a = 0; a < data.Length; a++)
+            {
+                temp = data[a].ToString();
+                if (!CheckInput(temp))
+                    continue;
+                switch (index)
+                {
+                    case 0:
+                        UUID0.Text = temp;
+                        break;
+                    case 1:
+                        UUID1.Text = temp;
+                        break;
+                    case 2:
+                        UUID2.Text = temp;
+                        break;
+                    case 3:
+                        UUID3.Text = temp;
+                        break;
+                    case 4:
+                        UUID4.Text = temp;
+                        break;
+                    case 5:
+                        UUID5.Text = temp;
+                        break;
+                    case 6:
+                        UUID6.Text = temp;
+                        break;
+                    case 7:
+                        UUID7.Text = temp;
+                        break;
+                    case 8:
+                        UUID8.Text = temp;
+                        break;
+                    case 9:
+                        UUID9.Text = temp;
+                        break;
+                    case 10:
+                        UUID10.Text = temp;
+                        break;
+                    case 11:
+                        UUID11.Text = temp;
+                        break;
+                    case 12:
+                        UUID12.Text = temp;
+                        break;
+                    case 13:
+                        UUID13.Text = temp;
+                        break;
+                    case 14:
+                        UUID14.Text = temp;
+                        break;
+                    case 15:
+                        UUID15.Text = temp;
+                        return;
+                }
+                index ++;
+            }
+        }
+        private string UUIDSplicing()
+        {
+            string temp = "";
+            if (UUID0.Text != "")
+                temp += UUID0.Text;
+            else
+                return null;
+            if (UUID1.Text != "")
+                temp += UUID1.Text;
+            else
+                return null;
+            if (UUID2.Text != "")
+                temp += UUID2.Text;
+            else
+                return null;
+            if (UUID3.Text != "")
+                temp += UUID3.Text;
+            else
+                return null;
+            if (UUID4.Text != "")
+                temp += UUID4.Text;
+            else
+                return null;
+            if (UUID5.Text != "")
+                temp += UUID5.Text;
+            else
+                return null;
+            if (UUID6.Text != "")
+                temp += UUID6.Text;
+            else
+                return null;
+            if (UUID7.Text != "")
+                temp += UUID7.Text;
+            else
+                return null;
+            if (UUID8.Text != "")
+                temp += UUID8.Text;
+            else
+                return null;
+            if (UUID9.Text != "")
+                temp += UUID9.Text;
+            else
+                return null;
+            if (UUID10.Text != "")
+                temp += UUID10.Text;
+            else
+                return null;
+            if (UUID11.Text != "")
+                temp += UUID11.Text;
+            else
+                return null;
+            if (UUID12.Text != "")
+                temp += UUID12.Text;
+            else
+                return null;
+            if (UUID13.Text != "")
+                temp += UUID13.Text;
+            else
+                return null;
+            if (UUID14.Text != "")
+                temp += UUID14.Text;
+            else
+                return null;
+            if (UUID15.Text != "")
+                temp += UUID15 .Text;
+            else
+                return null;
+            return temp;
+        }
+
+        private void UUID0_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            TextBox box = sender as TextBox;
+            if (box == null)
+                return;
+            if (box.Text.Length > 1)
+            {
+                ToUUIDs(box.Text);
+            }
+            else if (box.Text.Length == 1)
+            {
+                if (!CheckInput(box.Text))
+                {
+                    box.Text = "";
+                }
+            }
+        }
+
+        private void ReadUUID_Click(object sender, RoutedEventArgs e)
+        {
+            if (IsRead)
+                return;
+            if (IsConnect)
+            {
+                IsRead = true;
+                ReadUUID_Button.IsEnabled = false;
+                var data = HardPack.MakePack(PackType.UUID);
+                Serial.Write(data, 0, 6);
+                Task.Run(() =>
+                {
+                    Thread.Sleep(100);
+                    if (Serial.BytesToRead > 0)
+                    {
+                        var temp = new byte[Serial.BytesToRead];
+                        int len = Serial.BytesToRead - 6;
+                        Serial.Read(temp, 0, Serial.BytesToRead);
+                        var res = HardPack.CheckType(temp);
+                        if (res == PackType.UUID)
+                        {
+                            var temp1 = new byte[len];
+                            Array.Copy(temp, 6, temp1, 0, len);
+                            ReadUUID(temp1);
+                        }
+                        App.ShowB("读信息", "UUID已读取");
+                    }
+                    else
+                    {
+                        App.ShowB("读信息", "设备未响应");
+                    }
+                    Dispatcher.Invoke(() => ReadUUID_Button.IsEnabled = true);
+                    IsRead = false;
+                });
+            }
+            else
+            {
+                App.ShowB("读信息", "设备未连接");
+            }
+        }
+
+        private void Random_Click(object sender, RoutedEventArgs e)
+        {
+            var temp = GetRandomString();
+            ToUUIDs(temp);
+        }
+
+        private void CheckUUID_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

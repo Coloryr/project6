@@ -229,6 +229,26 @@ namespace ColoryrTrash.Server
                             });
                         }
                         break;
+                    case DataType.CheckUUID:
+                        if (ServerMain.SaveData.CheckUUID(temp))
+                        {
+                            SendItem(arg.ClientId, new DataPackObj
+                            {
+                                Type = DataType.CheckUUID,
+                                Res = true,
+                                Data = "UUID已存在"
+                            });
+                        }
+                        else
+                        {
+                            SendItem(arg.ClientId, new DataPackObj
+                            {
+                                Type = DataType.CheckUUID,
+                                Res = true,
+                                Data = "UUID不存在"
+                            });
+                        }
+                        break;
                 }
             }
             catch (Exception e)

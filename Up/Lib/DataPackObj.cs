@@ -6,7 +6,8 @@ namespace Lib
     {
         CheckLogin, Login, GetGroups, GetGroupInfo, Updata,
         AddGroup, MoveGroup, RenameGroup,
-        SetNick
+        SetNick,
+        CheckUUID
     }
     public record PackBase
     {
