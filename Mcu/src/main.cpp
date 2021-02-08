@@ -15,25 +15,30 @@ bool NetWork_State;
 
 void TaskUpload(void *data)
 {
-    Up->tick();
-    delay(100);
+    for (;;)
+    {
+        Up->tick();
+        delay(50);
+    }
 }
 
 void setup()
 {
+    delay(2000);
     Serial.begin(115200);
+    Serial.setTimeout(100);
 
-    ThisServo = new Servo();
-    IoT = new NBIoT();
+    // ThisServo = new Servo();
+    // IoT = new NBIoT();
     ThisEEPROM = new EEPROM();
-    IO = new IOInput();
-    VL53L0A = new VL53L0(VL53L0_A, '0');
-    VL53L0B = new VL53L0(VL53L0_B, '1');
+    // IO = new IOInput();
+    // VL53L0A = new VL53L0(VL53L0_A, '0');
+    // VL53L0B = new VL53L0(VL53L0_B, '1');
 
     // VL53L0A->check();
     // VL53L0B->check();
 
-    ThisEEPROM->init();
+    // ThisEEPROM->init();
 
     Up = new Upload();
 
@@ -45,15 +50,15 @@ void setup()
     // {
     //     BLE = new MyBLE(Client);
     // }
-    xTaskCreate(TaskUpload, "Upload", 1024, NULL, 3, NULL);
+    xTaskCreate(TaskUpload, "Upload", 1024, NULL, 5, NULL);
 }
 
 void loop()
 {
     // VL53L0A->update();
     // VL53L0B->update();
-    IO->isclose();
-    delay(2000);
+    // IO->isclose();
+    // delay(2000);
     // BLE->Tick();
     // for (int d = 1; d < 180; d += 1)
     // {

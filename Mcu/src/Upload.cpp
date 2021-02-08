@@ -15,6 +15,7 @@ Upload::Upload()
     readbuff = new uint8_t[64];
     writebuff = new uint8_t[64];
     open = false;
+    reset();
 }
 
 void Upload::tick()
@@ -62,12 +63,14 @@ void Upload::sendread(uint8_t type)
         {
             writebuff[a + 6] = UUID[a];
         }
-
+        sendwrite(22);
         break;
     }
 }
-void Upload::sendwrite(uint8_t type)
+void Upload::sendwrite(uint8_t size)
 {
+    Serial.write(writebuff, size);
+    reset();
 }
 void Upload::buildpack(uint8_t type)
 {
@@ -91,4 +94,12 @@ void Upload::sendok()
 void Upload::send(uint8_t size)
 {
     Serial.write(writebuff, size);
+}
+
+void Upload::reset()
+{
+    for (int a = 0; a < 64; a++)
+    {
+        writebuff[a] = 0;
+    }
 }

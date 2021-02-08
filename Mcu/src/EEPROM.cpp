@@ -17,6 +17,23 @@ EEPROM::EEPROM()
     {
         EEPROMIIC = new MyIIC(I2C_EEPROM_SDA, I2C_EEPROM_SCL, I2C_EEPROM_NUM);
     }
+    uint8_t *test = new uint8_t[64];
+    Serial.print("test:");
+    for (uint8_t a = 0; a < 16; a++)
+    {
+        Serial.printf("%d ", test[a]);
+    }
+    Serial.println();
+    EEPROMIIC->Write(Test_Add, EEPROM_Add, test, 8);
+    delay(100);
+    Serial.println("write done");
+    EEPROMIIC->Read(Test_Add, EEPROM_Add, test, 8);
+    Serial.print("read:");
+    for (uint8_t a = 0; a < 16; a++)
+    {
+        Serial.printf("%d ", test[a]);
+    }
+    Serial.println();
 }
 
 void EEPROM::init()
@@ -46,7 +63,7 @@ void EEPROM::init()
             uint8_t a = 0;
             for (a = 0; a < 16; a++)
             {
-                UUID[a] = 0;
+                UUID[a] = '0';
             }
             for (a = 0; a < 4; a++)
             {
@@ -82,11 +99,19 @@ void EEPROM::readall()
 void EEPROM::readuuid()
 {
     EEPROMIIC->Read(UUID_Add, EEPROM_Add, UUID, 16);
+#ifdef DEBUG
+    Serial.print("UUID:");
+    for (uint8_t a = 0; a < 16; a++)
+    {
+        Serial.printf("%c", UUID[a]);
+    }
+    Serial.println();
+#endif
 }
 void EEPROM::readip()
 {
     uint8_t *buff = new uint8_t[6];
-    EEPROMIIC->Read(UUID_Add, EEPROM_Add, buff, 6);
+    EEPROMIIC->Read(IP_Add, EEPROM_Add, buff, 6);
     IP[0] = buff[0];
     IP[1] = buff[1];
     IP[2] = buff[2];
@@ -108,11 +133,22 @@ void EEPROM::readset()
 void EEPROM::saveall()
 {
     saveuuid();
+    delay(10);
     saveip();
+    delay(10);
     saveset();
+    delay(10);
 }
 void EEPROM::saveuuid()
 {
+#ifdef DEBUG
+    Serial.print("UUID:");
+    for (uint8_t a = 0; a < 16; a++)
+    {
+        Serial.printf("%c", UUID[a]);
+    }
+    Serial.println();
+#endif
     EEPROMIIC->Write(UUID_Add, EEPROM_Add, UUID, 16);
 }
 void EEPROM::saveip()
@@ -124,7 +160,7 @@ void EEPROM::saveip()
     buff[3] = IP[3];
     buff[4] = Port[0];
     buff[5] = Port[1];
-    EEPROMIIC->Write(UUID_Add, EEPROM_Add, buff, 6);
+    EEPROMIIC->Write(IP_Add, EEPROM_Add, buff, 6);
     delete (buff);
 }
 void EEPROM::saveset()

@@ -44,7 +44,10 @@ void MyIIC::Write(uint8_t reg, uint8_t address, uint8_t *data, uint32_t size)
     i2c_master_start(cmd);
     i2c_master_write_byte(cmd, address | I2C_MASTER_WRITE, true);
     i2c_master_write_byte(cmd, reg, true);
-    i2c_master_write(cmd, data, size, true);
+    for (uint32_t a = 0; a < size; a++)
+    {
+        i2c_master_write_byte(cmd, data[a], true);
+    }
     i2c_master_stop(cmd);
     i2c_master_cmd_begin(I2C_MASTER_NUM, cmd, 10 / portTICK_RATE_MS);
     i2c_cmd_link_delete(cmd);
@@ -67,7 +70,10 @@ void MyIIC::Read(uint8_t address, uint8_t *data, uint32_t size)
     i2c_cmd_handle_t cmd = i2c_cmd_link_create();
     i2c_master_start(cmd);
     i2c_master_write_byte(cmd, address | I2C_MASTER_READ, true);
-    i2c_master_read(cmd, data, size, I2C_MASTER_ACK);
+    for (uint32_t a = 0; a < size; a++)
+    {
+        i2c_master_read_byte(cmd, data + a, I2C_MASTER_ACK);
+    }
     i2c_master_stop(cmd);
     i2c_master_cmd_begin(I2C_MASTER_NUM, cmd, 0);
     i2c_cmd_link_delete(cmd);

@@ -31,8 +31,12 @@ namespace ColoryrTrash.Desktop.Windows
             Serial = new();
             BaudRates = new int[] { 4800, 9600, 19200, 38400, 115200 };
             ComList.ItemsSource = SerialPort.GetPortNames();
+            if (SerialPort.GetPortNames().Length > 0)
+            {
+                ComList.SelectedItem = SerialPort.GetPortNames()[0];
+            }
             DataContext = this;
-            BaudRate.SelectedItem = 19200;
+            BaudRate.SelectedItem = 115200;
         }
         private void Window_Closing(object sender, CancelEventArgs e)
         {
@@ -324,7 +328,7 @@ namespace ColoryrTrash.Desktop.Windows
                 Serial.Write(data, 0, 6);
                 Task.Run(() =>
                 {
-                    Thread.Sleep(100);
+                    Thread.Sleep(1000);
                     if (Serial.BytesToRead > 0)
                     {
                         var temp = new byte[Serial.BytesToRead];
@@ -335,7 +339,7 @@ namespace ColoryrTrash.Desktop.Windows
                         {
                             var temp1 = new byte[len];
                             Array.Copy(temp, 6, temp1, 0, len);
-                            ReadUUID(temp1);
+                            Dispatcher.Invoke(() => ReadUUID(temp1));
                         }
                         App.ShowA("读信息", "UUID已读取");
                     }
