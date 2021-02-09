@@ -71,5 +71,26 @@
 
             </Grid>
         </GroupBox>
+        <GroupBox Header="地址设置" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="237,4,0,0" Height="100" Width="192" x:Name="Group2">
+            <Grid>
+                <Label Content="IP" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,1,0,0"/>
+                <Button Content="编辑" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="134,52,0,0" Height="20" Width="50"
+                        Click="SetIP_Click" Name="SetIP_Button"/>
+                <Button Content="读取" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="79,52,0,0" Height="20" Width="50"
+                        Click="ReadIP_Click" Name="ReadIP_Button"/>
+                <TextBox Text="255" TextWrapping="Wrap" VerticalAlignment="Top" Height="20" HorizontalAlignment="Left" Width="32" Margin="41,4,0,0"
+                    TextAlignment="Center" x:Name="IP0" TextChanged="IP0_TextChanged"/>
+                <TextBox Text="255" TextWrapping="Wrap" VerticalAlignment="Top" Height="20" HorizontalAlignment="Left" Width="32" Margin="78,4,0,0" 
+                    TextAlignment="Center" x:Name="IP1" TextChanged="IP0_TextChanged"/>
+                <TextBox Text="255" TextWrapping="Wrap" VerticalAlignment="Top" Height="20" HorizontalAlignment="Left" Width="32" Margin="115,4,0,0" 
+                    TextAlignment="Center" x:Name="IP2" TextChanged="IP0_TextChanged"/>
+                <TextBox Text="255" TextWrapping="Wrap" VerticalAlignment="Top" Height="20" HorizontalAlignment="Left" Width="32" Margin="152,4,0,0" 
+                    TextAlignment="Center" x:Name="IP3" TextChanged="IP0_TextChanged"/>
+                <TextBox Text="12345" TextWrapping="Wrap" VerticalAlignment="Center" Height="20" HorizontalAlignment="Left" Width="43" Margin="41,0,0,0" 
+                    TextAlignment="Center" x:Name="Port0" TextChanged="Port0_TextChanged"/>
+                <Label Content="Port" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="3,0,0,0"/>
+
+            </Grid>
+        </GroupBox>
     </Grid>
 </Window>

@@ -25,9 +25,30 @@ namespace ColoryrTrash.Desktop.Windows
         private bool IsConnect;
         private bool IsRead;
         private bool IsSend;
+        private bool IsLoad = true;
         public MakeHardway()
         {
             InitializeComponent();
+            DataObject.AddPastingHandler(IP0, OnPaste1);
+            DataObject.AddPastingHandler(IP1, OnPaste1);
+            DataObject.AddPastingHandler(IP2, OnPaste1);
+            DataObject.AddPastingHandler(IP3, OnPaste1);
+            DataObject.AddPastingHandler(UUID0, OnPaste2);
+            DataObject.AddPastingHandler(UUID1, OnPaste2);
+            DataObject.AddPastingHandler(UUID2, OnPaste2);
+            DataObject.AddPastingHandler(UUID3, OnPaste2);
+            DataObject.AddPastingHandler(UUID4, OnPaste2);
+            DataObject.AddPastingHandler(UUID5, OnPaste2);
+            DataObject.AddPastingHandler(UUID6, OnPaste2);
+            DataObject.AddPastingHandler(UUID7, OnPaste2);
+            DataObject.AddPastingHandler(UUID8, OnPaste2);
+            DataObject.AddPastingHandler(UUID9, OnPaste2);
+            DataObject.AddPastingHandler(UUID10, OnPaste2);
+            DataObject.AddPastingHandler(UUID11, OnPaste2);
+            DataObject.AddPastingHandler(UUID12, OnPaste2);
+            DataObject.AddPastingHandler(UUID13, OnPaste2);
+            DataObject.AddPastingHandler(UUID14, OnPaste2);
+            DataObject.AddPastingHandler(UUID15, OnPaste2);
             Serial = new();
             BaudRates = new int[] { 4800, 9600, 19200, 38400, 115200 };
             ComList.ItemsSource = SerialPort.GetPortNames();
@@ -37,6 +58,7 @@ namespace ColoryrTrash.Desktop.Windows
             }
             DataContext = this;
             BaudRate.SelectedItem = 115200;
+            IsLoad = false;
         }
         private void Window_Closing(object sender, CancelEventArgs e)
         {
@@ -45,6 +67,10 @@ namespace ColoryrTrash.Desktop.Windows
         private bool CheckInput(string data)
         {
             return Regex.IsMatch(data, "^[A-Za-z0-9]+$");
+        }
+        private bool CheckInputNumber(string data)
+        {
+            return Regex.IsMatch(data, "^[0-9]+$");
         }
         private string GetRandomString()
         {
@@ -228,6 +254,33 @@ namespace ColoryrTrash.Desktop.Windows
                 index ++;
             }
         }
+
+        private void ToIPs(string data)
+        {
+            int index = 0;
+            string[] temp = data.Split('.');
+            foreach (var item in temp)
+            {
+                if (!CheckInput(item) || item.Length > 3 || int.Parse(item) > 255)
+                    continue;
+                switch (index)
+                {
+                    case 0:
+                        IP0.Text = item;
+                        break;
+                    case 1:
+                        IP1.Text = item;
+                        break;
+                    case 2:
+                        IP2.Text = item;
+                        break;
+                    case 3:
+                        IP3.Text = item;
+                        return;
+                }
+                index++;
+            }
+        }
         private string UUIDSplicing()
         {
             string temp = "";
@@ -300,18 +353,83 @@ namespace ColoryrTrash.Desktop.Windows
 
         private void UUID0_TextChanged(object sender, TextChangedEventArgs e)
         {
+            if (IsLoad)
+                return;
             TextBox box = sender as TextBox;
             if (box == null)
                 return;
             if (box.Text.Length > 1)
             {
-                ToUUIDs(box.Text);
+                box.Text = box.Text[0].ToString();
             }
             else if (box.Text.Length == 1)
             {
                 if (!CheckInput(box.Text))
                 {
                     box.Text = "";
+                }
+                else
+                {
+                    if (box.Name == "UUID0")
+                    {
+                        UUID1.Focus();
+                    }
+                    else if (box.Name == "UUID1")
+                    {
+                        UUID2.Focus();
+                    }
+                    else if (box.Name == "UUID2")
+                    {
+                        UUID3.Focus();
+                    }
+                    else if (box.Name == "UUID3")
+                    {
+                        UUID4.Focus();
+                    }
+                    else if (box.Name == "UUID4")
+                    {
+                        UUID5.Focus();
+                    }
+                    else if (box.Name == "UUID5")
+                    {
+                        UUID6.Focus();
+                    }
+                    else if (box.Name == "UUID6")
+                    {
+                        UUID7.Focus();
+                    }
+                    else if (box.Name == "UUID7")
+                    {
+                        UUID8.Focus();
+                    }
+                    else if (box.Name == "UUID8")
+                    {
+                        UUID9.Focus();
+                    }
+                    else if (box.Name == "UUID9")
+                    {
+                        UUID10.Focus();
+                    }
+                    else if (box.Name == "UUID10")
+                    {
+                        UUID11.Focus();
+                    }
+                    else if (box.Name == "UUID11")
+                    {
+                        UUID12.Focus();
+                    }
+                    else if (box.Name == "UUID12")
+                    {
+                        UUID13.Focus();
+                    }
+                    else if (box.Name == "UUID13")
+                    {
+                        UUID14.Focus();
+                    }
+                    else if (box.Name == "UUID14")
+                    {
+                        UUID15.Focus();
+                    }
                 }
             }
         }
@@ -415,6 +533,222 @@ namespace ColoryrTrash.Desktop.Windows
                 Dispatcher.Invoke(() => SetUUID_Button.IsEnabled = true);
                 IsSend = false;
             });
+        }
+
+        private void IP0_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (IsLoad)
+                return;
+            TextBox box = sender as TextBox;
+            if (box == null)
+                return;
+            if (box.Text.Length > 3)
+            {
+                box.Text = "";
+                return;
+            }
+            else
+            {
+                if (!CheckInputNumber(box.Text))
+                {
+                    box.Text = "";
+                }
+                if (box.Text.Length == 0)
+                    return;
+                int temp = int.Parse(box.Text);
+                if (temp > 0xff)
+                {
+                    box.Text = "";
+                }
+            }
+            if (box.Text.Length == 3)
+            {
+                if (box.Name == "IP0")
+                {
+                    IP1.Focus();
+                }
+                else if (box.Name == "IP1")
+                {
+                    IP2.Focus();
+                }
+                else if (box.Name == "IP2")
+                {
+                    IP3.Focus();
+                }
+            }
+        }
+
+        private void Port0_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (IsLoad)
+                return;
+            TextBox box = sender as TextBox;
+            if (box == null)
+                return;
+            if (box.Text.Length > 5)
+            {
+                box.Text = "";
+            }
+            else
+            {
+                if (!CheckInputNumber(box.Text))
+                {
+                    box.Text = "";
+                }
+                int temp = int.Parse(box.Text);
+                if (temp > 0xffff)
+                {
+                    box.Text = "";
+                }
+            }
+        }
+
+        private void SetIP_Click(object sender, RoutedEventArgs e)
+        {
+            if (IsSend)
+                return;
+            if (!IsConnect)
+            {
+                App.ShowB("设置", "设备未连接");
+                return;
+            }
+            if (!IPCheck())
+            {
+                App.ShowB("设置", "地址填写错误");
+                return;
+            }
+            IsSend = true;
+            SetIP_Button.IsEnabled = false;
+            var temp = new byte[6];
+            temp[0] = byte.Parse(IP0.Text);
+            temp[1] = byte.Parse(IP1.Text);
+            temp[2] = byte.Parse(IP2.Text);
+            temp[3] = byte.Parse(IP3.Text);
+            int temp1 = int.Parse(Port0.Text);
+            temp[5] = (byte)((temp1 >> 8) & 0xFF);
+            temp[4] = (byte)(temp1 & 0xFF);
+            Task.Run(() =>
+            {
+                var data = HardPack.MakeSetPack(PackType.IP, temp);
+                Serial.Write(data, 0, data.Length);
+                Thread.Sleep(1000);
+                if (Serial.BytesToRead <= 0)
+                {
+                    App.ShowB("设置", "设备未响应");
+                    Dispatcher.Invoke(() => SetIP_Button.IsEnabled = true);
+                    IsSend = false;
+                    return;
+                }
+                data = new byte[Serial.BytesToRead];
+                Serial.Read(data, 0, Serial.BytesToRead);
+                if (HardPack.CheckOK(data))
+                {
+                    App.ShowA("设置", "地址已设置");
+                }
+                else
+                {
+                    App.ShowB("设置", "地址设置失败");
+                }
+                Dispatcher.Invoke(() => SetIP_Button.IsEnabled = true);
+                IsSend = false;
+            });
+        }
+
+        private bool IPCheck()
+        {
+            if (IP0.Text.Length == 0 || IP1.Text.Length == 0 || IP2.Text.Length == 0 || IP3.Text.Length == 0 || Port0.Text.Length == 0)
+                return false;
+            if (!CheckInputNumber(IP0.Text) || !CheckInputNumber(IP1.Text) || !CheckInputNumber(IP2.Text) || !CheckInputNumber(IP3.Text) || !CheckInputNumber(Port0.Text))
+                return false;
+            if (int.Parse(IP0.Text) > 0xff || int.Parse(IP1.Text) > 0xff || int.Parse(IP2.Text) > 0xff || int.Parse(IP3.Text) > 0xff || int.Parse(Port0.Text) > 0xffff)
+                return false;
+            return true;
+        }
+
+        private void ReadIP_Click(object sender, RoutedEventArgs e)
+        {
+            if (IsRead)
+                return;
+            if (IsConnect)
+            {
+                IsRead = true;
+                ReadIP_Button.IsEnabled = false;
+                var data = HardPack.MakeReadPack(PackType.IP);
+                Serial.Write(data, 0, 6);
+                Task.Run(() =>
+                {
+                    Thread.Sleep(1000);
+                    if (Serial.BytesToRead > 0)
+                    {
+                        var temp = new byte[Serial.BytesToRead];
+                        int len = Serial.BytesToRead - 6;
+                        Serial.Read(temp, 0, Serial.BytesToRead);
+                        var res = HardPack.CheckType(temp);
+                        if (res == PackType.IP)
+                        {
+                            var temp1 = new byte[len];
+                            Array.Copy(temp, 6, temp1, 0, len);
+                            Dispatcher.Invoke(() => ReadIP(temp1));
+                        }
+                        App.ShowA("读信息", "地址已读取");
+                    }
+                    else
+                    {
+                        App.ShowB("读信息", "设备未响应");
+                    }
+                    Dispatcher.Invoke(() => ReadIP_Button.IsEnabled = true);
+                    IsRead = false;
+                });
+            }
+            else
+            {
+                App.ShowB("读信息", "设备未连接");
+            }
+        }
+
+        private void ReadIP(byte[] data)
+        {
+            if (data.Length != 6)
+            {
+                App.ShowB("读信息", "数据包错误");
+                return;
+            }
+            string temp = data[0].ToString();
+            IP0.Text = temp;
+            temp = data[1].ToString();
+            IP1.Text = temp;
+            temp = data[2].ToString();
+            IP2.Text = temp;
+            temp = data[3].ToString();
+            IP3.Text = temp;
+            int value;
+            value = data[4] & 0xFF | ((data[5] & 0xFF) << 8);
+            Port0.Text = value.ToString();
+        }
+
+        private void OnPaste1(object sender, DataObjectPastingEventArgs e)
+        {
+            if (IsLoad)
+                return;
+            var isText = e.SourceDataObject.GetDataPresent(DataFormats.UnicodeText, true);
+            if (!isText) return;
+
+            var text = e.SourceDataObject.GetData(DataFormats.UnicodeText) as string;
+            e.CancelCommand();
+            ToIPs(text);
+            Port0.Focus();
+        }
+        private void OnPaste2(object sender, DataObjectPastingEventArgs e)
+        {
+            if (IsLoad)
+                return;
+            var isText = e.SourceDataObject.GetDataPresent(DataFormats.UnicodeText, true);
+            if (!isText) return;
+
+            var text = e.SourceDataObject.GetData(DataFormats.UnicodeText) as string;
+            e.CancelCommand();
+            ToUUIDs(text);
+            UUID0.Focus();
         }
     }
 }

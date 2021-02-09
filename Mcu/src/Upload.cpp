@@ -73,6 +73,16 @@ void Upload::sendread(uint8_t type)
         }
         send(22);
         break;
+    case 4:
+        buildpack(4);
+        writebuff[6] = IP[0];
+        writebuff[7] = IP[1];
+        writebuff[8] = IP[2];
+        writebuff[9] = IP[3];
+        writebuff[10] = Port[0];
+        writebuff[11] = Port[1];
+        send(12);
+        break;
     }
 }
 void Upload::sendwrite(uint8_t type)
@@ -85,6 +95,15 @@ void Upload::sendwrite(uint8_t type)
             UUID[a] = readbuff[a + 5];
         }
         ThisEEPROM->saveuuid();
+        break;
+    case 4:
+        IP[0] = readbuff[5];
+        IP[1] = readbuff[6];
+        IP[2] = readbuff[7];
+        IP[3] = readbuff[8];
+        Port[0] = readbuff[9];
+        Port[1] = readbuff[10];
+        ThisEEPROM->saveip();
         break;
     }
     reset();
