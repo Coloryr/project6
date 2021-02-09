@@ -5,7 +5,7 @@ NBIoT *IoT;
 
 uint8_t UUID[16];
 uint8_t IP[4];
-uint8_t Port[2];
+uint16_t Port;
 
 void IoTRead(void *arg)
 {

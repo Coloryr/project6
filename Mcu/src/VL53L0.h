@@ -24,7 +24,7 @@
 #define VL53L0X_STOP 0x00
 #define VL53L0X_START 0x01
 
-extern uint16_t maxsize;
+extern uint16_t Distance;
 
 class VL53L0
 {
@@ -33,13 +33,13 @@ private:
     bool ok;
     char index;
     uint8_t buff[12];
-    uint8_t status;
-    uint16_t count[3];
     void start();
     void close();
 
 public:
     VL53L0(int arg0, char arg1);
+    uint8_t status;
+    uint16_t count[3];
     void check();
     bool isok();
     bool isready();

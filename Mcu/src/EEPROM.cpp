@@ -7,6 +7,7 @@
 #include "VL53L0.h"
 #include "IOInput.h"
 #include "tools.h"
+#include "Servo.h"
 
 EEPROM *ThisEEPROM;
 MyIIC *EEPROMIIC = NULL;
@@ -17,33 +18,6 @@ EEPROM::EEPROM()
     {
         EEPROMIIC = new MyIIC(I2C_EEPROM_SDA, I2C_EEPROM_SCL, I2C_EEPROM_NUM);
     }
-    // uint8_t *test = new uint8_t[64];
-    // test[0] = 123;
-    // test[1] = 12;
-    // test[2] = 243;
-    // test[3] = 26;
-    // test[4] = 89;
-    // test[5] = 90;
-    // test[6] = 13;
-    // test[7] = 53;
-    // Serial.print("test:");
-    // for (uint8_t a = 0; a < 16; a++)
-    // {
-    //     Serial.printf("%d ", test[a]);
-    // }
-    // Serial.println();
-    // EEPROMIIC->Write(0x10, EEPROM_Add, test, 8);
-    // delay(100);
-    // EEPROMIIC->Write(0x20, EEPROM_Add, test, 8);
-    // delay(100);
-    // Serial.println("write done");
-    // EEPROMIIC->Read(0x10, EEPROM_Add, test, 16);
-    // Serial.print("read:");
-    // for (uint8_t a = 0; a < 16; a++)
-    // {
-    //     Serial.printf("%d ", test[a]);
-    // }
-    // Serial.println();
 }
 
 void EEPROM::init()
@@ -81,12 +55,15 @@ void EEPROM::init()
             }
             for (a = 0; a < 2; a++)
             {
-                Port[a] = 0;
+                Port = 0;
             }
             saveall();
             EEPROMIIC->WriteBit(Bit_Add, EEPROM_Add, bit_data);
         }
 #ifdef DEBUG
+        Serial.printf("IP:%d.%d.%d.%d, Port:%d\n", IP[0], IP[1], IP[2], IP[3], Port);
+        Serial.printf("ADC_High:%d,ADC_Low:%d,Distance:%d\n", ADC_HIGH, ADC_Low, Distance);
+        Serial.printf("ServoOpen:%d,ServoClose:%d\n", openset, closeset);
         Serial.println("EEPROM init done");
         ok = true;
 #endif
@@ -109,7 +86,7 @@ void EEPROM::readall()
 void EEPROM::readuuid()
 {
     EEPROMIIC->Read(UUID_Add, EEPROM_Add, UUID, 8);
-    EEPROMIIC->Read(UUID_Add, EEPROM_Add, UUID + 8, 8);
+    EEPROMIIC->Read(UUID_Add + 8, EEPROM_Add, UUID + 8, 8);
 #ifdef DEBUG
     Serial.print("UUID:");
     for (uint8_t a = 0; a < 16; a++)
@@ -127,17 +104,28 @@ void EEPROM::readip()
     IP[1] = buff[1];
     IP[2] = buff[2];
     IP[3] = buff[3];
-    Port[0] = buff[4];
-    Port[1] = buff[5];
+    Mytow tow;
+    tow.u8[1] = buff[4];
+    tow.u8[0] = buff[5];
+    Port = tow.u16;
     delete (buff);
 }
 void EEPROM::readset()
 {
-    uint8_t *buff = new uint8_t[6];
-    EEPROMIIC->Read(SET_Add, EEPROM_Add, buff, 6);
-    maxsize = makeuint16(buff[1], buff[0]);
-    ADC_Low = makeuint16(buff[3], buff[2]);
-    ADC_HIGH = makeuint16(buff[5], buff[4]);
+    uint8_t *buff = new uint8_t[8];
+    EEPROMIIC->Read(SET_Add, EEPROM_Add, buff, 8);
+    Mytow tow;
+    tow.u8[0] = buff[0];
+    tow.u8[1] = buff[1];
+    Distance = tow.u16;
+    tow.u8[1] = buff[2];
+    tow.u8[0] = buff[3];
+    ADC_Low = tow.u16;
+    tow.u8[1] = buff[4];
+    tow.u8[0] = buff[5];
+    ADC_HIGH = tow.u16;
+    openset = buff[6];
+    closeset = buff[7];
     delete (buff);
 }
 
@@ -171,16 +159,18 @@ void EEPROM::saveip()
     buff[1] = IP[1];
     buff[2] = IP[2];
     buff[3] = IP[3];
-    buff[4] = Port[0];
-    buff[5] = Port[1];
+    Mytow tow;
+    tow.u16 = Port;
+    buff[4] = tow.u8[0];
+    buff[5] = tow.u8[1];
     EEPROMIIC->Write(IP_Add, EEPROM_Add, buff, 6);
     delete (buff);
 }
 void EEPROM::saveset()
 {
-    uint8_t *buff = new uint8_t[6];
+    uint8_t *buff = new uint8_t[8];
     Mytow tow;
-    tow.u16 = maxsize;
+    tow.u16 = Distance;
     buff[0] = tow.u8[0];
     buff[1] = tow.u8[1];
     tow.u16 = ADC_Low;
@@ -189,7 +179,9 @@ void EEPROM::saveset()
     tow.u16 = ADC_HIGH;
     buff[4] = tow.u8[0];
     buff[5] = tow.u8[1];
-    EEPROMIIC->Write(SET_Add, EEPROM_Add, buff, 6);
+    buff[6] = openset;
+    buff[7] = closeset;
+    EEPROMIIC->Write(SET_Add, EEPROM_Add, buff, 8);
     delete (buff);
 }
 bool EEPROM::isok()

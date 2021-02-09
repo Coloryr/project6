@@ -2,6 +2,10 @@
 #include "main.h"
 #include "NBIoT.h"
 #include "EEPROM.h"
+#include "IOInput.h"
+#include "VL53L0.h"
+#include "tools.h"
+#include "Servo.h"
 
 Upload *Up;
 
@@ -73,15 +77,49 @@ void Upload::sendread(uint8_t type)
         }
         send(22);
         break;
-    case 4:
-        buildpack(4);
+    case 1:
+        buildpack(1);
+        Mytow tow;
+        tow.u16 = Distance;
+        writebuff[6] = tow.u8[0];
+        writebuff[7] = tow.u8[1];
+        tow.u16 = ADC_Low;
+        writebuff[8] = tow.u8[0];
+        writebuff[9] = tow.u8[1];
+        tow.u16 = ADC_HIGH;
+        writebuff[10] = tow.u8[0];
+        writebuff[11] = tow.u8[1];
+        writebuff[12] = openset;
+        writebuff[13] = closeset;
+        send(14);
+        break;
+    case 2:
+        buildpack(2);
         writebuff[6] = IP[0];
         writebuff[7] = IP[1];
         writebuff[8] = IP[2];
         writebuff[9] = IP[3];
-        writebuff[10] = Port[0];
-        writebuff[11] = Port[1];
+        tow.u16 = Port;
+        writebuff[10] = tow.u8[0];
+        writebuff[11] = tow.u8[1];
         send(12);
+        break;
+    case 3:
+        buildpack(3);
+        tow.u16 = IO->adcread();
+        writebuff[6] = tow.u8[1];
+        writebuff[7] = tow.u8[0];
+        VL53L0A->update();
+        VL53L0B->update();
+        tow.u16 = VL53L0A->count[2];
+        writebuff[8] = tow.u8[0];
+        writebuff[9] = tow.u8[1];
+        writebuff[10] = VL53L0A->status;
+        tow.u16 = VL53L0B->count[2];
+        writebuff[11] = tow.u8[0];
+        writebuff[12] = tow.u8[1];
+        writebuff[13] = VL53L0B->status;
+        send(14);
         break;
     }
 }
@@ -96,13 +134,29 @@ void Upload::sendwrite(uint8_t type)
         }
         ThisEEPROM->saveuuid();
         break;
-    case 4:
+    case 1:
+        Mytow tow;
+        tow.u8[0] = readbuff[5];
+        tow.u8[1] = readbuff[6];
+        Distance = tow.u16;
+        tow.u8[0] = readbuff[7];
+        tow.u8[1] = readbuff[8];
+        ADC_Low = tow.u16;
+        tow.u8[0] = readbuff[9];
+        tow.u8[1] = readbuff[10];
+        ADC_HIGH = tow.u16;
+        openset = readbuff[11];
+        closeset = readbuff[12];
+        ThisEEPROM->saveset();
+        break;
+    case 2:
         IP[0] = readbuff[5];
         IP[1] = readbuff[6];
         IP[2] = readbuff[7];
         IP[3] = readbuff[8];
-        Port[0] = readbuff[9];
-        Port[1] = readbuff[10];
+        tow.u8[0] = readbuff[9];
+        tow.u8[1] = readbuff[10];
+        Port = tow.u16;
         ThisEEPROM->saveip();
         break;
     }

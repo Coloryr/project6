@@ -15,10 +15,9 @@ extern uint16_t ADC_HIGH;
 class IOInput
 {
 private:
-    uint16_t adcread();
-
 public:
     IOInput();
+    uint16_t adcread();
     bool readopen();
     bool readclose();
     bool isclose();

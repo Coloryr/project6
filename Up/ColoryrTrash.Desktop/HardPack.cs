@@ -8,7 +8,7 @@ namespace ColoryrTrash.Desktop
 {
     public enum PackType
     {
-        UUID, Size, Height, Low, IP, All, None
+        UUID, Set, IP, Sensor, None
     }
     class HardPack
     {
@@ -66,6 +66,17 @@ namespace ColoryrTrash.Desktop
             if (data.Length < 2)
                 return false;
             return data[0] == OKPack[0] && data[1] == OKPack[1];
+        }
+        public static int ByteToInt(byte a, byte b)
+        {
+            return (a & 0xFF) << 8 | (b & 0xFF);
+        }
+        public static byte[] IntToByte(int a)
+        {
+            var bytes = new byte[2];
+            bytes[0] = (byte)((a >> 8) & 0xFF);
+            bytes[1] = (byte)(a & 0xFF);
+            return bytes;
         }
     }
 }

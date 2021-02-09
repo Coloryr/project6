@@ -28,15 +28,15 @@ void setup()
     Serial.begin(115200);
     Serial.setTimeout(100);
 
-    // ThisServo = new Servo();
+    ThisServo = new Servo();
     // IoT = new NBIoT();
     ThisEEPROM = new EEPROM();
-    // IO = new IOInput();
-    // VL53L0A = new VL53L0(VL53L0_A, '0');
-    // VL53L0B = new VL53L0(VL53L0_B, '1');
+    IO = new IOInput();
+    VL53L0A = new VL53L0(VL53L0_A, '0');
+    VL53L0B = new VL53L0(VL53L0_B, '1');
 
-    // VL53L0A->check();
-    // VL53L0B->check();
+    VL53L0A->check();
+    VL53L0B->check();
 
     ThisEEPROM->init();
 
@@ -55,10 +55,10 @@ void setup()
 
 void loop()
 {
+    // IO->isclose();
     // VL53L0A->update();
     // VL53L0B->update();
-    // IO->isclose();
-    // delay(2000);
+    delay(2000);
     // BLE->Tick();
     // for (int d = 1; d < 180; d += 1)
     // {

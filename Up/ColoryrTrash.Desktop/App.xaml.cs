@@ -55,7 +55,7 @@ namespace ColoryrTrash.Desktop
 
                 Logs = new Logs(RunLocal);
 
-                //HttpServer.Prefixes.Add($"http://127.0.0.1:{Config.HttpPort}/");
+                HttpServer.Prefixes.Add($"http://127.0.0.1:{Config.HttpPort}/");
 
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
                 DispatcherUnhandledException += new DispatcherUnhandledExceptionEventHandler(App_DispatcherUnhandledException);
@@ -66,21 +66,21 @@ namespace ColoryrTrash.Desktop
                 notifyIcon.Visible = true;
                 notifyIcon.BalloonTipText = "ColoryrTrash";
 
-                //MqttUtils = new MqttUtils();
+                MqttUtils = new MqttUtils();
 
-                //using (MemoryStream stream = new MemoryStream())
-                //{
-                //    DesktopResource.map.Save(stream, ImageFormat.Png);
-                //    ImgData = new byte[stream.Length];
-                //    stream.Seek(0, SeekOrigin.Begin);
-                //    stream.Read(ImgData, 0, Convert.ToInt32(stream.Length));
-                //}
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    DesktopResource.map.Save(stream, ImageFormat.Png);
+                    ImgData = new byte[stream.Length];
+                    stream.Seek(0, SeekOrigin.Begin);
+                    stream.Read(ImgData, 0, Convert.ToInt32(stream.Length));
+                }
 
-                //HttpServer.Start();
-                //HttpServer.BeginGetContext(ContextReady, null);
+                HttpServer.Start();
+                HttpServer.BeginGetContext(ContextReady, null);
 
-                new MakeHardway().ShowDialog();
-                return;
+                //new MakeHardway().ShowDialog();
+                //return;
 
                 Login();
             }

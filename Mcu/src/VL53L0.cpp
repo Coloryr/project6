@@ -3,7 +3,7 @@
 #include "main.h"
 #include "tools.h"
 
-uint16_t maxsize;
+uint16_t Distance;
 
 VL53L0 *VL53L0A;
 VL53L0 *VL53L0B;
@@ -91,9 +91,16 @@ void VL53L0::update()
         return;
     }
     VL53L0IIC->Read(VL53L0X_REG_RESULT_RANGE_STATUS, VL53L0X_Add, buff, 12);
-    count[0] = makeuint16(buff[7], buff[6]);
-    count[1] = makeuint16(buff[9], buff[8]);
-    count[2] = makeuint16(buff[11], buff[10]);
+    Mytow tow;
+    tow.u8[1] = buff[6];
+    tow.u8[0] = buff[7];
+    count[0] = tow.u16;
+    tow.u8[1] = buff[8];
+    tow.u8[0] = buff[9];
+    count[1] = tow.u16;
+    tow.u8[1] = buff[10];
+    tow.u8[0] = buff[11];
+    count[2] = tow.u16;
     status = ((buff[0] & 0x78) >> 3);
 #ifdef DEBUG
     Serial.printf("VL53L0:%c ambient count = %4d signal count = %4d distance = %4d status = %d \n", index, count[0], count[1], count[2], status);

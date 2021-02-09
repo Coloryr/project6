@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ColoryrTrash.Desktop.Windows"
         mc:Ignorable="d"
-        Title="硬件编辑" Height="298" Width="496" ResizeMode="NoResize" Closing="Window_Closing">
+        Title="硬件编辑" Height="317" Width="439" ResizeMode="NoResize" Closing="Window_Closing">
     <Grid>
         <Rectangle Fill="#FFF4F4F5" Stroke="#FF5ABED6" StrokeThickness="2"/>
         <GroupBox Header="串口信息" Margin="4,4,0,0" HorizontalAlignment="Left" Width="231" Height="100" VerticalAlignment="Top">
@@ -27,7 +27,8 @@
 
             </Grid>
         </GroupBox>
-        <GroupBox Header="基本信息" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="4,106,0,0" Height="100" Width="231" Name="Group1">
+        <GroupBox Header="基本信息" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="4,106,0,0" Height="100" Width="231"
+                  Name="Group1" IsEnabled="False">
             <Grid>
                 <Label Content="UUID" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,13,0,0"/>
                 <Button Content="编辑" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="172,52,0,0" Height="20" Width="50" 
@@ -71,25 +72,74 @@
 
             </Grid>
         </GroupBox>
-        <GroupBox Header="地址设置" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="237,4,0,0" Height="100" Width="192" x:Name="Group2">
+        <GroupBox Header="地址设置" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="237,4,0,0" Height="100" Width="192" 
+                  x:Name="Group2" IsEnabled="False">
             <Grid>
-                <Label Content="IP" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,1,0,0"/>
+                <Label Content="IP" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,0,0,0"/>
                 <Button Content="编辑" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="134,52,0,0" Height="20" Width="50"
                         Click="SetIP_Click" Name="SetIP_Button"/>
                 <Button Content="读取" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="79,52,0,0" Height="20" Width="50"
                         Click="ReadIP_Click" Name="ReadIP_Button"/>
-                <TextBox Text="255" TextWrapping="Wrap" VerticalAlignment="Top" Height="20" HorizontalAlignment="Left" Width="32" Margin="41,4,0,0"
-                    TextAlignment="Center" x:Name="IP0" TextChanged="IP0_TextChanged"/>
-                <TextBox Text="255" TextWrapping="Wrap" VerticalAlignment="Top" Height="20" HorizontalAlignment="Left" Width="32" Margin="78,4,0,0" 
-                    TextAlignment="Center" x:Name="IP1" TextChanged="IP0_TextChanged"/>
-                <TextBox Text="255" TextWrapping="Wrap" VerticalAlignment="Top" Height="20" HorizontalAlignment="Left" Width="32" Margin="115,4,0,0" 
-                    TextAlignment="Center" x:Name="IP2" TextChanged="IP0_TextChanged"/>
-                <TextBox Text="255" TextWrapping="Wrap" VerticalAlignment="Top" Height="20" HorizontalAlignment="Left" Width="32" Margin="152,4,0,0" 
-                    TextAlignment="Center" x:Name="IP3" TextChanged="IP0_TextChanged"/>
+                <TextBox Text="255" TextWrapping="Wrap" VerticalAlignment="Top" Height="20" HorizontalAlignment="Left" Width="32" Margin="41,3,0,0"
+                         TextAlignment="Center" x:Name="IP0" TextChanged="IP0_TextChanged"/>
+                <TextBox Text="255" TextWrapping="Wrap" VerticalAlignment="Top" Height="20" HorizontalAlignment="Center" Width="32" Margin="0,3,0,0" 
+                         TextAlignment="Center" x:Name="IP1" TextChanged="IP0_TextChanged"/>
+                <TextBox Text="255" TextWrapping="Wrap" VerticalAlignment="Top" Height="20" HorizontalAlignment="Left" Width="32" Margin="115,3,0,0" 
+                         TextAlignment="Center" x:Name="IP2" TextChanged="IP0_TextChanged"/>
+                <TextBox Text="255" TextWrapping="Wrap" VerticalAlignment="Top" Height="20" HorizontalAlignment="Left" Width="32" Margin="152,3,0,0" 
+                         TextAlignment="Center" x:Name="IP3" TextChanged="IP0_TextChanged"/>
                 <TextBox Text="12345" TextWrapping="Wrap" VerticalAlignment="Center" Height="20" HorizontalAlignment="Left" Width="43" Margin="41,0,0,0" 
-                    TextAlignment="Center" x:Name="Port0" TextChanged="Port0_TextChanged"/>
+                         TextAlignment="Center" x:Name="Port0" TextChanged="Port0_TextChanged"/>
                 <Label Content="Port" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="3,0,0,0"/>
-
+                <Ellipse Fill="Black" Margin="74,19,111,53"/>
+                <Ellipse Fill="Black" Margin="111,19,74,53"/>
+                <Ellipse Fill="Black" Margin="148,19,37,53"/>
+            </Grid>
+        </GroupBox>
+        <GroupBox Header="硬件设置" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="4,208,0,0" Height="76" Width="425"
+                  x:Name="Group3" IsEnabled="False">
+            <Grid>
+                <Label Content="ADC开盖" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                <Button Content="编辑" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="367,27,0,0" Height="20" Width="50"
+                        Name="SetSetting_Button" Click="SetSetting_Click"/>
+                <Button Content="读取" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="312,27,0,0" Height="20" Width="50"
+                        Name="ReadSetting_Button" Click="ReadSetting_Click"/>
+                <TextBox Text="0" TextWrapping="Wrap" VerticalAlignment="Top" Height="20" HorizontalAlignment="Left" Width="43" Margin="60,3,0,0"
+                         TextAlignment="Center" Name="WADC1" TextChanged="WADC_TextChanged"/>
+                <Label Content="ADC关盖" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="103,0,0,0"/>
+                <TextBox Text="0" TextWrapping="Wrap" VerticalAlignment="Top" Height="20" HorizontalAlignment="Left" Width="43" Margin="163,3,0,0"
+                         TextAlignment="Center" Name="WADC2" TextChanged="WADC_TextChanged"/>
+                <Label Content="最大距离" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="1,25,0,0"/>
+                <TextBox Text="0" TextWrapping="Wrap" VerticalAlignment="Top" Height="20" HorizontalAlignment="Left" Width="43" Margin="60,27,0,0"
+                         TextAlignment="Center" Name="WDis" TextChanged="WDis_TextChanged"/>
+                <Label Content="舵机开盖" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="206,0,0,0"/>
+                <TextBox Text="0" TextWrapping="Wrap" VerticalAlignment="Top" Height="20" HorizontalAlignment="Left" Width="30" Margin="264,3,0,0"
+                         TextAlignment="Center" Name="WServo1" TextChanged="WServo_TextChanged"/>
+                <Label Content="舵机关盖" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="294,0,0,0"/>
+                <TextBox Text="0" TextWrapping="Wrap" VerticalAlignment="Top" Height="20" HorizontalAlignment="Left" Width="30" Margin="352,3,0,0"
+                         TextAlignment="Center" Name="WServo2" TextChanged="WServo_TextChanged"/>
+            </Grid>
+        </GroupBox>
+        <GroupBox Header="传感器" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="237,106,0,0" Height="100" Width="192" 
+                  x:Name="Group4" IsEnabled="False">
+            <Grid>
+                <Label Content="距离1" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                <Button Content="读取" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="134,52,0,0" Height="20" Width="50" 
+                        Click="ReadSensor_Click" Name="ReadSensor_Button"/>
+                <TextBox Text="N/A" TextWrapping="Wrap" VerticalAlignment="Top" Height="20" HorizontalAlignment="Left" Width="43" Margin="41,3,0,0"
+                    TextAlignment="Center" IsReadOnly="True" Name="R1A"/>
+                <TextBox Text="N/A" TextWrapping="Wrap" VerticalAlignment="Top" Height="20" HorizontalAlignment="Left" Width="43" Margin="41,52,0,0" 
+                    TextAlignment="Center" IsReadOnly="True" Name="RADC"/>
+                <Label Content="ADC" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="3,49,0,0"/>
+                <Label Content="距离2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="84,0,0,0"/>
+                <TextBox Text="N/A" TextWrapping="Wrap" VerticalAlignment="Top" Height="20" HorizontalAlignment="Left" Width="43" Margin="125,3,0,0"
+                    TextAlignment="Center" IsReadOnly="True" Name="R2A"/>
+                <Label Content="距离1状态" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                <TextBox Text="0" TextWrapping="Wrap" VerticalAlignment="Center" Height="20" HorizontalAlignment="Left" Width="22" Margin="65,0,0,0"
+                    TextAlignment="Center" IsReadOnly="True" Name="R1B"/>
+                <Label Content="距离2状态" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="87,0,0,0"/>
+                <TextBox Text="0" TextWrapping="Wrap" VerticalAlignment="Center" Height="20" HorizontalAlignment="Left" Width="22" Margin="152,0,0,0"
+                    TextAlignment="Center" IsReadOnly="True" Name="R2B"/>
             </Grid>
         </GroupBox>
     </Grid>

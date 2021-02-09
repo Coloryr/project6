@@ -1,11 +1,24 @@
 #include "Servo.h"
 #include "main.h"
 
+uint8_t openset;
+uint8_t closeset;
+
 Servo *ThisServo;
 Servo::Servo()
 {
     ledcSetup(Channel, Freq, Resolution); // 设置通道
     ledcAttachPin(ServoIO, Channel);      // 将通道与对应的引脚连接
+}
+
+void Servo::open()
+{
+    SetServo(openset);
+}
+
+void Servo::close()
+{
+    SetServo(closeset);
 }
 
 void Servo::SetServo(uint8_t data)

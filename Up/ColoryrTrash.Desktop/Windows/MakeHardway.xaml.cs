@@ -111,7 +111,6 @@ namespace ColoryrTrash.Desktop.Windows
                     Cancel = new();
                     Task.Run(() => TestConnect(), Cancel.Token);
                     Open = true;
-                    Group1.IsEnabled = true;
                 }
                 catch (InvalidOperationException)
                 {
@@ -134,7 +133,10 @@ namespace ColoryrTrash.Desktop.Windows
                 State_Led.Fill = Brushes.Gray;
                 Open = false;
                 IsConnect = false;
-                Group1.IsEnabled = false;
+                Group1.IsEnabled =
+                Group2.IsEnabled =
+                Group3.IsEnabled =
+                Group4.IsEnabled = false;
             }
         }
 
@@ -157,8 +159,16 @@ namespace ColoryrTrash.Desktop.Windows
                     Dispatcher.Invoke(() =>
                     {
                         State.Content = "已连接";
+                        Group1.IsEnabled =
+                        Group2.IsEnabled =
+                        Group3.IsEnabled =
+                        Group4.IsEnabled = true;
                         State_Led.Fill = Brushes.LawnGreen;
                     });
+                    ReadUUID_();
+                    ReadIP_();
+                    ReadSensor_();
+                    ReadSetting_();
                 }
                 else
                 {
@@ -434,6 +444,35 @@ namespace ColoryrTrash.Desktop.Windows
             }
         }
 
+        private void ReadUUID_()
+        {
+            IsRead = true;
+            Dispatcher.Invoke(()=> ReadUUID_Button.IsEnabled = false);
+            var data = HardPack.MakeReadPack(PackType.UUID);
+            Serial.Write(data, 0, 6);
+            Thread.Sleep(1000);
+            if (Serial.BytesToRead > 0)
+            {
+                var temp = new byte[Serial.BytesToRead];
+                int len = Serial.BytesToRead - 6;
+                Serial.Read(temp, 0, Serial.BytesToRead);
+                var res = HardPack.CheckType(temp);
+                if (res == PackType.UUID)
+                {
+                    var temp1 = new byte[len];
+                    Array.Copy(temp, 6, temp1, 0, len);
+                    Dispatcher.Invoke(() => ReadUUID(temp1));
+                }
+                App.ShowA("读信息", "UUID已读取");
+            }
+            else
+            {
+                App.ShowB("读信息", "设备未响应");
+            }
+            Dispatcher.Invoke(() => ReadUUID_Button.IsEnabled = true);
+            IsRead = false;
+        }
+
         private void ReadUUID_Click(object sender, RoutedEventArgs e)
         {
             if (IsRead)
@@ -594,6 +633,7 @@ namespace ColoryrTrash.Desktop.Windows
                 if (!CheckInputNumber(box.Text))
                 {
                     box.Text = "";
+                    return;
                 }
                 int temp = int.Parse(box.Text);
                 if (temp > 0xffff)
@@ -624,9 +664,9 @@ namespace ColoryrTrash.Desktop.Windows
             temp[1] = byte.Parse(IP1.Text);
             temp[2] = byte.Parse(IP2.Text);
             temp[3] = byte.Parse(IP3.Text);
-            int temp1 = int.Parse(Port0.Text);
-            temp[5] = (byte)((temp1 >> 8) & 0xFF);
-            temp[4] = (byte)(temp1 & 0xFF);
+            var temp2 = HardPack.IntToByte(int.Parse(Port0.Text));
+            temp[4] = temp2[1];
+            temp[5] = temp2[0];
             Task.Run(() =>
             {
                 var data = HardPack.MakeSetPack(PackType.IP, temp);
@@ -664,8 +704,36 @@ namespace ColoryrTrash.Desktop.Windows
                 return false;
             return true;
         }
+        private void ReadIP_()
+        {
+            IsRead = true;
+            Dispatcher.Invoke(() => ReadIP_Button.IsEnabled = false);
+            var data = HardPack.MakeReadPack(PackType.IP);
+            Serial.Write(data, 0, 6);
+            Thread.Sleep(1000);
+            if (Serial.BytesToRead > 0)
+            {
+                var temp = new byte[Serial.BytesToRead];
+                int len = Serial.BytesToRead - 6;
+                Serial.Read(temp, 0, Serial.BytesToRead);
+                var res = HardPack.CheckType(temp);
+                if (res == PackType.IP)
+                {
+                    var temp1 = new byte[len];
+                    Array.Copy(temp, 6, temp1, 0, len);
+                    Dispatcher.Invoke(() => ReadIP(temp1));
+                }
+                App.ShowA("读信息", "地址已读取");
+            }
+            else
+            {
+                App.ShowB("读信息", "设备未响应");
+            }
+            Dispatcher.Invoke(() => ReadIP_Button.IsEnabled = true);
+            IsRead = false;
+        }
 
-        private void ReadIP_Click(object sender, RoutedEventArgs e)
+        private async void ReadIP_Click(object sender, RoutedEventArgs e)
         {
             if (IsRead)
                 return;
@@ -675,7 +743,7 @@ namespace ColoryrTrash.Desktop.Windows
                 ReadIP_Button.IsEnabled = false;
                 var data = HardPack.MakeReadPack(PackType.IP);
                 Serial.Write(data, 0, 6);
-                Task.Run(() =>
+                await Task.Run(() =>
                 {
                     Thread.Sleep(1000);
                     if (Serial.BytesToRead > 0)
@@ -721,9 +789,7 @@ namespace ColoryrTrash.Desktop.Windows
             IP2.Text = temp;
             temp = data[3].ToString();
             IP3.Text = temp;
-            int value;
-            value = data[4] & 0xFF | ((data[5] & 0xFF) << 8);
-            Port0.Text = value.ToString();
+            Port0.Text = HardPack.ByteToInt(data[5], data[4]).ToString();
         }
 
         private void OnPaste1(object sender, DataObjectPastingEventArgs e)
@@ -749,6 +815,330 @@ namespace ColoryrTrash.Desktop.Windows
             e.CancelCommand();
             ToUUIDs(text);
             UUID0.Focus();
+        }
+
+        private void ReadSensor_()
+        {
+            IsRead = true;
+            Dispatcher.Invoke(() => ReadSensor_Button.IsEnabled = false);
+            var data = HardPack.MakeReadPack(PackType.Sensor);
+            Serial.Write(data, 0, 6);
+            Thread.Sleep(1000);
+            if (Serial.BytesToRead > 0)
+            {
+                var temp = new byte[Serial.BytesToRead];
+                int len = Serial.BytesToRead - 6;
+                Serial.Read(temp, 0, Serial.BytesToRead);
+                var res = HardPack.CheckType(temp);
+                if (res == PackType.Sensor)
+                {
+                    var temp1 = new byte[len];
+                    Array.Copy(temp, 6, temp1, 0, len);
+                    Dispatcher.Invoke(() => ReadSensor(temp1));
+                }
+                App.ShowA("读信息", "传感器已读取");
+            }
+            else
+            {
+                App.ShowB("读信息", "设备未响应");
+            }
+            Dispatcher.Invoke(() => ReadSensor_Button.IsEnabled = true);
+            IsRead = false;
+        }
+
+        private async void ReadSensor_Click(object sender, RoutedEventArgs e)
+        {
+            if (IsRead)
+                return;
+            if (IsConnect)
+            {
+                IsRead = true;
+                ReadSensor_Button.IsEnabled = false;
+                var data = HardPack.MakeReadPack(PackType.Sensor);
+                Serial.Write(data, 0, 6);
+                await Task.Run(() =>
+                {
+                    Thread.Sleep(1000);
+                    if (Serial.BytesToRead > 0)
+                    {
+                        var temp = new byte[Serial.BytesToRead];
+                        int len = Serial.BytesToRead - 6;
+                        Serial.Read(temp, 0, Serial.BytesToRead);
+                        var res = HardPack.CheckType(temp);
+                        if (res == PackType.Sensor)
+                        {
+                            var temp1 = new byte[len];
+                            Array.Copy(temp, 6, temp1, 0, len);
+                            Dispatcher.Invoke(() => ReadSensor(temp1));
+                        }
+                        App.ShowA("读信息", "传感器已读取");
+                    }
+                    else
+                    {
+                        App.ShowB("读信息", "设备未响应");
+                    }
+                    Dispatcher.Invoke(() => ReadSensor_Button.IsEnabled = true);
+                    IsRead = false;
+                });
+            }
+            else
+            {
+                App.ShowB("读信息", "设备未连接");
+            }
+        }
+
+        private void ReadSensor(byte[] data)
+        {
+            if (data.Length != 8)
+            {
+                App.ShowB("读信息", "数据包错误");
+                return;
+            }
+            int temp = HardPack.ByteToInt(data[0], data[1]);
+            RADC.Text = temp.ToString();
+            temp = HardPack.ByteToInt(data[3], data[2]);
+            R1A.Text = temp.ToString();
+            temp = HardPack.ByteToInt(data[6], data[5]);
+            R2A.Text = temp.ToString();
+            R1B.Text = data[4].ToString();
+            R2B.Text = data[7].ToString();
+        }
+
+        private void SetSetting_Click(object sender, RoutedEventArgs e)
+        {
+            if (IsSend)
+                return;
+            if (!IsConnect)
+            {
+                App.ShowB("设置", "设备未连接");
+                return;
+            }
+            if (!SetCheck())
+            {
+                App.ShowB("设置", "硬件配置填写错误");
+                return;
+            }
+            IsSend = true;
+            SetSetting_Button.IsEnabled = false;
+            var temp = new byte[8];
+            var temp2 = HardPack.IntToByte(int.Parse(WDis.Text));
+            temp[0] = temp2[1];
+            temp[1] = temp2[0];
+            temp2 = HardPack.IntToByte(int.Parse(WADC2.Text));
+            temp[2] = temp2[1];
+            temp[3] = temp2[0];
+            temp2 = HardPack.IntToByte(int.Parse(WADC1.Text));
+            temp[4] = temp2[1];
+            temp[5] = temp2[0];
+            temp[6] = byte.Parse(WServo1.Text);
+            temp[7] = byte.Parse(WServo2.Text);
+            Task.Run(() =>
+            {
+                var data = HardPack.MakeSetPack(PackType.Set, temp);
+                Serial.Write(data, 0, data.Length);
+                Thread.Sleep(1000);
+                if (Serial.BytesToRead <= 0)
+                {
+                    App.ShowB("设置", "设备未响应");
+                    Dispatcher.Invoke(() => SetSetting_Button.IsEnabled = true);
+                    IsSend = false;
+                    return;
+                }
+                data = new byte[Serial.BytesToRead];
+                Serial.Read(data, 0, Serial.BytesToRead);
+                if (HardPack.CheckOK(data))
+                {
+                    App.ShowA("设置", "硬件配置已设置");
+                }
+                else
+                {
+                    App.ShowB("设置", "硬件配置设置失败");
+                }
+                Dispatcher.Invoke(() => SetSetting_Button.IsEnabled = true);
+                IsSend = false;
+            });
+        }
+
+        private bool SetCheck()
+        {
+            if (WADC1.Text.Length == 0 || WADC2.Text.Length == 0 || WServo1.Text.Length == 0 || WServo2.Text.Length == 0 || WDis.Text.Length == 0)
+                return false;
+            if (!CheckInputNumber(WADC1.Text) || !CheckInputNumber(WADC2.Text) || !CheckInputNumber(WServo1.Text) || !CheckInputNumber(WServo2.Text) || !CheckInputNumber(WDis.Text))
+                return false;
+            if (int.Parse(WADC1.Text) > 4096 || int.Parse(WADC2.Text) > 4086 || int.Parse(WServo1.Text) > 180 || int.Parse(WServo2.Text) > 180 || int.Parse(WDis.Text) > 8196)
+                return false;
+            return true;
+        }
+
+        private void ReadSetting_()
+        {
+            IsRead = true;
+            Dispatcher.Invoke(() => ReadSetting_Button.IsEnabled = false);
+            var data = HardPack.MakeReadPack(PackType.Set);
+            Serial.Write(data, 0, 6);
+            Thread.Sleep(1000);
+            if (Serial.BytesToRead > 0)
+            {
+                var temp = new byte[Serial.BytesToRead];
+                int len = Serial.BytesToRead - 6;
+                Serial.Read(temp, 0, Serial.BytesToRead);
+                var res = HardPack.CheckType(temp);
+                if (res == PackType.Set)
+                {
+                    var temp1 = new byte[len];
+                    Array.Copy(temp, 6, temp1, 0, len);
+                    Dispatcher.Invoke(() => ReadSet(temp1));
+                }
+                App.ShowA("读信息", "硬件设置已读取");
+            }
+            else
+            {
+                App.ShowB("读信息", "设备未响应");
+            }
+            Dispatcher.Invoke(() => ReadSetting_Button.IsEnabled = true);
+            IsRead = false;
+        }
+
+        private async void ReadSetting_Click(object sender, RoutedEventArgs e)
+        {
+            if (IsRead)
+                return;
+            if (IsConnect)
+            {
+                IsRead = true;
+                ReadSetting_Button.IsEnabled = false;
+                var data = HardPack.MakeReadPack(PackType.Set);
+                Serial.Write(data, 0, 6);
+                await Task.Run(() =>
+                {
+                    Thread.Sleep(1000);
+                    if (Serial.BytesToRead > 0)
+                    {
+                        var temp = new byte[Serial.BytesToRead];
+                        int len = Serial.BytesToRead - 6;
+                        Serial.Read(temp, 0, Serial.BytesToRead);
+                        var res = HardPack.CheckType(temp);
+                        if (res == PackType.Set)
+                        {
+                            var temp1 = new byte[len];
+                            Array.Copy(temp, 6, temp1, 0, len);
+                            Dispatcher.Invoke(() => ReadSet(temp1));
+                        }
+                        App.ShowA("读信息", "硬件设置已读取");
+                    }
+                    else
+                    {
+                        App.ShowB("读信息", "设备未响应");
+                    }
+                    Dispatcher.Invoke(() => ReadSetting_Button.IsEnabled = true);
+                    IsRead = false;
+                });
+            }
+            else
+            {
+                App.ShowB("读信息", "设备未连接");
+            }
+        }
+
+        private void ReadSet(byte[] data)
+        {
+            if (data.Length != 8)
+            {
+                App.ShowB("读信息", "数据包错误");
+                return;
+            }
+            int temp = HardPack.ByteToInt(data[1], data[0]);
+            WDis.Text = temp.ToString();
+            temp = HardPack.ByteToInt(data[3], data[2]);
+            WADC2.Text = temp.ToString();
+            temp = HardPack.ByteToInt(data[5], data[4]);
+            WADC1.Text = temp.ToString();
+            WServo1.Text = data[6].ToString();
+            WServo2.Text = data[7].ToString();
+        }
+
+        private void WADC_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (IsLoad)
+                return;
+            TextBox box = sender as TextBox;
+            if (box == null)
+                return;
+            if (box.Text.Length > 4)
+            {
+                box.Text = "";
+            }
+            else
+            {
+                if (!CheckInputNumber(box.Text))
+                {
+                    box.Text = "";
+                    return;
+                }
+                if (box.Text.Length == 0)
+                    return;
+                int temp = int.Parse(box.Text);
+                if (temp > 4096)
+                {
+                    box.Text = "";
+                }
+            }
+        }
+
+        private void WServo_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (IsLoad)
+                return;
+            TextBox box = sender as TextBox;
+            if (box == null)
+                return;
+            if (box.Text.Length > 3)
+            {
+                box.Text = "";
+            }
+            else
+            {
+                if (!CheckInputNumber(box.Text))
+                {
+                    box.Text = "";
+                    return;
+                }
+                if (box.Text.Length == 0)
+                    return;
+                int temp = int.Parse(box.Text);
+                if (temp > 180)
+                {
+                    box.Text = "";
+                }
+            }
+        }
+
+        private void WDis_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (IsLoad)
+                return;
+            TextBox box = sender as TextBox;
+            if (box == null)
+                return;
+            if (box.Text.Length > 4)
+            {
+                box.Text = "";
+            }
+            else
+            {
+                if (!CheckInputNumber(box.Text))
+                {
+                    box.Text = "";
+                    return;
+                }
+                if (box.Text.Length == 0)
+                    return;
+                int temp = int.Parse(box.Text);
+                if (temp > 8196)
+                {
+                    box.Text = "";
+                }
+            }
         }
     }
 }
