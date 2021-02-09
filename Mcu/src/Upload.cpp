@@ -1,6 +1,7 @@
 #include "Upload.h"
 #include "main.h"
 #include "NBIoT.h"
+#include "EEPROM.h"
 
 Upload *Up;
 
@@ -50,6 +51,13 @@ void Upload::check()
     }
     else if (readbuff[0] == 0x53)
     {
+        for (uint8_t a = 0; a < 4; a++)
+        {
+            if (SetPack[a] != readbuff[a])
+                return;
+        }
+        sendwrite(readbuff[4]);
+        sendok();
     }
 }
 
@@ -63,13 +71,22 @@ void Upload::sendread(uint8_t type)
         {
             writebuff[a + 6] = UUID[a];
         }
-        sendwrite(22);
+        send(22);
         break;
     }
 }
-void Upload::sendwrite(uint8_t size)
+void Upload::sendwrite(uint8_t type)
 {
-    Serial.write(writebuff, size);
+    switch (type)
+    {
+    case 0:
+        for (uint8_t a = 0; a < 16; a++)
+        {
+            UUID[a] = readbuff[a + 5];
+        }
+        ThisEEPROM->saveuuid();
+        break;
+    }
     reset();
 }
 void Upload::buildpack(uint8_t type)
@@ -94,6 +111,7 @@ void Upload::sendok()
 void Upload::send(uint8_t size)
 {
     Serial.write(writebuff, size);
+    reset();
 }
 
 void Upload::reset()

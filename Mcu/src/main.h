@@ -3,7 +3,7 @@
 
 #include "Arduino.h"
 
-#define DEBUG true
+// #define DEBUG true
 
 extern uint8_t mode;
 extern bool Bluetooth_State;

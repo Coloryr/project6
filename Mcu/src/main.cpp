@@ -38,7 +38,7 @@ void setup()
     // VL53L0A->check();
     // VL53L0B->check();
 
-    // ThisEEPROM->init();
+    ThisEEPROM->init();
 
     Up = new Upload();
 

@@ -59,7 +59,7 @@ namespace ColoryrTrash.Desktop
             }
             temp[4] = (byte)type;
             Array.Copy(data, 0, temp, 5, data.Length);
-            return data;
+            return temp;
         }
         public static bool CheckOK(byte[] data)
         {

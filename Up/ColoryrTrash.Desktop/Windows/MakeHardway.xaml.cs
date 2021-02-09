@@ -394,14 +394,16 @@ namespace ColoryrTrash.Desktop.Windows
             {
                 var data = HardPack.MakeSetPack(PackType.UUID, Encoding.UTF8.GetBytes(temp));
                 Serial.Write(data, 0, data.Length);
-                Thread.Sleep(100);
+                Thread.Sleep(1000);
                 if (Serial.BytesToRead <= 0)
                 {
-                    App.ShowB("设置", "UUID设置失败");
+                    App.ShowB("设置", "设备未响应");
+                    Dispatcher.Invoke(() => SetUUID_Button.IsEnabled = true);
                     IsSend = false;
                     return;
                 }
                 data = new byte[Serial.BytesToRead];
+                Serial.Read(data, 0, Serial.BytesToRead);
                 if (HardPack.CheckOK(data))
                 {
                     App.ShowA("设置", "UUID已设置");

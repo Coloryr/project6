@@ -17,23 +17,33 @@ EEPROM::EEPROM()
     {
         EEPROMIIC = new MyIIC(I2C_EEPROM_SDA, I2C_EEPROM_SCL, I2C_EEPROM_NUM);
     }
-    uint8_t *test = new uint8_t[64];
-    Serial.print("test:");
-    for (uint8_t a = 0; a < 16; a++)
-    {
-        Serial.printf("%d ", test[a]);
-    }
-    Serial.println();
-    EEPROMIIC->Write(Test_Add, EEPROM_Add, test, 8);
-    delay(100);
-    Serial.println("write done");
-    EEPROMIIC->Read(Test_Add, EEPROM_Add, test, 8);
-    Serial.print("read:");
-    for (uint8_t a = 0; a < 16; a++)
-    {
-        Serial.printf("%d ", test[a]);
-    }
-    Serial.println();
+    // uint8_t *test = new uint8_t[64];
+    // test[0] = 123;
+    // test[1] = 12;
+    // test[2] = 243;
+    // test[3] = 26;
+    // test[4] = 89;
+    // test[5] = 90;
+    // test[6] = 13;
+    // test[7] = 53;
+    // Serial.print("test:");
+    // for (uint8_t a = 0; a < 16; a++)
+    // {
+    //     Serial.printf("%d ", test[a]);
+    // }
+    // Serial.println();
+    // EEPROMIIC->Write(0x10, EEPROM_Add, test, 8);
+    // delay(100);
+    // EEPROMIIC->Write(0x20, EEPROM_Add, test, 8);
+    // delay(100);
+    // Serial.println("write done");
+    // EEPROMIIC->Read(0x10, EEPROM_Add, test, 16);
+    // Serial.print("read:");
+    // for (uint8_t a = 0; a < 16; a++)
+    // {
+    //     Serial.printf("%d ", test[a]);
+    // }
+    // Serial.println();
 }
 
 void EEPROM::init()
@@ -98,7 +108,8 @@ void EEPROM::readall()
 }
 void EEPROM::readuuid()
 {
-    EEPROMIIC->Read(UUID_Add, EEPROM_Add, UUID, 16);
+    EEPROMIIC->Read(UUID_Add, EEPROM_Add, UUID, 8);
+    EEPROMIIC->Read(UUID_Add, EEPROM_Add, UUID + 8, 8);
 #ifdef DEBUG
     Serial.print("UUID:");
     for (uint8_t a = 0; a < 16; a++)
@@ -149,7 +160,9 @@ void EEPROM::saveuuid()
     }
     Serial.println();
 #endif
-    EEPROMIIC->Write(UUID_Add, EEPROM_Add, UUID, 16);
+    EEPROMIIC->Write(UUID_Add, EEPROM_Add, UUID, 8);
+    delay(10);
+    EEPROMIIC->Write(UUID_Add + 8, EEPROM_Add, UUID + 8, 8);
 }
 void EEPROM::saveip()
 {
