@@ -123,9 +123,9 @@ namespace ColoryrTrash.Server
             return true;
         }
 
-        public bool AddGroup(string Name)
+        public bool AddGroup(string name)
         {
-            if (!IsFileNameValid(Name) || Groups.ContainsKey(Name))
+            if (!IsFileNameValid(name) || Groups.ContainsKey(name))
             {
                 return false;
             }
@@ -133,14 +133,14 @@ namespace ColoryrTrash.Server
             {
                 lock (Lock)
                 {
-                    Groups.Add(Name, new DataSaveObj
+                    Groups.Add(name, new DataSaveObj
                     {
-                        Name = Name,
+                        Name = name,
                         List = new()
                     });
-                    ThisMqttServer.AddGroup(Name);
+                    ThisMqttServer.AddGroup(name);
                 }
-                SaveGroup(Name);
+                SaveGroup(name);
                 return true;
             }
         }
@@ -165,10 +165,10 @@ namespace ColoryrTrash.Server
                 return true;
             }
         }
-        public void AddItem(string UUID)
+        public void AddItem(string uuid)
         {
             string Time = string.Format("{0:s}", DateTime.Now);
-            if (!UUID_Group.ContainsKey(UUID))
+            if (!UUID_Group.ContainsKey(uuid))
             {
                 lock (Lock)
                 {
@@ -176,13 +176,13 @@ namespace ColoryrTrash.Server
                     var item = new ItemSaveObj
                     {
                         Capacity = 0,
-                        UUID = UUID,
+                        UUID = uuid,
                         Nick = "新的垃圾桶",
                         Time = Time,
                         X = -1,
                         Y = -1
                     };
-                    group.List.Add(UUID, item);
+                    group.List.Add(uuid, item);
                     ThisMqttServer.UpdateItem(EmptyGroup, item);
                 }
                 SaveGroup(EmptyGroup);
@@ -191,23 +191,39 @@ namespace ColoryrTrash.Server
             {
                 lock (Lock)
                 {
-                    var group = UUID_Group[UUID];
+                    var group = UUID_Group[uuid];
                     var obj = Groups[group];
-                    var item = obj.List[UUID];
+                    var item = obj.List[uuid];
                     item.Time = Time;
                     ThisMqttServer.UpdateItem(group, item);
                 }
             }
         }
-        public void UpData(string UUID, int x, int y, int capacity, bool open, ItemState state)
+
+        public void UpSIM(string uuid, string sim)
         {
-            if (UUID_Group.ContainsKey(UUID))
+            if (UUID_Group.ContainsKey(uuid))
             {
                 lock (Lock)
                 {
-                    string group = UUID_Group[UUID];
+                    string group = UUID_Group[uuid];
                     var obj = Groups[group];
-                    var item = obj.List[UUID];
+                    var item = obj.List[uuid];
+                    item.SIM = sim;
+                    ThisMqttServer.UpdateItem(group, item);
+                }
+            }
+        }
+
+        public void UpData(string uuid, int x, int y, int capacity, bool open, ItemState state)
+        {
+            if (UUID_Group.ContainsKey(uuid))
+            {
+                lock (Lock)
+                {
+                    string group = UUID_Group[uuid];
+                    var obj = Groups[group];
+                    var item = obj.List[uuid];
                     item.Capacity = capacity;
                     item.X = x;
                     item.Y = y;

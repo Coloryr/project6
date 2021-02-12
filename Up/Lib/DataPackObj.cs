@@ -41,5 +41,6 @@ namespace Lib
         public string Time { get; set; }
         public bool Open { get; set; }
         public ItemState State { get; set; }
+        public string SIM { get; set; }
     }
 }

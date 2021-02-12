@@ -28,19 +28,19 @@ void setup()
     Serial.begin(115200);
     Serial.setTimeout(100);
 
-    ThisServo = new Servo();
-    // IoT = new NBIoT();
-    ThisEEPROM = new EEPROM();
-    IO = new IOInput();
-    VL53L0A = new VL53L0(VL53L0_A, '0');
-    VL53L0B = new VL53L0(VL53L0_B, '1');
+    // ThisServo = new Servo();
+    IoT = new NBIoT();
+    // ThisEEPROM = new EEPROM();
+    // IO = new IOInput();
+    // VL53L0A = new VL53L0(VL53L0_A, '0');
+    // VL53L0B = new VL53L0(VL53L0_B, '1');
 
-    VL53L0A->check();
-    VL53L0B->check();
+    // VL53L0A->check();
+    // VL53L0B->check();
 
-    ThisEEPROM->init();
+    // ThisEEPROM->init();
 
-    Up = new Upload();
+    // Up = new Upload();
 
     // if (NetWork_State)
     // {

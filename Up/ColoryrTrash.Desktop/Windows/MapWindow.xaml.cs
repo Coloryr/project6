@@ -7,10 +7,10 @@ namespace ColoryrTrash.Desktop.Windows
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MapWindow : Window
     {
         private bool IsLoad;
-        public MainWindow()
+        public MapWindow()
         {
             InitializeComponent();
             App.MainWindow_ = this;

@@ -22,7 +22,7 @@ namespace ColoryrTrash.Desktop
         public static ConfigObj Config;
         public static MqttUtils MqttUtils;
         public static Login LoginWindows;
-        public static MainWindow MainWindow_;
+        public static MapWindow MainWindow_;
         public static ListWindows ListWindows_;
         public static MakeHardway MakeHardway_;
 

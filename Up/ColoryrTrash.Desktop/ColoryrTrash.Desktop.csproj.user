@@ -39,7 +39,7 @@
     <Page Update="Windows\Login.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Windows\MainWindow.xaml">
+    <Page Update="Windows\MapWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Windows\MakeHardway.xaml">

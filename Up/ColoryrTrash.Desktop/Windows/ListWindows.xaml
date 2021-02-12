@@ -19,6 +19,7 @@
                     <GridViewColumn Header="上线时间" Width="150" DisplayMemberBinding="{Binding Time}"/>
                     <GridViewColumn Header="打开" Width="60" DisplayMemberBinding="{Binding Open}"/>
                     <GridViewColumn Header="状态" Width="60" DisplayMemberBinding="{Binding State}"/>
+                    <GridViewColumn Header="SIM卡号" Width="60" DisplayMemberBinding="{Binding SIM}"/>
                 </GridView>
             </ListView.View>
             <ListView.ContextMenu>
