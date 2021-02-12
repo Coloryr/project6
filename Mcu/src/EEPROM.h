@@ -24,19 +24,19 @@ class EEPROM
 {
 private:
     bool ok;
-    void readall();
-    void readuuid();
-    void readip();
-    void readset();
+    void readAll();
+    void readUUID();
+    void readIP();
+    void readSet();
     
 public:
     EEPROM();
     void init();
-    void saveall();
-    void saveuuid();
-    void saveip();
-    void saveset();
-    bool isok();
+    void saveAll();
+    void saveUUID();
+    void saveIP();
+    void saveSet();
+    bool isOK();
 };
 
 

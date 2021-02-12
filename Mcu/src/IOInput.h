@@ -17,10 +17,10 @@ class IOInput
 private:
 public:
     IOInput();
-    uint16_t adcread();
-    bool readopen();
-    bool readclose();
-    bool isclose();
+    uint16_t readADC();
+    bool readOpen();
+    bool readClose();
+    bool isClose();
 };
 
 

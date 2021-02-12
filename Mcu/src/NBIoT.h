@@ -19,18 +19,20 @@ private:
     bool online;
     bool mqtt;
     void check();
-    void getcard();
-    void checkonline();
-    uint8_t getquality();
+    void getCard();
+    void checkOnline();
+    uint8_t getQuality();
 
 public:
     NBIoT();
-    bool isok();
-    bool havecard();
-    bool isonline();
-    void Socket();
-    void Mqtt(uint8_t *User, uint8_t *Pass);
+    bool isOK();
+    bool haveCard();
+    bool isOnline();
+    void startSocket();
+    void startMqtt(uint8_t *User, uint8_t *Pass);
     void send(uint8_t *data);
+    bool setGnssOpen(bool open);
+    void readGnss();
 
 };
 

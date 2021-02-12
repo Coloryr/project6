@@ -15,12 +15,12 @@ IOInput::IOInput()
     pinMode(Close_IN, INPUT_PULLUP);
 }
 
-uint16_t IOInput::adcread()
+uint16_t IOInput::readADC()
 {
     return analogRead(ADC_IN);
 }
 
-bool IOInput::readopen()
+bool IOInput::readOpen()
 {
     if (digitalRead(Open_IN) == LOW)
     {
@@ -35,7 +35,7 @@ bool IOInput::readopen()
     }
     return false;
 }
-bool IOInput::readclose()
+bool IOInput::readClose()
 {
     if (digitalRead(Close_IN) == LOW)
     {
@@ -50,9 +50,9 @@ bool IOInput::readclose()
     }
     return false;
 }
-bool IOInput::isclose()
+bool IOInput::isClose()
 {
-    uint16_t temp = adcread();
+    uint16_t temp = readADC();
 #ifdef DEBUG
     Serial.printf("adc:%d\n", temp);
 #endif

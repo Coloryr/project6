@@ -29,13 +29,15 @@ NBIoT::NBIoT()
     check();
     if (!ok)
         return;
-    getcard();
+    getCard();
     if (!card)
         return;
-    if (getquality() == 99)
+    if (getQuality() == 99)
         return;
-    checkonline();
-    xTaskCreate(IoTRead, "IoT", 1024, NULL, 5, NULL);
+    checkOnline();
+    // xTaskCreate(IoTRead, "IoT", 1024, NULL, 5, NULL);
+    setGnssOpen(true);
+    readGnss();
 }
 
 void NBIoT::check()
@@ -62,7 +64,7 @@ void NBIoT::check()
         ok = false;
     }
 }
-void NBIoT::getcard()
+void NBIoT::getCard()
 {
     Serial2.println("AT+CIMI");
     delay(300);
@@ -100,7 +102,7 @@ void NBIoT::getcard()
     }
 }
 
-void NBIoT::checkonline()
+void NBIoT::checkOnline()
 {
     Serial2.println("AT+CGATT?");
     delay(300);
@@ -132,7 +134,7 @@ void NBIoT::checkonline()
     }
 }
 
-uint8_t NBIoT::getquality()
+uint8_t NBIoT::getQuality()
 {
     Serial2.println("AT+CESQ");
     delay(300);
@@ -157,7 +159,7 @@ uint8_t NBIoT::getquality()
             String data1 = data.substring(0, local);
             uint8_t quality = data1.toInt();
 #ifdef DEBUG
-            Serial.printf("NB-IoT:信号强度%d\n", quality);
+            Serial.printf("NB-IoT:信号强度:%d\n", quality);
 #endif
             return quality;
         }
@@ -165,27 +167,79 @@ uint8_t NBIoT::getquality()
     return 99;
 }
 
-bool NBIoT::isok()
+bool NBIoT::setGnssOpen(bool open)
+{
+    Serial2.println("AT+QGNSSC?");
+    delay(500);
+    String data = Serial2.readString();
+    data.trim();
+#ifdef DEBUG
+    Serial.println(data.c_str());
+#endif
+    bool state;
+    state = data.startsWith("+QGNSSC: 1");
+    if (open != state)
+    {
+        if (open && !state)
+            Serial2.println("AT+QGNSSC=1");
+        else if (!open && state)
+            Serial2.println("AT+QGNSSC=0");
+        data = Serial2.readString();
+        data.trim();
+#ifdef DEBUG
+        Serial.println(data.c_str());
+#endif
+    }
+    if (data.endsWith("OK"))
+    {
+#ifdef DEBUG
+        Serial.printf("NB-IoT:GNSS模式设置为:%d\n", open);
+#endif
+        Serial2.println("AT+QGNSSAGPS=1");
+        delay(300);
+        data = Serial2.readString();
+        data.trim();
+#ifdef DEBUG
+        Serial.println(data.c_str());
+#endif
+        return true;
+    }
+    return false;
+}
+
+void NBIoT::readGnss()
+{
+    // Serial2.println("AT+QGNSSRD=\"NMEA/RMC\"");
+    Serial2.println("AT+QGNSSRD?");
+    delay(200);
+    String data = Serial2.readString();
+    data.trim();
+#ifdef DEBUG
+    Serial.println(data.c_str());
+#endif
+}
+
+bool NBIoT::isOK()
 {
     return ok;
 }
 
-bool NBIoT::havecard()
+bool NBIoT::haveCard()
 {
     return card;
 }
 
-bool NBIoT::isonline()
+bool NBIoT::isOnline()
 {
     return online;
 }
 
-void NBIoT::Socket()
+void NBIoT::startSocket()
 {
     if (!ok || !card || !online)
         return;
 }
-void NBIoT::Mqtt(uint8_t *User, uint8_t *Pass)
+void NBIoT::startMqtt(uint8_t *User, uint8_t *Pass)
 {
     if (!ok || !card || !online)
         return;

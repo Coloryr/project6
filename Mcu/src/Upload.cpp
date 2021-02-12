@@ -106,7 +106,7 @@ void Upload::sendread(uint8_t type)
         break;
     case 3:
         buildpack(3);
-        tow.u16 = IO->adcread();
+        tow.u16 = IO->readADC();
         writebuff[6] = tow.u8[1];
         writebuff[7] = tow.u8[0];
         VL53L0A->update();
@@ -132,7 +132,7 @@ void Upload::sendwrite(uint8_t type)
         {
             UUID[a] = readbuff[a + 5];
         }
-        ThisEEPROM->saveuuid();
+        ThisEEPROM->saveUUID();
         break;
     case 1:
         Mytow tow;
@@ -147,7 +147,7 @@ void Upload::sendwrite(uint8_t type)
         ADC_HIGH = tow.u16;
         openset = readbuff[11];
         closeset = readbuff[12];
-        ThisEEPROM->saveset();
+        ThisEEPROM->saveSet();
         break;
     case 2:
         IP[0] = readbuff[5];
@@ -157,7 +157,7 @@ void Upload::sendwrite(uint8_t type)
         tow.u8[0] = readbuff[9];
         tow.u8[1] = readbuff[10];
         Port = tow.u16;
-        ThisEEPROM->saveip();
+        ThisEEPROM->saveIP();
         break;
     }
     reset();

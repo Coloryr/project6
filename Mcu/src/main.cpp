@@ -58,7 +58,8 @@ void loop()
     // IO->isclose();
     // VL53L0A->update();
     // VL53L0B->update();
-    delay(2000);
+    delay(10000);
+    IoT->readGnss();
     // BLE->Tick();
     // for (int d = 1; d < 180; d += 1)
     // {

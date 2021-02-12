@@ -26,10 +26,10 @@ void VL53L0::check()
 {
     digitalWrite(en, HIGH);
     delay(20);
-    VL53L0IIC->WriteBit(VL53L0X_REG_SYSRANGE_START, VL53L0X_Add, VL53L0X_START);
+    VL53L0IIC->writeBit(VL53L0X_REG_SYSRANGE_START, VL53L0X_Add, VL53L0X_START);
     delay(200);
     start();
-    uint8_t data = VL53L0IIC->ReadBit(VL53L0X_REG_IDENTIFICATION_MODEL_ID, VL53L0X_Add);
+    uint8_t data = VL53L0IIC->readBit(VL53L0X_REG_IDENTIFICATION_MODEL_ID, VL53L0X_Add);
     close();
     ok = data == 0xEE;
 #ifdef DEBUG
@@ -53,7 +53,7 @@ void VL53L0::start()
 {
     digitalWrite(en, HIGH);
     delay(10);
-    VL53L0IIC->WriteBit(VL53L0X_REG_SYSRANGE_START, VL53L0X_Add, VL53L0X_START);
+    VL53L0IIC->writeBit(VL53L0X_REG_SYSRANGE_START, VL53L0X_Add, VL53L0X_START);
 }
 
 bool VL53L0::isready()
@@ -62,7 +62,7 @@ bool VL53L0::isready()
     for (;;)
     {
         delay(10);
-        uint8_t val = VL53L0IIC->ReadBit(VL53L0X_REG_RESULT_RANGE_STATUS, VL53L0X_Add);
+        uint8_t val = VL53L0IIC->readBit(VL53L0X_REG_RESULT_RANGE_STATUS, VL53L0X_Add);
         if (val & 0x01)
             return true;
         times++;
@@ -73,7 +73,7 @@ bool VL53L0::isready()
 
 void VL53L0::close()
 {
-    VL53L0IIC->WriteBit(VL53L0X_REG_SYSRANGE_START, VL53L0X_Add, VL53L0X_STOP);
+    VL53L0IIC->writeBit(VL53L0X_REG_SYSRANGE_START, VL53L0X_Add, VL53L0X_STOP);
     delay(10);
     digitalWrite(en, LOW);
 }
@@ -90,7 +90,7 @@ void VL53L0::update()
         close();
         return;
     }
-    VL53L0IIC->Read(VL53L0X_REG_RESULT_RANGE_STATUS, VL53L0X_Add, buff, 12);
+    VL53L0IIC->read(VL53L0X_REG_RESULT_RANGE_STATUS, VL53L0X_Add, buff, 12);
     Mytow tow;
     tow.u8[1] = buff[6];
     tow.u8[0] = buff[7];

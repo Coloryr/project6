@@ -16,7 +16,7 @@ MyIIC::MyIIC(gpio_num_t SDA, gpio_num_t SCL, i2c_port_t NUM)
     i2c_driver_install(I2C_MASTER_NUM, conf.mode, 0, 0, 0);
 }
 
-void MyIIC::Write(uint8_t reg, uint8_t address)
+void MyIIC::_write(uint8_t reg, uint8_t address)
 {
     i2c_cmd_handle_t cmd = i2c_cmd_link_create();
     i2c_master_start(cmd);
@@ -27,7 +27,7 @@ void MyIIC::Write(uint8_t reg, uint8_t address)
     i2c_cmd_link_delete(cmd);
 }
 
-void MyIIC::Write(uint8_t *reg, uint32_t size1, uint8_t address)
+void MyIIC::_write(uint8_t *reg, uint32_t size1, uint8_t address)
 {
     i2c_cmd_handle_t cmd = i2c_cmd_link_create();
     i2c_master_start(cmd);
@@ -38,7 +38,7 @@ void MyIIC::Write(uint8_t *reg, uint32_t size1, uint8_t address)
     i2c_cmd_link_delete(cmd);
 }
 
-void MyIIC::Write(uint8_t reg, uint8_t address, uint8_t *data, uint32_t size)
+void MyIIC::write(uint8_t reg, uint8_t address, uint8_t *data, uint32_t size)
 {
     i2c_cmd_handle_t cmd = i2c_cmd_link_create();
     i2c_master_start(cmd);
@@ -53,7 +53,7 @@ void MyIIC::Write(uint8_t reg, uint8_t address, uint8_t *data, uint32_t size)
     i2c_cmd_link_delete(cmd);
 }
 
-void MyIIC::WriteBit(uint8_t reg, uint8_t address, uint8_t data)
+void MyIIC::writeBit(uint8_t reg, uint8_t address, uint8_t data)
 {
     i2c_cmd_handle_t cmd = i2c_cmd_link_create();
     i2c_master_start(cmd);
@@ -65,7 +65,7 @@ void MyIIC::WriteBit(uint8_t reg, uint8_t address, uint8_t data)
     i2c_cmd_link_delete(cmd);
 }
 
-void MyIIC::Read(uint8_t address, uint8_t *data, uint32_t size)
+void MyIIC::_read(uint8_t address, uint8_t *data, uint32_t size)
 {
     i2c_cmd_handle_t cmd = i2c_cmd_link_create();
     i2c_master_start(cmd);
@@ -79,7 +79,7 @@ void MyIIC::Read(uint8_t address, uint8_t *data, uint32_t size)
     i2c_cmd_link_delete(cmd);
 }
 
-uint8_t MyIIC::Read(uint8_t address)
+uint8_t MyIIC::_read(uint8_t address)
 {
     uint8_t data;
     i2c_cmd_handle_t cmd = i2c_cmd_link_create();
@@ -92,20 +92,20 @@ uint8_t MyIIC::Read(uint8_t address)
     return data;
 }
 
-void MyIIC::Read(uint8_t reg, uint8_t address, uint8_t *data, uint32_t size)
+void MyIIC::read(uint8_t reg, uint8_t address, uint8_t *data, uint32_t size)
 {
-    Write(reg, address);
-    Read(address, data, size);
+    _write(reg, address);
+    _read(address, data, size);
 }
 
-void MyIIC::Read(uint8_t *reg, uint32_t size1, uint8_t address, uint8_t *data, uint32_t size)
+void MyIIC::read(uint8_t *reg, uint32_t size1, uint8_t address, uint8_t *data, uint32_t size)
 {
-    Write(reg, size1, address);
-    Read(address, data, size);
+    _write(reg, size1, address);
+    _read(address, data, size);
 }
 
-uint8_t MyIIC::ReadBit(uint8_t reg, uint8_t address)
+uint8_t MyIIC::readBit(uint8_t reg, uint8_t address)
 {
-    Write(reg, address);
-    return Read(address);
+    _write(reg, address);
+    return _read(address);
 }
