@@ -10,11 +10,11 @@ private:
     uint8_t *writebuff;
     bool open;
     void check();
-    void sendread(uint8_t type);
-    void sendwrite(uint8_t size);
-    void sendopen();
-    void buildpack(uint8_t type);
-    void sendok();
+    void sendRead(uint8_t type);
+    void sendWrite(uint8_t size);
+    void sendOpen();
+    void buildPack(uint8_t type);
+    void sendOK();
     void send(uint8_t size);
     void reset();
 

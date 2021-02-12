@@ -15,7 +15,7 @@ extern uint8_t closeset;
 class Servo
 {
 private:
-    void SetServo(uint8_t degree);
+    void setServo(uint8_t degree);
 
 public:
     Servo();

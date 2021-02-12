@@ -41,10 +41,10 @@ public:
     uint8_t status;
     uint16_t count[3];
     void check();
-    bool isok();
-    bool isready();
+    bool isOK();
+    bool isReady();
     void update();
-    char getindex();
+    char getIndex();
 };
 
 #endif

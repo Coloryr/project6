@@ -13,15 +13,15 @@ Servo::Servo()
 
 void Servo::open()
 {
-    SetServo(openset);
+    setServo(openset);
 }
 
 void Servo::close()
 {
-    SetServo(closeset);
+    setServo(closeset);
 }
 
-void Servo::SetServo(uint8_t data)
+void Servo::setServo(uint8_t data)
 {
     const float deadZone = 6.4; //对应0.5ms（0.5ms/(20ms/256）)
     const float max = 32;       //对应2.5ms
