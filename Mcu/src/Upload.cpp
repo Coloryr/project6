@@ -42,7 +42,7 @@ void Upload::check()
                 return;
         }
         open = true;
-        sendopen();
+        sendOpen();
     }
     else if (readbuff[0] == 0x52)
     {
@@ -51,7 +51,7 @@ void Upload::check()
             if (ReadPack[a] != readbuff[a])
                 return;
         }
-        sendread(readbuff[5]);
+        sendRead(readbuff[5]);
     }
     else if (readbuff[0] == 0x53)
     {
@@ -60,17 +60,17 @@ void Upload::check()
             if (SetPack[a] != readbuff[a])
                 return;
         }
-        sendwrite(readbuff[4]);
-        sendok();
+        sendWrite(readbuff[4]);
+        sendOK();
     }
 }
 
-void Upload::sendread(uint8_t type)
+void Upload::sendRead(uint8_t type)
 {
     switch (type)
     {
     case 0:
-        buildpack(0);
+        buildPack(0);
         for (uint8_t a = 0; a < 16; a++)
         {
             writebuff[a + 6] = UUID[a];
@@ -78,7 +78,7 @@ void Upload::sendread(uint8_t type)
         send(22);
         break;
     case 1:
-        buildpack(1);
+        buildPack(1);
         Mytow tow;
         tow.u16 = Distance;
         writebuff[6] = tow.u8[0];
@@ -94,7 +94,7 @@ void Upload::sendread(uint8_t type)
         send(14);
         break;
     case 2:
-        buildpack(2);
+        buildPack(2);
         writebuff[6] = IP[0];
         writebuff[7] = IP[1];
         writebuff[8] = IP[2];
@@ -105,7 +105,7 @@ void Upload::sendread(uint8_t type)
         send(12);
         break;
     case 3:
-        buildpack(3);
+        buildPack(3);
         tow.u16 = IO->readADC();
         writebuff[6] = tow.u8[1];
         writebuff[7] = tow.u8[0];
@@ -123,7 +123,7 @@ void Upload::sendread(uint8_t type)
         break;
     }
 }
-void Upload::sendwrite(uint8_t type)
+void Upload::sendWrite(uint8_t type)
 {
     switch (type)
     {
@@ -162,7 +162,7 @@ void Upload::sendwrite(uint8_t type)
     }
     reset();
 }
-void Upload::buildpack(uint8_t type)
+void Upload::buildPack(uint8_t type)
 {
     for (uint8_t a = 0; a < 5; a++)
     {
@@ -171,12 +171,12 @@ void Upload::buildpack(uint8_t type)
     writebuff[5] = type;
 }
 
-void Upload::sendopen()
+void Upload::sendOpen()
 {
     Serial.write(ResPack, 9);
 }
 
-void Upload::sendok()
+void Upload::sendOK()
 {
     Serial.write(OKPack, 2);
 }
