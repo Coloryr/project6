@@ -7,9 +7,12 @@ namespace ColoryrTrash.App
 {
     public partial class App : Application
     {
+        public static bool IsLogin { get; set; }
+        private static App ThisApp;
 
         public App()
-        { 
+        {
+            ThisApp = this;
             InitializeComponent();
             MainPage = new MainPage();
         }
