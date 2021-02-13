@@ -10,11 +10,9 @@ namespace ColoryrTrash.App.Pages
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class LoginPage : ContentPage
     {
-        private bool IsLoad;
         private bool IsLoging;
         public LoginPage()
         {
-            IsLoad = true;
             InitializeComponent();
             if (App.Config.AutoLogin)
             {
@@ -28,7 +26,6 @@ namespace ColoryrTrash.App.Pages
             Port.Text = App.Config.Port.ToString();
             User.Text = App.Config.User;
             Save.IsToggled = App.Config.AutoLogin;
-            IsLoad = false;
         }
 
         public async void Login()

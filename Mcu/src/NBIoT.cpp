@@ -195,13 +195,13 @@ bool NBIoT::setGnssOpen(bool open)
 #ifdef DEBUG
         Serial.printf("NB-IoT:GNSS模式设置为:%d\n", open);
 #endif
-        Serial2.println("AT+QGNSSAGPS=1");
-        delay(300);
-        data = Serial2.readString();
-        data.trim();
-#ifdef DEBUG
-        Serial.println(data.c_str());
-#endif
+//         Serial2.println("AT+QGNSSAGPS=1");
+//         delay(300);
+//         data = Serial2.readString();
+//         data.trim();
+// #ifdef DEBUG
+//         Serial.println(data.c_str());
+// #endif
         return true;
     }
     return false;

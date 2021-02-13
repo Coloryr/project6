@@ -44,7 +44,7 @@ void VL53L0::check()
 #endif
 }
 
-bool VL53L0::isok()
+bool VL53L0::isOK()
 {
     return ok;
 }
@@ -56,7 +56,7 @@ void VL53L0::start()
     VL53L0IIC->writeBit(VL53L0X_REG_SYSRANGE_START, VL53L0X_Add, VL53L0X_START);
 }
 
-bool VL53L0::isready()
+bool VL53L0::isReady()
 {
     int times = 0;
     for (;;)
@@ -82,7 +82,7 @@ void VL53L0::update()
 {
     start();
     delay(20);
-    if (!isready())
+    if (!isReady())
     {
 #ifdef DEBUG
         Serial.printf("VL53L0:%c No ready\n", index);
@@ -108,7 +108,7 @@ void VL53L0::update()
     close();
 }
 
-char VL53L0::getindex()
+char VL53L0::getIndex()
 {
     return index;
 }
