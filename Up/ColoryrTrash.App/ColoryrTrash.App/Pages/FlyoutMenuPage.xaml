@@ -2,17 +2,19 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:ColoryrTrash.App"
-             x:Class="ColoryrTrash.App.FlyoutMenuPage"
+             xmlns:pages="clr-namespace:ColoryrTrash.App.Pages"
+             x:Class="ColoryrTrash.App.Pages.FlyoutMenuPage"
              Padding="0,40,0,0"
              IconImageSource="hamburger.png"
-             Title="Personal Organiser">
+             Title="智能垃圾桶">
     <StackLayout>
         <ListView x:Name="listView" x:FieldModifier="public">
             <ListView.ItemsSource>
                 <x:Array Type="{x:Type local:FlyoutPageItem}">
-                    <local:FlyoutPageItem Title="Contacts" IconSource="contacts.png" TargetType="{x:Type local:ContactsPage}" />
-                    <local:FlyoutPageItem Title="TodoList" IconSource="todo.png" TargetType="{x:Type local:TodoListPage}" />
-                    <local:FlyoutPageItem Title="Reminders" IconSource="reminders.png" TargetType="{x:Type local:ReminderPage}" />
+                    <local:FlyoutPageItem Name="Main" Title="欢迎" IconSource="todo.png" TargetType="{x:Type pages:HelloPage}" />
+                    <local:FlyoutPageItem Name="Info" Title="垃圾桶信息" IconSource="contacts.png" TargetType="{x:Type pages:InfoPage}" />
+                    <local:FlyoutPageItem Name="Login" Title="用户" IconSource="contacts.png" TargetType="{x:Type pages:LoginPage}"/>
+                    <local:FlyoutPageItem Name="Map" Title="地图" IconSource="reminders.png" TargetType="{x:Type pages:MapPage}" />
                 </x:Array>
             </ListView.ItemsSource>
             <ListView.ItemTemplate>

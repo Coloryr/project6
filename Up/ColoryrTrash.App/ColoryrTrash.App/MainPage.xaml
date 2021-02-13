@@ -1,15 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <FlyoutPage xmlns="http://xamarin.com/schemas/2014/forms"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:local="clr-namespace:ColoryrTrash.App;assembly=ColoryrTrash.App"
-             x:Class="ColoryrTrash.App.MainPage">
+            xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+            xmlns:pages="clr-namespace:ColoryrTrash.App.Pages;assembly=ColoryrTrash.App"
+            xmlns:local="clr-namespace:ColoryrTrash.App;assembly=ColoryrTrash.App"
+            x:Class="ColoryrTrash.App.MainPage">
     <FlyoutPage.Flyout>
-        <local:FlyoutMenuPage x:Name="flyoutPage" />
+        <pages:FlyoutMenuPage x:Name="flyoutPage" />
     </FlyoutPage.Flyout>
     <FlyoutPage.Detail>
         <NavigationPage>
             <x:Arguments>
-                <local:ContactsPage />
+                <pages:HelloPage />
             </x:Arguments>
         </NavigationPage>
     </FlyoutPage.Detail>

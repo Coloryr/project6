@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
-namespace ColoryrTrash.App
+namespace ColoryrTrash.App.Pages
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class ReminderPage : ContentPage
+    public partial class InfoPage : ContentPage
     {
-        public ReminderPage()
+        public InfoPage()
         {
             InitializeComponent();
         }

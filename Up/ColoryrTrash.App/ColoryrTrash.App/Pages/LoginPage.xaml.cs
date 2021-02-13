@@ -1,0 +1,103 @@
+﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
+
+using Xamarin.Forms;
+using Xamarin.Forms.Xaml;
+
+namespace ColoryrTrash.App.Pages
+{
+    [XamlCompilation(XamlCompilationOptions.Compile)]
+    public partial class LoginPage : ContentPage
+    {
+        private bool IsLoad;
+        private bool IsLoging;
+        public LoginPage()
+        {
+            IsLoad = true;
+            InitializeComponent();
+            if (App.Config.AutoLogin)
+            {
+                Task.Run(() =>
+                {
+                    Thread.Sleep(2000);
+                    Login();
+                });
+            }
+            IP.Text = App.Config.IP;
+            Port.Text = App.Config.Port.ToString();
+            User.Text = App.Config.User;
+            Save.IsToggled = App.Config.AutoLogin;
+            IsLoad = false;
+        }
+
+        public async void Login()
+        {
+            if (!await App.MqttUtils.Start())
+            {
+                App.ShowB("服务器", "服务器连接失败");
+                return;
+            }
+        }
+
+        private async void Login_Clicked(object sender, EventArgs e)
+        {
+            if (IsLoging)
+                return;
+            IsLoging = true;
+            int port;
+            if (!int.TryParse(Port.Text, out port))
+            {
+                await DisplayAlert("错误", "端口号不正确", "确定");
+                IsLoging = false;
+                return;
+            }
+            if (string.IsNullOrWhiteSpace(User.Text))
+            {
+                await DisplayAlert("错误", "用户名为空", "确定");
+                IsLoging = false;
+                return;
+            }
+            if (string.IsNullOrWhiteSpace(Pass.Text))
+            {
+                await DisplayAlert("错误", "密码为空", "确定");
+                IsLoging = false;
+                return;
+            }
+            CloseAll();
+            App.Config.IP = IP.Text;
+            App.Config.Port = port;
+            App.Config.User = User.Text;
+            App.Config.AutoLogin = Save.IsToggled;
+            Login_Button.Text = "登录中...";
+            Act.IsRunning = true;
+
+            await Task.Delay(20000);
+
+            OpenAll();
+            Login_Button.Text = "登录";
+            Act.IsRunning = false;
+            IsLoging = false;
+        }
+
+        private void CloseAll()
+        {
+            Login_Button.IsEnabled = false;
+            IP.IsReadOnly = true;
+            Port.IsReadOnly = true;
+            User.IsReadOnly = true;
+            Pass.IsReadOnly = true;
+            Save.IsEnabled = false;
+        }
+
+        private void OpenAll()
+        {
+            Login_Button.IsEnabled = true;
+            IP.IsReadOnly = false;
+            Port.IsReadOnly = false;
+            User.IsReadOnly = false;
+            Pass.IsReadOnly = false;
+            Save.IsEnabled = true;
+        }
+    }
+}

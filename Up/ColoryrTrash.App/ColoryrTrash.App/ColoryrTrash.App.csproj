@@ -10,6 +10,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="map.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="MQTTnet" Version="3.0.15-rc1" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="Xamarin.Forms" Version="5.0.0.2012" />  
@@ -17,22 +21,22 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="ContactsPage.xaml">
+    <EmbeddedResource Update="Pages\InfoPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="FlyoutMenuPage.xaml">
+    <EmbeddedResource Update="Pages\FlyoutMenuPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="LoginPage.xaml">
+    <EmbeddedResource Update="Pages\LoginPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="MainPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="ReminderPage.xaml">
+    <EmbeddedResource Update="Pages\HelloPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="TodoListPage.xaml">
+    <EmbeddedResource Update="Pages\MapPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
   </ItemGroup>
@@ -42,8 +46,20 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="map.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <Resource Include="map.png" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Pages\InfoPage.xaml.cs">
+      <DependentUpon>InfoPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Pages\HelloPage.xaml.cs">
+      <DependentUpon>HelloPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Pages\MapPage.xaml.cs">
+      <DependentUpon>MapPage.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <Import Project="..\..\Lib\Lib.projitems" Label="Shared" />
 </Project>

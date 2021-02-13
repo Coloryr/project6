@@ -9,18 +9,18 @@ namespace Lib
         SetNick,
         CheckUUID
     }
-    public record PackBase
+    public class PackBase
     {
         public string Token { get; set; }
     }
-    public record DataPackObj : PackBase
+    public class DataPackObj : PackBase
     {
         public DataType Type { get; set; }
         public bool Res { get; set; }
         public string Data { get; set; }
         public string Data1 { get; set; }
     }
-    public record DataSaveObj
+    public class DataSaveObj
     {
         public Dictionary<string, ItemSaveObj> List { get; set; }
         public string Name { get; set; }
@@ -31,7 +31,7 @@ namespace Lib
         Ok, Error, LowBattery
     }
 
-    public record ItemSaveObj
+    public class ItemSaveObj
     {
         public string UUID { get; set; }
         public string Nick { get; set; }

@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
-namespace ColoryrTrash.App
+namespace ColoryrTrash.App.Pages
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class TodoListPage : ContentPage
+    public partial class FlyoutMenuPage : ContentPage
     {
-        public TodoListPage()
+        public FlyoutMenuPage()
         {
             InitializeComponent();
         }

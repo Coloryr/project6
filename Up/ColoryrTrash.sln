@@ -13,13 +13,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ColoryrTrash.App.Android", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ColoryrTrash.App.iOS", "ColoryrTrash.App\ColoryrTrash.App.iOS\ColoryrTrash.App.iOS.csproj", "{62ACC10F-144B-45B4-B717-40A1883DB6FB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ColoryrTrash.App", "ColoryrTrash.App\ColoryrTrash.App\ColoryrTrash.App.csproj", "{CD326522-D214-4309-ACC7-A673C4B3FA85}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ColoryrTrash.App", "ColoryrTrash.App\ColoryrTrash.App\ColoryrTrash.App.csproj", "{CD326522-D214-4309-ACC7-A673C4B3FA85}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Lib\Lib.projitems*{2c95b18b-ed1a-488b-916c-aa6bfa3edddf}*SharedItemsImports = 13
 		Lib\Lib.projitems*{4e8c54ef-612e-431e-9587-c5d272f093f3}*SharedItemsImports = 5
 		Lib\Lib.projitems*{62dbdaea-ae55-48c6-b345-b6d8b467eef3}*SharedItemsImports = 5
+		Lib\Lib.projitems*{cd326522-d214-4309-acc7-a673c4b3fa85}*SharedItemsImports = 5
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
