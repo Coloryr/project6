@@ -1,5 +1,4 @@
-﻿using ColoryrTrash.App.Services;
-using ColoryrTrash.App.Views;
+﻿
 using System;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -10,11 +9,9 @@ namespace ColoryrTrash.App
     {
 
         public App()
-        {
+        { 
             InitializeComponent();
-
-            DependencyService.Register<MockDataStore>();
-            MainPage = new AppShell();
+            MainPage = new MainPage();
         }
 
         protected override void OnStart()
