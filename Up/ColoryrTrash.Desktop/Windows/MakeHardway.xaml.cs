@@ -8,7 +8,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 using System.Windows.Media;
 
 namespace ColoryrTrash.Desktop.Windows
@@ -261,7 +260,7 @@ namespace ColoryrTrash.Desktop.Windows
                         UUID15.Text = temp;
                         return;
                 }
-                index ++;
+                index++;
             }
         }
 
@@ -355,7 +354,7 @@ namespace ColoryrTrash.Desktop.Windows
             else
                 return null;
             if (UUID15.Text != "")
-                temp += UUID15 .Text;
+                temp += UUID15.Text;
             else
                 return null;
             return temp;
@@ -447,7 +446,7 @@ namespace ColoryrTrash.Desktop.Windows
         private void ReadUUID_()
         {
             IsRead = true;
-            Dispatcher.Invoke(()=> ReadUUID_Button.IsEnabled = false);
+            Dispatcher.Invoke(() => ReadUUID_Button.IsEnabled = false);
             var data = HardPack.MakeReadPack(PackType.UUID);
             Serial.Write(data, 0, 6);
             Thread.Sleep(1000);
@@ -543,7 +542,7 @@ namespace ColoryrTrash.Desktop.Windows
             if (temp == null)
             {
                 App.ShowB("设置", "UUID填写错误");
-                    return;
+                return;
             }
             IsSend = true;
             SetUUID_Button.IsEnabled = false;
