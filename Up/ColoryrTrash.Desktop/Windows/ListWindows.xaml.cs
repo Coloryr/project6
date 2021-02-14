@@ -9,23 +9,23 @@ namespace ColoryrTrash.Desktop.Windows
     /// <summary>
     /// ListWindows.xaml 的交互逻辑
     /// </summary>
-    public partial class ListWindows : Window
+    public partial class ListWindow : Window
     {
         private TrashDataSaveObj obj;
         private List<string> list;
-        public ListWindows()
+        public ListWindow()
         {
             InitializeComponent();
         }
 
         public void GetList()
         {
-            App.MqttUtils.GetGroups();
+            App.MqttUtils.GetTrashGroups();
         }
 
         private void GetInfo(string group)
         {
-            App.MqttUtils.GetGroupInfo(group);
+            App.MqttUtils.GetTrashGroupInfo(group);
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -141,7 +141,7 @@ namespace ColoryrTrash.Desktop.Windows
         {
             var res = new InputWindow("创建组").Set();
             if (!string.IsNullOrWhiteSpace(res))
-                App.MqttUtils.AddGroup(res);
+                App.MqttUtils.AddTrashGroup(res);
         }
 
         private void RenameGroup_Click(object sender, RoutedEventArgs e)
@@ -150,7 +150,7 @@ namespace ColoryrTrash.Desktop.Windows
                 return;
             var res = new InputWindow("设置组名字", GroupList.SelectedItem as string).Set();
             if (!string.IsNullOrWhiteSpace(res))
-                App.MqttUtils.RenameGroup(GroupList.SelectedItem as string, res);
+                App.MqttUtils.RenameTrashGroup(GroupList.SelectedItem as string, res);
         }
 
         public void AddGroup(string data)
@@ -193,7 +193,7 @@ namespace ColoryrTrash.Desktop.Windows
             var res = new GroupChose(list, obj.UUID, GroupList.SelectedItem as string).Set();
             if (res != GroupList.SelectedItem as string)
             {
-                App.MqttUtils.MoveGroup(obj.UUID, res);
+                App.MqttUtils.MoveTrashGroup(obj.UUID, res);
             }
         }
 
@@ -205,7 +205,7 @@ namespace ColoryrTrash.Desktop.Windows
             var res = new InputWindow("设置备注", obj.Nick).Set();
             if (string.IsNullOrWhiteSpace(res))
                 return;
-            App.MqttUtils.SetNick(obj.UUID, res);
+            App.MqttUtils.SetTrashNick(obj.UUID, res);
         }
 
         public void MoveGroup(string uuid, string group)

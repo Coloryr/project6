@@ -4,11 +4,14 @@ namespace Lib
 {
     public enum DataType
     {
-        CheckLogin, Login, GetGroups, GetGroupInfo, Updata,
-        AddGroup, MoveGroup, RenameGroup,
-        SetNick, CheckUUID, 
-        AddUser, RemoveUser, SetUser, SetUserTask,
-        GetUserInfo, GetUsetTask
+        CheckLogin, Login, 
+        GetTrashGroups, GetTrashGroupInfo, UpdataTrash,
+        AddTrashGroup, MoveTrashGroup, RenameTrashGroup,
+        SetTrashNick, CheckTrashUUID,
+        GetUserGroups, GetUserGroupInfo,
+        GetUserGroup, GetUsetTask,
+        AddUserGroup, MoveUserGroup, RenameUserGroup,
+        AddUser, RemoveUser, SetUser, SetUserTask
     }
     public enum ItemState
     {
@@ -51,6 +54,7 @@ namespace Lib
     public class UserDataSaveObj
     {
         public Dictionary<string, UserSaveObj> List { get; set; }
+        public List<string> Bind { get; set; }
         public string Name { get; set; }
     }
 }

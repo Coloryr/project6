@@ -527,7 +527,7 @@ namespace ColoryrTrash.Desktop.Windows
                 App.ShowB("设置", "UUID填写错误");
                 return;
             }
-            App.MqttUtils.CheckUUID(temp);
+            App.MqttUtils.CheckTrashUUID(temp);
         }
         private void SetUUID_Click(object sender, RoutedEventArgs e)
         {

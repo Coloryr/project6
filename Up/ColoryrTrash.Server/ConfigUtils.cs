@@ -1,4 +1,5 @@
-﻿using Lib;
+﻿using ColoryrTrash.Server.Mqtt;
+using Lib;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -136,9 +137,10 @@ namespace ColoryrTrash.Server
                     Groups.Add(group, new UserDataSaveObj
                     {
                         Name = group,
-                        List = new()
+                        List = new(),
+                        Bind = new()
                     });
-                    ThisMqttServer.AddUserGroup(group);
+                    DesktopServer.AddUserGroup(group);
                 }
                 SaveGroup(group);
                 return true;
@@ -158,7 +160,7 @@ namespace ColoryrTrash.Server
                     item.Name = group;
                     Groups.Remove(old);
                     Groups.Add(group, item);
-                    ThisMqttServer.RenameUserGroup(old, group);
+                    DesktopServer.RenameUserGroup(old, group);
                 }
                 SaveGroup(group);
                 DeleteGroup(old);
@@ -196,7 +198,6 @@ namespace ColoryrTrash.Server
                         LoginTime = Time
                     };
                     group.List.Add(id, item);
-                    ThisMqttServer.UpdateUserItem(EmptyGroup, item);
                 }
                 SaveGroup(EmptyGroup);
             }
@@ -208,11 +209,22 @@ namespace ColoryrTrash.Server
                     var obj = Groups[group];
                     var item = obj.List[id];
                     item.LoginTime = Time;
-                    ThisMqttServer.UpdateUserItem(group, item);
                 }
             }
+            SaveID(id);
         }
-        public void UpData(string id, string pass)
+        public void RemoveUser(string id)
+        {
+            string temp = ID_Group[id];
+            lock (Lock)
+            {
+                var group = Groups[temp];
+                group.List.Remove(id);
+                ID_Group.Remove(id);
+            }
+            SaveGroup(temp);
+        }
+        public void ChangePass(string id, string pass)
         {
             if (ID_Group.ContainsKey(id))
             {
@@ -222,8 +234,8 @@ namespace ColoryrTrash.Server
                     var obj = Groups[group];
                     var item = obj.List[id];
                     item.Pass = pass;
-                    ThisMqttServer.UpdateUserItem(group, item);
                 }
+                SaveID(id);
             }
         }
         public bool MoveGroup(string id, string group)
@@ -239,7 +251,7 @@ namespace ColoryrTrash.Server
                 var obj1 = Groups[group];
                 obj1.List.Add(id, item);
                 ID_Group[id] = group;
-                ThisMqttServer.MoveGroup(id, group);
+                DesktopServer.MoveTrashGroup(id, group);
             }
             SaveGroup(oldgroup);
             SaveGroup(group);
@@ -254,7 +266,7 @@ namespace ColoryrTrash.Server
         {
             if (!Directory.Exists(FilePath))
             {
-                ServerMain.LogOut("正在创建默认文件夹");
+                ServerMain.LogOut("正在创建用户默认文件夹");
                 Directory.CreateDirectory(FilePath);
             }
             var files = Directory.GetFiles(FilePath);
@@ -263,7 +275,7 @@ namespace ColoryrTrash.Server
                 try
                 {
                     var obj = JsonConvert.DeserializeObject<UserDataSaveObj>(File.ReadAllText(item));
-                    ServerMain.LogOut($"正在加载组[{obj.Name}]");
+                    ServerMain.LogOut($"正在加载用户组[{obj.Name}]");
                     Groups.Add(obj.Name, obj);
                     foreach (var item1 in obj.List)
                     {
@@ -277,7 +289,7 @@ namespace ColoryrTrash.Server
             }
             if (!Groups.ContainsKey(EmptyGroup))
             {
-                ServerMain.LogOut("正在创建默认组");
+                ServerMain.LogOut("正在创建用户默认组");
                 Groups.Add(EmptyGroup, new UserDataSaveObj
                 {
                     Name = EmptyGroup,
@@ -304,14 +316,13 @@ namespace ColoryrTrash.Server
             token.Cancel();
             SaveAll();
         }
-
         public void SaveGroup(string group)
         {
             lock (Lock)
             {
                 if (Groups.ContainsKey(group))
                 {
-                    ServerMain.LogOut($"正在保存组[{group}]");
+                    ServerMain.LogOut($"正在保存用户组[{group}]");
                     var obj = Groups[group];
                     var data = JsonConvert.SerializeObject(obj);
                     File.WriteAllText($"{FilePath}{obj.Name}.json", data);
@@ -322,14 +333,14 @@ namespace ColoryrTrash.Server
         {
             File.Delete($"{FilePath}{temp}.json");
         }
-        public void SaveUUID(string id)
+        public void SaveID(string id)
         {
             lock (Lock)
             {
                 if (ID_Group.ContainsKey(id))
                 {
                     var group = ID_Group[id];
-                    ServerMain.LogOut($"正在保存组[{group}]");
+                    ServerMain.LogOut($"正在保存用户组[{group}]");
                     var obj = Groups[group];
                     var data = JsonConvert.SerializeObject(obj);
                     File.WriteAllText($"{FilePath}{obj.Name}.json", data);
@@ -342,7 +353,7 @@ namespace ColoryrTrash.Server
             {
                 foreach (var item in Groups.Values)
                 {
-                    ServerMain.LogOut($"正在保存组[{item.Name}]");
+                    ServerMain.LogOut($"正在保存用户组[{item.Name}]");
                     var data = JsonConvert.SerializeObject(item);
                     File.WriteAllText($"{FilePath}{item.Name}.json", data);
                 }
@@ -399,7 +410,7 @@ namespace ColoryrTrash.Server
                         Name = name,
                         List = new()
                     });
-                    ThisMqttServer.AddGroup(name);
+                    DesktopServer.AddTrashGroup(name);
                 }
                 SaveGroup(name);
                 return true;
@@ -419,7 +430,7 @@ namespace ColoryrTrash.Server
                     item.Name = temp1;
                     Groups.Remove(temp);
                     Groups.Add(temp1, item);
-                    ThisMqttServer.RenameGroup(temp, temp1);
+                    DesktopServer.RenameTrashGroup(temp, temp1);
                 }
                 SaveGroup(temp1);
                 DeleteGroup(temp);
@@ -444,7 +455,7 @@ namespace ColoryrTrash.Server
                         Y = -1
                     };
                     group.List.Add(uuid, item);
-                    ThisMqttServer.UpdateItem(EmptyGroup, item);
+                    DesktopServer.UpdateTrashItem(EmptyGroup, item);
                 }
                 SaveGroup(EmptyGroup);
             }
@@ -456,7 +467,7 @@ namespace ColoryrTrash.Server
                     var obj = Groups[group];
                     var item = obj.List[uuid];
                     item.Time = Time;
-                    ThisMqttServer.UpdateItem(group, item);
+                    DesktopServer.UpdateTrashItem(group, item);
                 }
             }
         }
@@ -471,7 +482,7 @@ namespace ColoryrTrash.Server
                     var obj = Groups[group];
                     var item = obj.List[uuid];
                     item.SIM = sim;
-                    ThisMqttServer.UpdateItem(group, item);
+                    DesktopServer.UpdateTrashItem(group, item);
                 }
             }
         }
@@ -490,7 +501,7 @@ namespace ColoryrTrash.Server
                     item.Y = y;
                     item.Open = open;
                     item.State = state;
-                    ThisMqttServer.UpdateItem(group, item);
+                    DesktopServer.UpdateTrashItem(group, item);
                 }
             }
         }
@@ -507,7 +518,7 @@ namespace ColoryrTrash.Server
                 var obj1 = Groups[group];
                 obj1.List.Add(uuid, item);
                 UUID_Group[uuid] = group;
-                ThisMqttServer.MoveGroup(uuid, group);
+                DesktopServer.MoveTrashGroup(uuid, group);
             }
             SaveGroup(oldgroup);
             SaveGroup(group);
@@ -529,7 +540,7 @@ namespace ColoryrTrash.Server
                     {
                         var item = obj.List[uuid];
                         item.Nick = nick;
-                        ThisMqttServer.UpdateItem(group, item);
+                        DesktopServer.UpdateTrashItem(group, item);
                     }
                 }
             }
@@ -545,7 +556,7 @@ namespace ColoryrTrash.Server
         {
             if (!Directory.Exists(FilePath))
             {
-                ServerMain.LogOut("正在创建默认文件夹");
+                ServerMain.LogOut("正在创建垃圾桶默认文件夹");
                 Directory.CreateDirectory(FilePath);
             }
             var files = Directory.GetFiles(FilePath);
@@ -554,7 +565,7 @@ namespace ColoryrTrash.Server
                 try
                 {
                     var obj = JsonConvert.DeserializeObject<TrashDataSaveObj>(File.ReadAllText(item));
-                    ServerMain.LogOut($"正在加载组[{obj.Name}]");
+                    ServerMain.LogOut($"正在加载垃圾桶组[{obj.Name}]");
                     Groups.Add(obj.Name, obj);
                     foreach (var item1 in obj.List)
                     {
@@ -568,7 +579,7 @@ namespace ColoryrTrash.Server
             }
             if (!Groups.ContainsKey(EmptyGroup))
             {
-                ServerMain.LogOut("正在创建默认组");
+                ServerMain.LogOut("正在创建垃圾桶默认组");
                 Groups.Add(EmptyGroup, new TrashDataSaveObj
                 {
                     Name = EmptyGroup,
@@ -602,7 +613,7 @@ namespace ColoryrTrash.Server
             {
                 if (Groups.ContainsKey(group))
                 {
-                    ServerMain.LogOut($"正在保存组[{group}]");
+                    ServerMain.LogOut($"正在保存垃圾桶组[{group}]");
                     var obj = Groups[group];
                     var data = JsonConvert.SerializeObject(obj);
                     File.WriteAllText($"{FilePath}{obj.Name}.json", data);
@@ -620,7 +631,7 @@ namespace ColoryrTrash.Server
                 if (UUID_Group.ContainsKey(uuid))
                 {
                     var group = UUID_Group[uuid];
-                    ServerMain.LogOut($"正在保存组[{group}]");
+                    ServerMain.LogOut($"正在保存垃圾桶组[{group}]");
                     var obj = Groups[group];
                     var data = JsonConvert.SerializeObject(obj);
                     File.WriteAllText($"{FilePath}{obj.Name}.json", data);
@@ -633,7 +644,7 @@ namespace ColoryrTrash.Server
             {
                 foreach (var item in Groups.Values)
                 {
-                    ServerMain.LogOut($"正在保存组[{item.Name}]");
+                    ServerMain.LogOut($"正在保存垃圾桶组[{item.Name}]");
                     var data = JsonConvert.SerializeObject(item);
                     File.WriteAllText($"{FilePath}{item.Name}.json", data);
                 }

@@ -46,138 +46,116 @@ namespace ColoryrTrash.Desktop
                 {
                     string Message = Encoding.UTF8.GetString(arg.ApplicationMessage.Payload);
                     var obj = JsonConvert.DeserializeObject<DataPackObj>(Message);
+                    if (obj.Type == DataType.Login)
+                    {
+                        if (obj.Res)
+                        {
+                            App.Config.Token = obj.Data;
+                            App.Save();
+                            App.Start();
+                            App.IsLogin = true;
+                            App.LoginWindows.LoginClose();
+                            App.ShowA("登录", "登录成功");
+                        }
+                        else
+                        {
+                            App.IsLogin = false;
+                            App.ShowB("登录", obj.Data);
+                        }
+                        return;
+                    }
+                    else if (obj.Type == DataType.CheckLogin)
+                    {
+                        if (obj.Res == false)
+                        {
+                            App.ShowB("自动登录", "自动登录失败");
+                        }
+                        else
+                        {
+                            App.Start();
+                            App.IsLogin = true;
+                            App.LoginWindows.LoginClose();
+                            App.ShowA("自动登录", "已自动登录");
+                        }
+                        return;
+                    }
+                    if (!obj.Res)
+                    {
+                        App.IsLogin = false;
+                        App.ShowB("登录", obj.Data);
+                        App.Login();
+                        return;
+                    }
                     switch (obj.Type)
                     {
-                        case DataType.CheckLogin:
-                            if (obj.Res == false)
+                        case DataType.GetTrashGroups:
+                            var list = JsonConvert.DeserializeObject<List<string>>(obj.Data);
+                            App.ListWindow_?.SetList(list);
+                            break;
+                        case DataType.GetTrashGroupInfo:
+                            if (obj.Data == null)
                             {
-                                App.ShowB("自动登录", "自动登录失败");
+                                App.ShowB("获取垃圾桶组内容错误", obj.Data1);
                             }
                             else
                             {
-                                App.Start();
-                                App.IsLogin = true;
-                                App.LoginWindows.LoginClose();
-                                App.ShowA("自动登录", "已自动登录");
+                                var list1 = JsonConvert.DeserializeObject<TrashDataSaveObj>(obj.Data);
+                                App.ListWindow_?.SetInfo(list1);
                             }
                             break;
-                        case DataType.Login:
-                            if (obj.Res)
+                        case DataType.AddTrashGroup:
+                            App.ShowA("添加垃圾桶组", obj.Data);
+                            break;
+                        case DataType.RenameTrashGroup:
+                            App.ShowA("修改垃圾桶组", obj.Data);
+                            break;
+                        case DataType.SetTrashNick:
+                            App.ShowA("设置垃圾桶备注", obj.Data);
+                            break;
+                        case DataType.CheckTrashUUID:
+                            App.ShowA("垃圾桶UUID检查", obj.Data);
+                            break;
+                        case DataType.GetUserGroups:
+                            var list2 = JsonConvert.DeserializeObject<List<string>>(obj.Data);
+                            App.UserListWindow_?.SetList(list2);
+                            break;
+                        case DataType.GetUserGroupInfo:
+                            if (obj.Data == null)
                             {
-                                App.Config.Token = obj.Data;
-                                App.Save();
-                                App.Start();
-                                App.IsLogin = true;
-                                App.LoginWindows.LoginClose();
-                                App.ShowA("登录", "登录成功");
+                                App.ShowB("获取账户组内容错误", obj.Data1);
                             }
                             else
                             {
-                                App.IsLogin = false;
-                                App.ShowB("登录", obj.Data);
+                                var list3 = JsonConvert.DeserializeObject<UserDataSaveObj>(obj.Data);
+                                App.UserListWindow_?.SetInfo(list3);
                             }
                             break;
-                        case DataType.GetGroups:
-                            if (obj.Res == true)
-                            {
-                                var list = JsonConvert.DeserializeObject<List<string>>(obj.Data);
-                                App.ListWindows_?.SetList(list);
-                            }
-                            else
-                            {
-                                App.IsLogin = false;
-                                App.ShowB("登录", obj.Data);
-                                App.Login();
-                            }
+                        case DataType.AddUser:
+                            App.ShowA("添加账户", obj.Data);
                             break;
-                        case DataType.GetGroupInfo:
-                            if (obj.Res == true)
-                            {
-                                if (obj.Data == null)
-                                {
-                                    App.ShowB("获取群组内容错误", obj.Data1);
-                                }
-                                else
-                                {
-                                    var list = JsonConvert.DeserializeObject<TrashDataSaveObj>(obj.Data);
-                                    App.ListWindows_?.SetInfo(list);
-                                }
-                            }
-                            else
-                            {
-                                App.IsLogin = false;
-                                App.ShowB("登录", obj.Data);
-                                App.Login();
-                            }
-                            break;
-                        case DataType.AddGroup:
-                            if (obj.Res == true)
-                            {
-                                App.ShowA("添加组", obj.Data);
-                            }
-                            else
-                            {
-                                App.IsLogin = false;
-                                App.ShowB("登录", obj.Data);
-                                App.Login();
-                            }
-                            break;
-                        case DataType.RenameGroup:
-                            if (obj.Res == true)
-                            {
-                                App.ShowA("修改组", obj.Data);
-                            }
-                            else
-                            {
-                                App.IsLogin = false;
-                                App.ShowB("登录", obj.Data);
-                                App.Login();
-                            }
-                            break;
-                        case DataType.SetNick:
-                            if (obj.Res == true)
-                            {
-                                App.ShowA("设置备注", obj.Data);
-                            }
-                            else
-                            {
-                                App.IsLogin = false;
-                                App.ShowB("登录", obj.Data);
-                                App.Login();
-                            }
-                            break;
-                        case DataType.CheckUUID:
-                            if (obj.Res == true)
-                            {
-                                App.ShowA("UUID检查", obj.Data);
-                            }
-                            else
-                            {
-                                App.IsLogin = false;
-                                App.ShowB("登录", obj.Data);
-                                App.Login();
-                            }
+                        case DataType.RenameUserGroup:
+                            App.ShowA("修改账户组名字", obj.Data);
                             break;
                     }
                 }
-                else if (arg.ApplicationMessage.Topic == DataArg.TopicServer)
+                else if (arg.ApplicationMessage.Topic == DataArg.TopicDesktopServer)
                 {
                     string Message = Encoding.UTF8.GetString(arg.ApplicationMessage.Payload);
                     var obj = JsonConvert.DeserializeObject<DataPackObj>(Message);
                     switch (obj.Type)
                     {
-                        case DataType.AddGroup:
-                            App.ListWindows_.AddGroup(obj.Data);
+                        case DataType.AddTrashGroup:
+                            App.ListWindow_.AddGroup(obj.Data);
                             break;
-                        case DataType.RenameGroup:
-                            App.ListWindows_.RenameGroup(obj.Data, obj.Data1);
+                        case DataType.RenameTrashGroup:
+                            App.ListWindow_.RenameGroup(obj.Data, obj.Data1);
                             break;
-                        case DataType.MoveGroup:
-                            App.ListWindows_.MoveGroup(obj.Data, obj.Data1);
+                        case DataType.MoveTrashGroup:
+                            App.ListWindow_.MoveGroup(obj.Data, obj.Data1);
                             break;
-                        case DataType.Updata:
+                        case DataType.UpdataTrash:
                             var obj1 = JsonConvert.DeserializeObject<TrashSaveObj>(obj.Data1);
-                            App.ListWindows_.Updata(obj.Data, obj1);
+                            App.ListWindow_.Updata(obj.Data, obj1);
                             break;
                     }
                 }
@@ -186,6 +164,11 @@ namespace ColoryrTrash.Desktop
             {
                 App.LogError(ex);
             }
+        }
+
+        internal void AddUserGroup(string res)
+        {
+            throw new NotImplementedException();
         }
 
         private void OnMqttClientDisConnected(MqttClientDisconnectedEventArgs arg)
@@ -249,10 +232,10 @@ namespace ColoryrTrash.Desktop
                 options.ClientId = App.Config.User;
 
                 await Client.ConnectAsync(options);
-                SelfServerTopic = DataArg.TopicServer + "/" + App.Config.User;
-                SelfClientTopic = DataArg.TopicClient + "/" + App.Config.User;
+                SelfServerTopic = DataArg.TopicDesktopServer + "/" + App.Config.User;
+                SelfClientTopic = DataArg.TopicDesktopClient + "/" + App.Config.User;
                 await Client.SubscribeAsync(SelfServerTopic);
-                await Client.SubscribeAsync(DataArg.TopicServer);
+                await Client.SubscribeAsync(DataArg.TopicDesktopServer);
                 IsConnecting = false;
                 return true;
             }
@@ -295,76 +278,117 @@ namespace ColoryrTrash.Desktop
             Send(JsonConvert.SerializeObject(obj));
         }
 
-        public void GetGroups()
+        public void GetTrashGroups()
         {
             var obj = new DataPackObj
             {
                 Token = App.Config.Token,
-                Type = DataType.GetGroups
+                Type = DataType.GetTrashGroups
             };
             Send(JsonConvert.SerializeObject(obj));
         }
-        public void GetGroupInfo(string group)
+        public void GetTrashGroupInfo(string group)
         {
             var obj = new DataPackObj
             {
                 Token = App.Config.Token,
-                Type = DataType.GetGroupInfo,
+                Type = DataType.GetTrashGroupInfo,
                 Data = group
             };
             Send(JsonConvert.SerializeObject(obj));
         }
-        public void AddGroup(string group)
+        public void AddTrashGroup(string group)
         {
             var obj = new DataPackObj
             {
                 Token = App.Config.Token,
-                Type = DataType.AddGroup,
+                Type = DataType.AddTrashGroup,
                 Data = group
             };
             Send(JsonConvert.SerializeObject(obj));
         }
-        public void RenameGroup(string old, string res)
+        public void RenameTrashGroup(string old, string res)
         {
             var obj = new DataPackObj
             {
                 Token = App.Config.Token,
-                Type = DataType.RenameGroup,
+                Type = DataType.RenameTrashGroup,
                 Data = old,
                 Data1 = res
             };
             Send(JsonConvert.SerializeObject(obj));
         }
-        public void MoveGroup(string uuid, string res)
+        public void MoveTrashGroup(string uuid, string res)
         {
             var obj = new DataPackObj
             {
                 Token = App.Config.Token,
-                Type = DataType.MoveGroup,
+                Type = DataType.MoveTrashGroup,
                 Data = uuid,
                 Data1 = res
             };
             Send(JsonConvert.SerializeObject(obj));
         }
-        public void SetNick(string uuid, string res)
+        public void SetTrashNick(string uuid, string res)
         {
             var obj = new DataPackObj
             {
                 Token = App.Config.Token,
-                Type = DataType.SetNick,
+                Type = DataType.SetTrashNick,
                 Data = uuid,
                 Data1 = res
+            };
+            Send(JsonConvert.SerializeObject(obj));
+        }
+        public void CheckTrashUUID(string uuid)
+        {
+            var obj = new DataPackObj
+            {
+                Token = App.Config.Token,
+                Type = DataType.CheckTrashUUID,
+                Data = uuid
+            };
+            Send(JsonConvert.SerializeObject(obj));
+        }
+        public void GetUserGroupInfo(string group)
+        {
+            var obj = new DataPackObj
+            {
+                Token = App.Config.Token,
+                Type = DataType.GetUserGroupInfo,
+                Data = group
             };
             Send(JsonConvert.SerializeObject(obj));
         }
 
-        public void CheckUUID(string uuid)
+        public void GetUserGroups()
         {
             var obj = new DataPackObj
             {
                 Token = App.Config.Token,
-                Type = DataType.CheckUUID,
-                Data = uuid
+                Type = DataType.GetUserGroups
+            };
+            Send(JsonConvert.SerializeObject(obj));
+        }
+        public void AddUser(string id, string pass)
+        {
+            var obj = new DataPackObj
+            {
+                Token = App.Config.Token,
+                Type = DataType.AddUser,
+                Data = id,
+                Data1 = pass
+            };
+            Send(JsonConvert.SerializeObject(obj));
+        }
+        public void RenameUserGroup(string old, string group)
+        {
+            var obj = new DataPackObj
+            {
+                Token = App.Config.Token,
+                Type = DataType.RenameUserGroup,
+                Data = old,
+                Data1 = group
             };
             Send(JsonConvert.SerializeObject(obj));
         }

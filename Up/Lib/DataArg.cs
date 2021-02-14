@@ -2,8 +2,8 @@
 {
     public class DataArg
     {
-        public const string TopicServer = "desktop/server";
-        public const string TopicClient = "desktop/client";
+        public const string TopicDesktopServer = "desktop/server";
+        public const string TopicDesktopClient = "desktop/client";
 
         public const string TopicAppServer = "app/server";
         public const string TopicAppClient = "app/client";

@@ -23,7 +23,8 @@ namespace ColoryrTrash.Desktop
         public static MqttUtils MqttUtils;
         public static Login LoginWindows;
         public static MapWindow MainWindow_;
-        public static ListWindows ListWindows_;
+        public static ListWindow ListWindow_;
+        public static UserListWindow UserListWindow_;
         public static MakeHardway MakeHardway_;
 
         public static string RunLocal;
@@ -108,14 +109,23 @@ namespace ColoryrTrash.Desktop
         {
             ThisApp.Dispatcher.Invoke(() =>
             {
-                if (ListWindows_ == null)
+                if (ListWindow_ == null)
                 {
-                    ListWindows_ = new();
-                    ListWindows_.Show();
+                    ListWindow_ = new();
+                    ListWindow_.Show();
                 }
                 else
                 {
-                    ListWindows_.GetList();
+                    ListWindow_.GetList();
+                }
+                if (UserListWindow_ == null)
+                {
+                    UserListWindow_ = new();
+                    UserListWindow_.Show();
+                }
+                else
+                {
+                    UserListWindow_.GetList();
                 }
             });
         }
