@@ -47,5 +47,10 @@ namespace ColoryrTrash.App
             flyoutPage.listView.SelectedItem = null;
             IsPresented = false;
         }
+
+        internal void SetName(string v)
+        {
+            flyoutPage.SetName(v);
+        }
     }
 }

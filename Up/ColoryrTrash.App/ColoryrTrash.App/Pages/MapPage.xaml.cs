@@ -9,8 +9,8 @@ namespace ColoryrTrash.App.Pages
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class MapPage : ContentPage
     {
-        private Dictionary<string, ItemSaveObj> Points = new Dictionary<string, ItemSaveObj>();
-        private object Lock = new object();
+        private readonly Dictionary<string, ItemSaveObj> Points = new Dictionary<string, ItemSaveObj>();
+        private readonly object Lock = new object();
         public MapPage()
         {
             InitializeComponent();
@@ -44,13 +44,12 @@ namespace ColoryrTrash.App.Pages
                 Points.Add(item.UUID, item);
             }
         }
-        private async void AddPoint(double x, double y, string title, string text)
+        private void AddPoint(double x, double y, string title, string text)
         {
             double X = x / 1000000;
             double Y = y / 1000000;
             string temp = $"addpoint({X}, {Y},'{title}','{text}')";
-            string data = await Web.EvaluateJavaScriptAsync(temp);
-            App.Show("信息", data);
+            Web.EvaluateJavaScriptAsync(temp);
         }
 
         public void ClearPoint()

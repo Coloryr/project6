@@ -20,6 +20,8 @@ namespace ColoryrTrash.App
         private string SelfServerTopic;
         private string SelfClientTopic;
         private bool IsConnecting;
+
+        public string Token { get; set; }
         public MqttUtils()
         {
             Client = new MqttFactory().CreateMqttClient() as MqttClient;
@@ -45,107 +47,22 @@ namespace ColoryrTrash.App
                             }
                             else
                             {
-                                //App.Start();
                                 App.IsLogin = true;
-                                //App.LoginWindows.LoginClose();
                                 App.Show("自动登录", "已自动登录");
                             }
                             break;
                         case DataType.Login:
                             if (obj.Res)
                             {
-                                App.Config.Token = obj.Data;
-                                //App.Save();
-                                //App.Start();
+                                Token = obj.Data;
+                                App.LoginDone();
                                 App.IsLogin = true;
-                                //App.LoginWindows.LoginClose();
                                 App.Show("登录", "登录成功");
                             }
                             else
                             {
                                 App.IsLogin = false;
                                 App.Show("登录", obj.Data);
-                            }
-                            break;
-                        case DataType.GetGroups:
-                            if (obj.Res == true)
-                            {
-                                var list = JsonConvert.DeserializeObject<List<string>>(obj.Data);
-                                //App.ListWindows_?.SetList(list);
-                            }
-                            else
-                            {
-                                App.IsLogin = false;
-                                App.Show("登录", obj.Data);
-                                //App.Login();
-                            }
-                            break;
-                        case DataType.GetGroupInfo:
-                            if (obj.Res == true)
-                            {
-                                if (obj.Data == null)
-                                {
-                                    App.Show("获取群组内容错误", obj.Data1);
-                                }
-                                else
-                                {
-                                    var list = JsonConvert.DeserializeObject<DataSaveObj>(obj.Data);
-                                    //App.ListWindows_?.SetInfo(list);
-                                }
-                            }
-                            else
-                            {
-                                App.IsLogin = false;
-                                App.Show("登录", obj.Data);
-                                //App.Login();
-                            }
-                            break;
-                        case DataType.AddGroup:
-                            if (obj.Res == true)
-                            {
-                                App.Show("添加组", obj.Data);
-                            }
-                            else
-                            {
-                                App.IsLogin = false;
-                                App.Show("登录", obj.Data);
-                                //App.Login();
-                            }
-                            break;
-                        case DataType.RenameGroup:
-                            if (obj.Res == true)
-                            {
-                                App.Show("修改组", obj.Data);
-                            }
-                            else
-                            {
-                                App.IsLogin = false;
-                                App.Show("登录", obj.Data);
-                                //App.Login();
-                            }
-                            break;
-                        case DataType.SetNick:
-                            if (obj.Res == true)
-                            {
-                                App.Show("设置备注", obj.Data);
-                            }
-                            else
-                            {
-                                App.IsLogin = false;
-                                App.Show("登录", obj.Data);
-                                //App.Login();
-                            }
-                            break;
-                        case DataType.CheckUUID:
-                            if (obj.Res == true)
-                            {
-                                App.Show("UUID检查", obj.Data);
-                            }
-                            else
-                            {
-                                App.IsLogin = false;
-                                App.Show("登录", obj.Data);
-                                //App.Login();
                             }
                             break;
                     }
@@ -156,15 +73,6 @@ namespace ColoryrTrash.App
                     var obj = JsonConvert.DeserializeObject<DataPackObj>(Message);
                     switch (obj.Type)
                     {
-                        case DataType.AddGroup:
-                            //App.ListWindows_.AddGroup(obj.Data);
-                            break;
-                        case DataType.RenameGroup:
-                            //App.ListWindows_.RenameGroup(obj.Data, obj.Data1);
-                            break;
-                        case DataType.MoveGroup:
-                            //App.ListWindows_.MoveGroup(obj.Data, obj.Data1);
-                            break;
                         case DataType.Updata:
                             var obj1 = JsonConvert.DeserializeObject<ItemSaveObj>(obj.Data1);
                             //App.ListWindows_.Updata(obj.Data, obj1);
@@ -181,8 +89,8 @@ namespace ColoryrTrash.App
         private void OnMqttClientDisConnected(MqttClientDisconnectedEventArgs arg)
         {
             App.Show("服务器", "服务器连接断开");
-            //if (!IsConnecting)
-            //App.DisConnect();
+            if (!IsConnecting)
+                App.LoginOut();
         }
 
         private void OnMqttClientConnected(MqttClientConnectedEventArgs arg)
@@ -276,80 +184,6 @@ namespace ColoryrTrash.App
             {
                 Type = DataType.Login,
                 Data = Tools.GenSHA1(pass)
-            };
-            Send(JsonConvert.SerializeObject(obj));
-        }
-
-        public void GetGroups()
-        {
-            var obj = new DataPackObj
-            {
-                Token = App.Config.Token,
-                Type = DataType.GetGroups
-            };
-            Send(JsonConvert.SerializeObject(obj));
-        }
-        public void GetGroupInfo(string group)
-        {
-            var obj = new DataPackObj
-            {
-                Token = App.Config.Token,
-                Type = DataType.GetGroupInfo,
-                Data = group
-            };
-            Send(JsonConvert.SerializeObject(obj));
-        }
-        public void AddGroup(string group)
-        {
-            var obj = new DataPackObj
-            {
-                Token = App.Config.Token,
-                Type = DataType.AddGroup,
-                Data = group
-            };
-            Send(JsonConvert.SerializeObject(obj));
-        }
-        public void RenameGroup(string old, string res)
-        {
-            var obj = new DataPackObj
-            {
-                Token = App.Config.Token,
-                Type = DataType.RenameGroup,
-                Data = old,
-                Data1 = res
-            };
-            Send(JsonConvert.SerializeObject(obj));
-        }
-        public void MoveGroup(string uuid, string res)
-        {
-            var obj = new DataPackObj
-            {
-                Token = App.Config.Token,
-                Type = DataType.MoveGroup,
-                Data = uuid,
-                Data1 = res
-            };
-            Send(JsonConvert.SerializeObject(obj));
-        }
-        public void SetNick(string uuid, string res)
-        {
-            var obj = new DataPackObj
-            {
-                Token = App.Config.Token,
-                Type = DataType.SetNick,
-                Data = uuid,
-                Data1 = res
-            };
-            Send(JsonConvert.SerializeObject(obj));
-        }
-
-        public void CheckUUID(string uuid)
-        {
-            var obj = new DataPackObj
-            {
-                Token = App.Config.Token,
-                Type = DataType.CheckUUID,
-                Data = uuid
             };
             Send(JsonConvert.SerializeObject(obj));
         }

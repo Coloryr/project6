@@ -34,13 +34,15 @@ namespace ColoryrTrash.App
         private static byte[] ImgData;
         private static byte[] WebData;
 
+        private static string fileName;
+
         public App()
         {
             ThisApp = this;
             InitializeComponent();
 
             notificationManager = DependencyService.Get<INotificationManager>();
-            string fileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "config.json");
+            fileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "config.json");
             Config = ConfigSave.Config(new ConfigObj()
             {
                 AutoLogin = false,
@@ -99,6 +101,68 @@ namespace ColoryrTrash.App
             });
         }
 
+        public static void Show(string title, string text)
+        {
+            notificationManager.SendNotification(title, text);
+        }
+        public static void LoginDone()
+        {
+            IsLogin = true;
+            Save();
+            mainPage.SetName(Config.User);
+            loginPage.Updata();
+        }
+        public static void LoginOut()
+        {
+            Config.Token = "";
+            IsLogin = false;
+            Save();
+            mainPage.SetName("未登录");
+            loginPage.Updata();
+        }
+        private static void Save()
+        {
+            if (Config.AutoLogin)
+            {
+                Config.Token = MqttUtils.Token;
+            }
+            ConfigSave.Save(Config, fileName);
+        }
+
+        public static async void Login(string pass)
+        {
+            if (!await MqttUtils.Start())
+            { 
+                return;
+            }
+            MqttUtils.Login(pass);
+        }
+
+        protected override async void OnStart()
+        {
+            if (!await MqttUtils.Start())
+            {
+                return;
+            }
+            if (Config.AutoLogin)
+            {
+                MqttUtils.Token = Config.Token;
+                MqttUtils.CheckLogin(Config.Token);
+            }
+            if (!IsLogin)
+            {
+                mainPage.Switch("Login");
+            }
+        }
+
+        protected override void OnSleep()
+        {
+        }
+
+        protected override void OnResume()
+        {
+        }
+
         private void ContextReady(IAsyncResult ar)
         {
             try
@@ -122,43 +186,6 @@ namespace ColoryrTrash.App
             {
 
             }
-        }
-
-        public static void Show(string title, string text)
-        {
-            notificationManager.SendNotification(title, text);
-        }
-
-        public static async void Login()
-        {
-            if (!await MqttUtils.Start())
-            { 
-                return;
-            }
-        }
-
-        protected override async void OnStart()
-        {
-            if (!await MqttUtils.Start())
-            {
-                return;
-            }
-            if (Config.AutoLogin)
-            {
-                MqttUtils.CheckLogin(Config.Token);
-            }
-            if (!IsLogin)
-            {
-                mainPage.Switch("Login");
-            }
-        }
-
-        protected override void OnSleep()
-        {
-        }
-
-        protected override void OnResume()
-        {
         }
     }
 }

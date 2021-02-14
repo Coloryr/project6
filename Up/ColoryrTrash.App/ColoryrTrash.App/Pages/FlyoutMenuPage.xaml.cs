@@ -16,5 +16,13 @@ namespace ColoryrTrash.App.Pages
         {
             InitializeComponent();
         }
+
+        internal void SetName(string v)
+        {
+            Dispatcher.BeginInvokeOnMainThread(() =>
+            {
+                UserName.Text = $"欢迎回来 {v}";
+            });
+        }
     }
 }

@@ -14,50 +14,73 @@ namespace ColoryrTrash.App.Pages
         public LoginPage()
         {
             InitializeComponent();
+            Updata();
+        }
+
+        public void Updata()
+        {
             IP.Text = App.Config.IP;
             Port.Text = App.Config.Port.ToString();
             User.Text = App.Config.User;
             Save.IsToggled = App.Config.AutoLogin;
+            if (App.IsLogin)
+            {
+                CloseAll();
+                Login_Button.Text = "登出";
+                Login_Button.IsEnabled = true;
+            }
+            else
+            {
+                OpenAll();
+                Login_Button.Text = "登录";
+            }
         }
 
         private async void Login_Clicked(object sender, EventArgs e)
         {
-            if (IsLoging)
-                return;
-            IsLoging = true;
-            int port;
-            if (!int.TryParse(Port.Text, out port))
+            if (App.IsLogin)
             {
-                await DisplayAlert("错误", "端口号不正确", "确定");
-                IsLoging = false;
-                return;
-            }
-            if (string.IsNullOrWhiteSpace(User.Text))
-            {
-                await DisplayAlert("错误", "用户名为空", "确定");
-                IsLoging = false;
-                return;
-            }
-            if (string.IsNullOrWhiteSpace(Pass.Text))
-            {
-                await DisplayAlert("错误", "密码为空", "确定");
-                IsLoging = false;
-                return;
-            }
-            CloseAll();
-            App.Config.IP = IP.Text;
-            App.Config.Port = port;
-            App.Config.User = User.Text;
-            App.Config.AutoLogin = Save.IsToggled;
-            Login_Button.Text = "登录中...";
-            Act.IsRunning = true;
+                if (IsLoging)
+                    return;
+                IsLoging = true;
+                int port;
+                if (!int.TryParse(Port.Text, out port))
+                {
+                    await DisplayAlert("错误", "端口号不正确", "确定");
+                    IsLoging = false;
+                    return;
+                }
+                if (string.IsNullOrWhiteSpace(User.Text))
+                {
+                    await DisplayAlert("错误", "用户名为空", "确定");
+                    IsLoging = false;
+                    return;
+                }
+                if (string.IsNullOrWhiteSpace(Pass.Text))
+                {
+                    await DisplayAlert("错误", "密码为空", "确定");
+                    IsLoging = false;
+                    return;
+                }
+                CloseAll();
+                App.Config.IP = IP.Text;
+                App.Config.Port = port;
+                App.Config.User = User.Text;
+                App.Config.AutoLogin = Save.IsToggled;
+                Login_Button.Text = "登录中...";
+                Act.IsRunning = true;
 
-            await Task.Delay(20000);
+                App.Login(Pass.Text);
 
-            OpenAll();
-            Login_Button.Text = "登录";
-            Act.IsRunning = false;
-            IsLoging = false;
+                OpenAll();
+                Login_Button.Text = "登录";
+                Act.IsRunning = false;
+                IsLoging = false;
+            }
+            else 
+            {
+                App.LoginOut();
+            }
         }
 
         private void CloseAll()
