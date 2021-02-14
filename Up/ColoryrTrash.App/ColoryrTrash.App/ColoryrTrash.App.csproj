@@ -10,6 +10,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="html.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="html.txt" />
     <EmbeddedResource Include="map.png" />
   </ItemGroup>
 
@@ -39,10 +44,6 @@
     <EmbeddedResource Update="Pages\MapPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Style\" />
   </ItemGroup>
 
   <ItemGroup>

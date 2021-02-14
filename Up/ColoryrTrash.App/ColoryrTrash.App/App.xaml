@@ -4,7 +4,15 @@
              x:Class="ColoryrTrash.App.App">
     <Application.Resources>
         <ResourceDictionary>
-            
-        </ResourceDictionary>        
+            <Style x:Key="buttonStyle" TargetType="Button">
+                <Setter Property="HorizontalOptions" Value="Center" />
+                <Setter Property="VerticalOptions" Value="CenterAndExpand" />
+                <Setter Property="BorderColor" Value="#FF5EBDD3" />
+                <Setter Property="BorderRadius" Value="10" />
+                <Setter Property="BorderWidth" Value="2" />
+                <Setter Property="BackgroundColor" Value="Transparent"/>
+                <Setter Property="TextColor" Value="Black" />
+            </Style>
+        </ResourceDictionary>
     </Application.Resources>
 </Application>

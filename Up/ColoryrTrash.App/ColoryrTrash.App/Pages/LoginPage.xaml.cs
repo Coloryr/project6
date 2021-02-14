@@ -14,27 +14,10 @@ namespace ColoryrTrash.App.Pages
         public LoginPage()
         {
             InitializeComponent();
-            if (App.Config.AutoLogin)
-            {
-                Task.Run(() =>
-                {
-                    Thread.Sleep(2000);
-                    Login();
-                });
-            }
             IP.Text = App.Config.IP;
             Port.Text = App.Config.Port.ToString();
             User.Text = App.Config.User;
             Save.IsToggled = App.Config.AutoLogin;
-        }
-
-        public async void Login()
-        {
-            if (!await App.MqttUtils.Start())
-            {
-                App.ShowB("服务器", "服务器连接失败");
-                return;
-            }
         }
 
         private async void Login_Clicked(object sender, EventArgs e)

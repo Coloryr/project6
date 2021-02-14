@@ -2,7 +2,8 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:ColoryrTrash.App;assembly=ColoryrTrash.App"
-             x:Class="ColoryrTrash.App.Pages.LoginPage">
+             x:Class="ColoryrTrash.App.Pages.LoginPage"
+             Title="用户信息">
     <StackLayout HorizontalOptions="CenterAndExpand" 
                  VerticalOptions="CenterAndExpand">
         <Image Source="{local:ImageResource ColoryrTrash.App.map.png}"/>
@@ -47,7 +48,23 @@
         <StackLayout>
             <Button Text="登录" HorizontalOptions="CenterAndExpand"
                     WidthRequest="200" FontSize="20"
-                    Clicked="Login_Clicked" x:Name="Login_Button"/>
+                    Clicked="Login_Clicked" x:Name="Login_Button"
+                    Style="{DynamicResource buttonStyle}">
+                <VisualStateManager.VisualStateGroups>
+                    <VisualStateGroup x:Name="CommonStates">
+                        <VisualState x:Name="Normal">
+                            <VisualState.Setters>
+                                <Setter Property="BackgroundColor" Value="Transparent"/>
+                            </VisualState.Setters>
+                        </VisualState>
+                        <VisualState x:Name="Pressed">
+                            <VisualState.Setters>
+                                <Setter Property="BackgroundColor" Value="#FF5EBDD3"/>
+                            </VisualState.Setters>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateManager.VisualStateGroups>
+            </Button>
             <ActivityIndicator IsRunning="False"
                                Color="#5EBDD3" x:Name="Act"/>
         </StackLayout>

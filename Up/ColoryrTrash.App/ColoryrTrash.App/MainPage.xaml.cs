@@ -17,38 +17,33 @@ namespace ColoryrTrash.App
         {
             InitializeComponent();
             flyoutPage.listView.ItemSelected += OnItemSelected;
-            if (!App.IsLogin)
-            {
-                Switch("Login");
-            }
         }
+
         void OnItemSelected(object sender, SelectedItemChangedEventArgs e)
         {
             var item = e.SelectedItem as FlyoutPageItem;
             if (item != null)
             {
-                Switch(item);
+                Switch(item.Name);
             }
         }
         public void Switch(string name)
         {
-            foreach (var item in flyoutPage.listView.ItemsSource)
+            switch (name)
             {
-                var temp = item as FlyoutPageItem;
-                if (temp != null)
-                {
-                    if (temp.Name == name)
-                    {
-                        Switch(temp);
-                        return;
-                    }
-                }
+                case "Main":
+                    Detail = App.helloPage_;
+                    break;
+                case "Info":
+                    Detail = App.infoPage_;
+                    break;
+                case "Login":
+                    Detail = App.loginPage_;
+                    break;
+                case "Map":
+                    Detail = App.mapPage_;
+                    break;
             }
-        }
-
-        public void Switch(FlyoutPageItem item)
-        {
-            Detail = new NavigationPage((Page)Activator.CreateInstance(item.TargetType));
             flyoutPage.listView.SelectedItem = null;
             IsPresented = false;
         }

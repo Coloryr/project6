@@ -20,22 +20,12 @@ namespace ColoryrTrash.App
         private string SelfServerTopic;
         private string SelfClientTopic;
         private bool IsConnecting;
-
-        public bool isok;
         public MqttUtils()
         {
-            try
-            {
-                Client = new MqttFactory().CreateMqttClient() as MqttClient;
-                Client.ConnectedHandler = new MqttClientConnectedHandlerDelegate(OnMqttClientConnected);
-                Client.DisconnectedHandler = new MqttClientDisconnectedHandlerDelegate(OnMqttClientDisConnected);
-                Client.ApplicationMessageReceivedHandler = new MqttApplicationMessageReceivedHandlerDelegate(OnSubscriberMessageReceived);
-                isok = true;
-            }
-            catch
-            {
-                isok = false;
-            }
+            Client = new MqttFactory().CreateMqttClient() as MqttClient;
+            Client.ConnectedHandler = new MqttClientConnectedHandlerDelegate(OnMqttClientConnected);
+            Client.DisconnectedHandler = new MqttClientDisconnectedHandlerDelegate(OnMqttClientDisConnected);
+            Client.ApplicationMessageReceivedHandler = new MqttApplicationMessageReceivedHandlerDelegate(OnSubscriberMessageReceived);
         }
 
         private void OnSubscriberMessageReceived(MqttApplicationMessageReceivedEventArgs arg)
@@ -51,14 +41,14 @@ namespace ColoryrTrash.App
                         case DataType.CheckLogin:
                             if (obj.Res == false)
                             {
-                                App.ShowB("自动登录", "自动登录失败");
+                                App.Show("自动登录", "自动登录失败");
                             }
                             else
                             {
                                 //App.Start();
                                 App.IsLogin = true;
                                 //App.LoginWindows.LoginClose();
-                                App.ShowA("自动登录", "已自动登录");
+                                App.Show("自动登录", "已自动登录");
                             }
                             break;
                         case DataType.Login:
@@ -69,12 +59,12 @@ namespace ColoryrTrash.App
                                 //App.Start();
                                 App.IsLogin = true;
                                 //App.LoginWindows.LoginClose();
-                                App.ShowA("登录", "登录成功");
+                                App.Show("登录", "登录成功");
                             }
                             else
                             {
                                 App.IsLogin = false;
-                                App.ShowB("登录", obj.Data);
+                                App.Show("登录", obj.Data);
                             }
                             break;
                         case DataType.GetGroups:
@@ -86,7 +76,7 @@ namespace ColoryrTrash.App
                             else
                             {
                                 App.IsLogin = false;
-                                App.ShowB("登录", obj.Data);
+                                App.Show("登录", obj.Data);
                                 //App.Login();
                             }
                             break;
@@ -95,7 +85,7 @@ namespace ColoryrTrash.App
                             {
                                 if (obj.Data == null)
                                 {
-                                    App.ShowB("获取群组内容错误", obj.Data1);
+                                    App.Show("获取群组内容错误", obj.Data1);
                                 }
                                 else
                                 {
@@ -106,55 +96,55 @@ namespace ColoryrTrash.App
                             else
                             {
                                 App.IsLogin = false;
-                                App.ShowB("登录", obj.Data);
+                                App.Show("登录", obj.Data);
                                 //App.Login();
                             }
                             break;
                         case DataType.AddGroup:
                             if (obj.Res == true)
                             {
-                                App.ShowA("添加组", obj.Data);
+                                App.Show("添加组", obj.Data);
                             }
                             else
                             {
                                 App.IsLogin = false;
-                                App.ShowB("登录", obj.Data);
+                                App.Show("登录", obj.Data);
                                 //App.Login();
                             }
                             break;
                         case DataType.RenameGroup:
                             if (obj.Res == true)
                             {
-                                App.ShowA("修改组", obj.Data);
+                                App.Show("修改组", obj.Data);
                             }
                             else
                             {
                                 App.IsLogin = false;
-                                App.ShowB("登录", obj.Data);
+                                App.Show("登录", obj.Data);
                                 //App.Login();
                             }
                             break;
                         case DataType.SetNick:
                             if (obj.Res == true)
                             {
-                                App.ShowA("设置备注", obj.Data);
+                                App.Show("设置备注", obj.Data);
                             }
                             else
                             {
                                 App.IsLogin = false;
-                                App.ShowB("登录", obj.Data);
+                                App.Show("登录", obj.Data);
                                 //App.Login();
                             }
                             break;
                         case DataType.CheckUUID:
                             if (obj.Res == true)
                             {
-                                App.ShowA("UUID检查", obj.Data);
+                                App.Show("UUID检查", obj.Data);
                             }
                             else
                             {
                                 App.IsLogin = false;
-                                App.ShowB("登录", obj.Data);
+                                App.Show("登录", obj.Data);
                                 //App.Login();
                             }
                             break;
@@ -190,14 +180,14 @@ namespace ColoryrTrash.App
 
         private void OnMqttClientDisConnected(MqttClientDisconnectedEventArgs arg)
         {
-            App.ShowA("服务器", "服务器连接断开");
+            App.Show("服务器", "服务器连接断开");
             //if (!IsConnecting)
             //App.DisConnect();
         }
 
         private void OnMqttClientConnected(MqttClientConnectedEventArgs arg)
         {
-            App.ShowA("服务器", "服务器已连接");
+            App.Show("服务器", "服务器已连接");
         }
 
         private void Send(string message)
@@ -213,12 +203,6 @@ namespace ColoryrTrash.App
                 Client.PublishAsync(obj);
             }
         }
-
-        public bool Check()
-        {
-            return Client.IsConnected;
-        }
-
         public async Task<bool> Start()
         {
             try
@@ -260,6 +244,7 @@ namespace ColoryrTrash.App
             {
                 //App.LogError(e);
             }
+            App.Show("服务器", "服务器连接失败");
             return false;
         }
 

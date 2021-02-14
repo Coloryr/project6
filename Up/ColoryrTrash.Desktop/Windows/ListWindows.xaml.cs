@@ -115,8 +115,8 @@ namespace ColoryrTrash.Desktop.Windows
 
         private string GetString(ItemSaveObj item)
         {
-            return $"垃圾桶别称:{item.Nick}<br/>垃圾桶坐标:{(double)item.X / 1000}, {(double)item.Y / 1000}" +
-                $"<br/>垃圾桶容量:{item.Capacity}<br/>垃圾桶是否打开{item.Open}" +
+            return $"垃圾桶别称:{item.Nick}<br/>垃圾桶坐标:{(double)item.X / 1000000}, {(double)item.Y / 1000000}" +
+                $"<br/>垃圾桶容量:{item.Capacity}<br/>垃圾桶是否打开:{item.Open}" +
                 $"<br/>垃圾桶状态:{item.State}<br/>垃圾桶上线时间:{item.Time}";
         }
 
