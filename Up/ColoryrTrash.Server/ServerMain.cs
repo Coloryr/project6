@@ -9,6 +9,7 @@ namespace ColoryrTrash.Server
         public static string RunLocal;
         public static ConfigObj Config;
         public static SaveDataUtil SaveData;
+        public static SaveUserUtil UserData;
 
         private static Logs Logs;
         private static Logs UserLog;
@@ -31,6 +32,9 @@ namespace ColoryrTrash.Server
 
             SaveData = new();
             SaveData.Start();
+
+            UserData = new();
+            UserData.Start();
             //创建日志文件
 
             SocketServer.Start();
@@ -58,6 +62,7 @@ namespace ColoryrTrash.Server
             SocketServer.Stop();
             ThisMqttServer.Stop();
             SaveData.Stop();
+            UserData.Stop();
         }
 
         /// <summary>

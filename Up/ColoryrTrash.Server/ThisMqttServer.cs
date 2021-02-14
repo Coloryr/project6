@@ -257,6 +257,21 @@ namespace ColoryrTrash.Server
             }
         }
 
+        internal static void UpdateUserItem(string emptyGroup, UserSaveObj item)
+        {
+            
+        }
+
+        internal static void RenameUserGroup(string temp, string temp1)
+        {
+            
+        }
+
+        internal static void AddUserGroup(string name)
+        {
+            
+        }
+
         private static void OnUnsubscribedTopic(MqttServerClientUnsubscribedTopicEventArgs arg)
         {
             ServerMain.LogOut($"客户端[{arg.ClientId}]取消订阅频道[{arg.TopicFilter}]");
@@ -373,7 +388,7 @@ namespace ColoryrTrash.Server
             Task.Run(() => SendAll(JsonConvert.SerializeObject(send)));
         }
 
-        public static void UpdateItem(string group, ItemSaveObj obj)
+        public static void UpdateItem(string group, TrashSaveObj obj)
         {
             var send = new DataPackObj
             {

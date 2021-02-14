@@ -13,5 +13,15 @@ namespace Lib
                 temp = temp.ToLower();
             return temp;
         }
+        public static string EnBase64(string data)
+        {
+            var temp = Encoding.UTF8.GetBytes(data);
+            return Convert.ToBase64String(temp);
+        }
+        public static string DeBase64(string data)
+        {
+            var temp = Convert.FromBase64String(data);
+            return Encoding.UTF8.GetString(temp);
+        }
     }
 }

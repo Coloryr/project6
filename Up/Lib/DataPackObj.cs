@@ -10,29 +10,25 @@ namespace Lib
         AddUser, RemoveUser, SetUser, SetUserTask,
         GetUserInfo, GetUsetTask
     }
-    public class PackBase
+    public enum ItemState
+    {
+        Ok, Error, LowBattery
+    }
+    public class DataPackObj
     {
         public string Token { get; set; }
-    }
-    public class DataPackObj : PackBase
-    {
         public DataType Type { get; set; }
         public bool Res { get; set; }
         public string Data { get; set; }
         public string Data1 { get; set; }
     }
-    public class DataSaveObj
+
+    public class TrashDataSaveObj
     {
-        public Dictionary<string, ItemSaveObj> List { get; set; }
+        public Dictionary<string, TrashSaveObj> List { get; set; }
         public string Name { get; set; }
     }
-
-    public enum ItemState
-    {
-        Ok, Error, LowBattery
-    }
-
-    public class ItemSaveObj
+    public class TrashSaveObj
     {
         public string UUID { get; set; }
         public string Nick { get; set; }
@@ -43,5 +39,18 @@ namespace Lib
         public bool Open { get; set; }
         public ItemState State { get; set; }
         public string SIM { get; set; }
+    }
+
+    public class UserSaveObj
+    {
+        public string ID { get; set; }
+        public string Group { get; set; }
+        public string Pass { get; set; }
+        public string LoginTime { get; set; }
+    }
+    public class UserDataSaveObj
+    {
+        public Dictionary<string, UserSaveObj> List { get; set; }
+        public string Name { get; set; }
     }
 }

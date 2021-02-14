@@ -99,7 +99,7 @@ namespace ColoryrTrash.Desktop
                                 }
                                 else
                                 {
-                                    var list = JsonConvert.DeserializeObject<DataSaveObj>(obj.Data);
+                                    var list = JsonConvert.DeserializeObject<TrashDataSaveObj>(obj.Data);
                                     App.ListWindows_?.SetInfo(list);
                                 }
                             }
@@ -176,7 +176,7 @@ namespace ColoryrTrash.Desktop
                             App.ListWindows_.MoveGroup(obj.Data, obj.Data1);
                             break;
                         case DataType.Updata:
-                            var obj1 = JsonConvert.DeserializeObject<ItemSaveObj>(obj.Data1);
+                            var obj1 = JsonConvert.DeserializeObject<TrashSaveObj>(obj.Data1);
                             App.ListWindows_.Updata(obj.Data, obj1);
                             break;
                     }

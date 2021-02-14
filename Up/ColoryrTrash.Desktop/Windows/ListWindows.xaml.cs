@@ -11,7 +11,7 @@ namespace ColoryrTrash.Desktop.Windows
     /// </summary>
     public partial class ListWindows : Window
     {
-        private DataSaveObj obj;
+        private TrashDataSaveObj obj;
         private List<string> list;
         public ListWindows()
         {
@@ -63,7 +63,7 @@ namespace ColoryrTrash.Desktop.Windows
             });
         }
 
-        internal void SetInfo(DataSaveObj list)
+        internal void SetInfo(TrashDataSaveObj list)
         {
             obj = list;
             Dispatcher.Invoke(() =>
@@ -113,7 +113,7 @@ namespace ColoryrTrash.Desktop.Windows
             }
         }
 
-        private string GetString(ItemSaveObj item)
+        private string GetString(TrashSaveObj item)
         {
             return $"垃圾桶别称:{item.Nick}<br/>垃圾桶坐标:{(double)item.X / 1000000}, {(double)item.Y / 1000000}" +
                 $"<br/>垃圾桶容量:{item.Capacity}<br/>垃圾桶是否打开:{item.Open}" +
@@ -124,7 +124,7 @@ namespace ColoryrTrash.Desktop.Windows
         {
             if (List.SelectedItem == null)
                 return;
-            var obj = List.SelectedItem as ItemSaveObj;
+            var obj = List.SelectedItem as TrashSaveObj;
             if (obj.X == 0 && obj.Y == 0)
             {
                 App.ShowA("追踪", "无法追踪");
@@ -189,7 +189,7 @@ namespace ColoryrTrash.Desktop.Windows
         {
             if (List.SelectedItem == null)
                 return;
-            var obj = List.SelectedItem as ItemSaveObj;
+            var obj = List.SelectedItem as TrashSaveObj;
             var res = new GroupChose(list, obj.UUID, GroupList.SelectedItem as string).Set();
             if (res != GroupList.SelectedItem as string)
             {
@@ -201,7 +201,7 @@ namespace ColoryrTrash.Desktop.Windows
         {
             if (List.SelectedItem == null)
                 return;
-            var obj = List.SelectedItem as ItemSaveObj;
+            var obj = List.SelectedItem as TrashSaveObj;
             var res = new InputWindow("设置备注", obj.Nick).Set();
             if (string.IsNullOrWhiteSpace(res))
                 return;
@@ -216,7 +216,7 @@ namespace ColoryrTrash.Desktop.Windows
                 {
                     foreach (var item in List.Items)
                     {
-                        var obj = item as ItemSaveObj;
+                        var obj = item as TrashSaveObj;
                         if (obj.UUID == uuid)
                         {
                             List.Items.Remove(obj);
@@ -231,7 +231,7 @@ namespace ColoryrTrash.Desktop.Windows
             });
         }
 
-        public void Updata(string group, ItemSaveObj item)
+        public void Updata(string group, TrashSaveObj item)
         {
             Dispatcher.Invoke(() =>
             {
@@ -239,7 +239,7 @@ namespace ColoryrTrash.Desktop.Windows
                 {
                     foreach (var item1 in List.Items)
                     {
-                        var obj = item1 as ItemSaveObj;
+                        var obj = item1 as TrashSaveObj;
                         if (obj.UUID == item.UUID)
                         {
                             List.Items.Remove(item1);
