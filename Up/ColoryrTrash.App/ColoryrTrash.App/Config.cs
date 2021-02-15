@@ -32,6 +32,11 @@ namespace ColoryrTrash.App
                 lock (Locker)
                 {
                     obj = JsonConvert.DeserializeObject<T>(File.ReadAllText(FilePath));
+                    if (obj1 == null)
+                        obj = new T();
+                    else
+                        obj = obj1;
+                    Save(obj, FilePath);
                 }
             }
             return obj;
