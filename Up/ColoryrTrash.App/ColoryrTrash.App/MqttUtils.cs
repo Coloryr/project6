@@ -67,16 +67,13 @@ namespace ColoryrTrash.App
                             break;
                     }
                 }
-                else if (arg.ApplicationMessage.Topic == DataArg.TopicServer)
+                else if (arg.ApplicationMessage.Topic == DataArg.TopicAppServer)
                 {
                     string Message = Encoding.UTF8.GetString(arg.ApplicationMessage.Payload);
                     var obj = JsonConvert.DeserializeObject<DataPackObj>(Message);
                     switch (obj.Type)
                     {
-                        case DataType.Updata:
-                            var obj1 = JsonConvert.DeserializeObject<ItemSaveObj>(obj.Data1);
-                            //App.ListWindows_.Updata(obj.Data, obj1);
-                            break;
+                        
                     }
                 }
             }
@@ -141,10 +138,10 @@ namespace ColoryrTrash.App
                 options.ClientId = App.Config.User;
 
                 await Client.ConnectAsync(options);
-                SelfServerTopic = DataArg.TopicServer + "/" + App.Config.User;
-                SelfClientTopic = DataArg.TopicClient + "/" + App.Config.User;
+                SelfServerTopic = DataArg.TopicAppServer + "/" + App.Config.User;
+                SelfClientTopic = DataArg.TopicAppClient + "/" + App.Config.User;
                 await Client.SubscribeAsync(SelfServerTopic);
-                await Client.SubscribeAsync(DataArg.TopicServer);
+                await Client.SubscribeAsync(DataArg.TopicAppServer);
                 IsConnecting = false;
                 return true;
             }

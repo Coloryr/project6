@@ -1,4 +1,5 @@
 ﻿using ColoryrTrash.App.Pages;
+using Lib;
 using System;
 using System.IO;
 using System.Net;
@@ -91,7 +92,7 @@ namespace ColoryrTrash.App
             Task.Run(() =>
             {
                 Thread.Sleep(5000);
-                mapPage.AddPoint(new Lib.ItemSaveObj
+                mapPage.AddPoint(new TrashSaveObj
                 {
                     X = 116408293,
                     Y = 39918477,
@@ -117,7 +118,7 @@ namespace ColoryrTrash.App
             Config.Token = "";
             IsLogin = false;
             Save();
-            mainPage.SetName("未登录");
+            mainPage.ClearName();
             loginPage.Updata();
         }
         private static void Save()

@@ -24,5 +24,13 @@ namespace ColoryrTrash.App.Pages
                 UserName.Text = $"欢迎回来 {v}";
             });
         }
+
+        public void ClearName()
+        {
+            Dispatcher.BeginInvokeOnMainThread(() =>
+            {
+                UserName.Text = "未登录";
+            });
+        }
     }
 }

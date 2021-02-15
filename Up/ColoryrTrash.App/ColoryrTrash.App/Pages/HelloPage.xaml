@@ -3,9 +3,17 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="ColoryrTrash.App.Pages.HelloPage"
              Title="欢迎界面">
-    <ContentPage.Content>
+    <Grid BackgroundColor="#FFF4F4F5">
         <StackLayout>
-            <Label Text="Reminder data goes here" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" />
+            <Label Margin="40,20,0,0" FontSize="30" Text="未登录" x:Name="User"/>
+            <StackLayout Orientation="Horizontal">
+                <Label Margin="40,20,0,0" FontSize="20" Text="群组:"/>
+                <Label Margin="10,20,0,0" FontSize="20" Text="组" x:Name="Group"/>
+            </StackLayout>
+            <StackLayout Orientation="Horizontal">
+                <Label Margin="40,20,0,0" FontSize="20" Text="登录时间:"/>
+                <Label Margin="10,20,0,0" FontSize="20" Text="2020" x:Name="LoginTime"/>
+            </StackLayout>
         </StackLayout>
-    </ContentPage.Content>
+    </Grid>
 </ContentPage>

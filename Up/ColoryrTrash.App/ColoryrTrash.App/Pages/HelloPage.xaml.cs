@@ -16,5 +16,13 @@ namespace ColoryrTrash.App.Pages
         {
             InitializeComponent();
         }
+
+        public void ClearName()
+        {
+            Dispatcher.BeginInvokeOnMainThread(() =>
+            {
+                User.Text = "未登录";
+            });
+        }
     }
 }

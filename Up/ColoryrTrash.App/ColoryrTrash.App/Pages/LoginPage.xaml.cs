@@ -19,21 +19,24 @@ namespace ColoryrTrash.App.Pages
 
         public void Updata()
         {
-            IP.Text = App.Config.IP;
-            Port.Text = App.Config.Port.ToString();
-            User.Text = App.Config.User;
-            Save.IsToggled = App.Config.AutoLogin;
-            if (App.IsLogin)
+            Dispatcher.BeginInvokeOnMainThread(() =>
             {
-                CloseAll();
-                Login_Button.Text = "登出";
-                Login_Button.IsEnabled = true;
-            }
-            else
-            {
-                OpenAll();
-                Login_Button.Text = "登录";
-            }
+                IP.Text = App.Config.IP;
+                Port.Text = App.Config.Port.ToString();
+                User.Text = App.Config.User;
+                Save.IsToggled = App.Config.AutoLogin;
+                if (App.IsLogin)
+                {
+                    CloseAll();
+                    Login_Button.Text = "登出";
+                    Login_Button.IsEnabled = true;
+                }
+                else
+                {
+                    OpenAll();
+                    Login_Button.Text = "登录";
+                }
+            });
         }
 
         private async void Login_Clicked(object sender, EventArgs e)

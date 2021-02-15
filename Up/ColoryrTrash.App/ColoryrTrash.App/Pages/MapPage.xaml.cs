@@ -9,7 +9,7 @@ namespace ColoryrTrash.App.Pages
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class MapPage : ContentPage
     {
-        private readonly Dictionary<string, ItemSaveObj> Points = new Dictionary<string, ItemSaveObj>();
+        private readonly Dictionary<string, TrashSaveObj> Points = new Dictionary<string, TrashSaveObj>();
         private readonly object Lock = new object();
         public MapPage()
         {
@@ -30,14 +30,14 @@ namespace ColoryrTrash.App.Pages
             }
         }
 
-        private string GetString(ItemSaveObj item)
+        private string GetString(TrashSaveObj item)
         {
             return $"垃圾桶别称:{item.Nick}<br/>垃圾桶坐标:{(double)item.X / 1000000}, {(double)item.Y / 1000000}" +
                 $"<br/>垃圾桶容量:{item.Capacity}<br/>垃圾桶是否打开:{item.Open}" +
                 $"<br/>垃圾桶状态:{item.State}<br/>垃圾桶上线时间:{item.Time}";
         }
 
-        public void AddPoint(ItemSaveObj item)
+        public void AddPoint(TrashSaveObj item)
         {
             lock (Lock)
             {

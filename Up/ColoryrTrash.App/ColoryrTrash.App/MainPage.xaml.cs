@@ -13,6 +13,7 @@ namespace ColoryrTrash.App
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class MainPage : FlyoutPage
     {
+        private string NowSel;
         public MainPage()
         {
             InitializeComponent();
@@ -24,7 +25,8 @@ namespace ColoryrTrash.App
             var item = e.SelectedItem as FlyoutPageItem;
             if (item != null)
             {
-                Switch(item.Name);
+                if (NowSel != item.Name)
+                    Switch(item.Name);
             }
         }
         public void Switch(string name)
@@ -44,13 +46,18 @@ namespace ColoryrTrash.App
                     Detail = App.mapPage_;
                     break;
             }
-            flyoutPage.listView.SelectedItem = null;
             IsPresented = false;
+            NowSel = name;
         }
 
         internal void SetName(string v)
         {
             flyoutPage.SetName(v);
+        }
+
+        public void ClearName()
+        {
+            flyoutPage.ClearName();
         }
     }
 }

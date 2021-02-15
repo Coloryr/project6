@@ -4,69 +4,72 @@
              xmlns:local="clr-namespace:ColoryrTrash.App;assembly=ColoryrTrash.App"
              x:Class="ColoryrTrash.App.Pages.LoginPage"
              Title="用户信息">
-    <StackLayout HorizontalOptions="CenterAndExpand" 
+    <Grid BackgroundColor="#FFF4F4F5">
+        <StackLayout HorizontalOptions="CenterAndExpand" 
                  VerticalOptions="CenterAndExpand">
-        <Image Source="{local:ImageResource ColoryrTrash.App.map.png}"/>
-        <Label Text="用户系统登录"  FontSize="40"
+            <Image Source="{local:ImageResource ColoryrTrash.App.map.png}"
+                   HeightRequest="100"/>
+            <Label Text="用户系统登录"  FontSize="40"
                VerticalOptions="Center" HorizontalOptions="Center"/>
-        <StackLayout Orientation="Horizontal">
-            <Label Text="地址:" FontSize="20"
+            <StackLayout Orientation="Horizontal">
+                <Label Text="地址:" FontSize="20"
                    VerticalOptions="Center" 
                    HorizontalOptions="Center"/>
-            <Entry WidthRequest="140" x:Name="IP"
+                <Entry WidthRequest="140" x:Name="IP"
                    ClearButtonVisibility="WhileEditing"/>
-            <Label Text="端口:" FontSize="20"
+                <Label Text="端口:" FontSize="20"
                    VerticalOptions="Center" 
                    HorizontalOptions="Center"/>
-            <Entry WidthRequest="74" x:Name="Port"
+                <Entry WidthRequest="74" x:Name="Port"
                    ClearButtonVisibility="WhileEditing"
                    Placeholder="数字"/>
-        </StackLayout>
-        <StackLayout Orientation="Horizontal">
-            <Label Text="用户:" FontSize="20"
+            </StackLayout>
+            <StackLayout Orientation="Horizontal">
+                <Label Text="用户:" FontSize="20"
                    VerticalOptions="Center" 
                    HorizontalOptions="Center"/>
-            <Entry WidthRequest="270" x:Name="User"
+                <Entry WidthRequest="270" x:Name="User"
                    Placeholder="输入用户名"
                    ClearButtonVisibility="WhileEditing"/>
-        </StackLayout>
-        <StackLayout Orientation="Horizontal">
-            <Label Text="密码:" FontSize="20"
+            </StackLayout>
+            <StackLayout Orientation="Horizontal">
+                <Label Text="密码:" FontSize="20"
                    VerticalOptions="Center" 
                    HorizontalOptions="Center"/>
-            <Entry WidthRequest="270"
+                <Entry WidthRequest="270"
                    IsPassword="True" x:Name="Pass"
                    Placeholder="输入密码"
                    ClearButtonVisibility="WhileEditing"/>
-        </StackLayout>
-        <StackLayout Orientation="Horizontal">
-            <Label Text="保存令牌:" FontSize="20"
+            </StackLayout>
+            <StackLayout Orientation="Horizontal">
+                <Label Text="保存令牌:" FontSize="20"
                    VerticalOptions="Center" 
                    HorizontalOptions="Center"/>
-            <Switch IsToggled="false" x:Name="Save"/>
-        </StackLayout>
-        <StackLayout>
-            <Button Text="登录" HorizontalOptions="CenterAndExpand"
+                <Switch IsToggled="false" x:Name="Save"/>
+            </StackLayout>
+            <StackLayout>
+                <Button Text="登录" HorizontalOptions="CenterAndExpand"
                     WidthRequest="200" FontSize="20"
                     Clicked="Login_Clicked" x:Name="Login_Button"
                     Style="{DynamicResource buttonStyle}">
-                <VisualStateManager.VisualStateGroups>
-                    <VisualStateGroup x:Name="CommonStates">
-                        <VisualState x:Name="Normal">
-                            <VisualState.Setters>
-                                <Setter Property="BackgroundColor" Value="Transparent"/>
-                            </VisualState.Setters>
-                        </VisualState>
-                        <VisualState x:Name="Pressed">
-                            <VisualState.Setters>
-                                <Setter Property="BackgroundColor" Value="#FF5EBDD3"/>
-                            </VisualState.Setters>
-                        </VisualState>
-                    </VisualStateGroup>
-                </VisualStateManager.VisualStateGroups>
-            </Button>
-            <ActivityIndicator IsRunning="False"
+                    <VisualStateManager.VisualStateGroups>
+                        <VisualStateGroup x:Name="CommonStates">
+                            <VisualState x:Name="Normal">
+                                <VisualState.Setters>
+                                    <Setter Property="BackgroundColor" Value="Transparent"/>
+                                </VisualState.Setters>
+                            </VisualState>
+                            <VisualState x:Name="Pressed">
+                                <VisualState.Setters>
+                                    <Setter Property="BackgroundColor" Value="#FF5EBDD3"/>
+                                </VisualState.Setters>
+                            </VisualState>
+                        </VisualStateGroup>
+                    </VisualStateManager.VisualStateGroups>
+                </Button>
+                <ActivityIndicator IsRunning="False"
                                Color="#5EBDD3" x:Name="Act"/>
+            </StackLayout>
         </StackLayout>
-    </StackLayout>
+    </Grid>
 </ContentPage>
