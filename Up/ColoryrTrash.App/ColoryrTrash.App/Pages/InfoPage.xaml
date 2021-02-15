@@ -5,18 +5,62 @@
              Title="垃圾桶列表">
     <Grid BackgroundColor="#FFF4F4F5">
         <StackLayout>
-            <RefreshView x:Name="Re"
-                     RefreshColor="Teal">
-                <ListView Margin="10" x:Name="List">
+            <RefreshView x:Name="Re" Refreshing="Re_Refreshing"
+                     RefreshColor="#FF5EBDD3">
+                <ListView x:Name="List" RowHeight="70" ItemSelected="List_ItemSelected">
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <ViewCell>
-                                <StackLayout HorizontalOptions="StartAndExpand" Orientation="Horizontal">
-                                    <StackLayout Padding="5,0,0,0" VerticalOptions="StartAndExpand" Orientation="Vertical">
-                                        <Image Source="map.png"/>
-                                        <Label Text="智能垃圾桶"/>
-                                    </StackLayout>
-                                    <Button Text="定位" Style="{DynamicResource buttonStyle}" HorizontalOptions="EndAndExpand"/>
+                                <StackLayout Orientation="Horizontal">
+                                    <Grid>
+                                        <Image Source="map.png" WidthRequest="70" VerticalOptions="Start"
+                                                   HorizontalOptions="Start"/>
+                                        
+                                        <!--<Label Margin="70,5,0,0" Text="状态"/>
+                                        <Label Margin="135,5,0,0" Text="更新时间"/>
+                                        <Label Margin="200,5,0,0" Text="2021-10-10 20:00"/>
+                                        <Label Margin="70,25,0,0" Text="UUID:"/>
+                                        <Label Margin="110,25,0,0" Text="ABCDEFGHIJKLNMOPQ"/>
+                                        <Label Margin="70,45,0,0" Text="备注:"/>
+                                        <Label Margin="110,45,0,0" Text="备注"/>
+                                        <Label Margin="270,45,0,0" Text="容量:"/>
+                                        <Label Margin="310,45,0,0" Text="容量"/>-->
+                                        
+                                        <StackLayout Margin="70,5,0,0">
+                                            <StackLayout Orientation="Horizontal">
+                                                <Label Text="{Binding State}"/>
+                                                <Label Text="更新时间:"/>
+                                                <Label Text="{Binding Time}"/>
+                                            </StackLayout>
+                                            <StackLayout Orientation="Horizontal" Margin="0,-5,0,0">
+                                                <Label Text="UUID:"/>
+                                                <Label Text="{Binding UUID}"/>
+                                            </StackLayout>
+                                            <StackLayout Orientation="Horizontal" Margin="0,-5,0,0">
+                                                <Label Text="备注:"/>
+                                                <Label Text="{Binding Nick}"/>
+                                                <Label Text="容量:"/>
+                                                <Label Text="{Binding Capacity}"/>
+                                            </StackLayout>
+                                        </StackLayout>
+                                    </Grid>
+                                    <Button Text="定位" Style="{DynamicResource buttonStyle}" WidthRequest="80" Margin="0,0,5,0"
+                                                VerticalOptions="Center" HorizontalOptions="EndAndExpand" Clicked="Button_Clicked">
+                                        <VisualStateManager.VisualStateGroups>
+                                            <VisualStateGroup x:Name="CommonStates">
+                                                <VisualState x:Name="Normal">
+                                                    <VisualState.Setters>
+                                                        <Setter Property="BackgroundColor" Value="Transparent"/>
+                                                    </VisualState.Setters>
+                                                </VisualState>
+                                                <VisualState x:Name="Pressed">
+                                                    <VisualState.Setters>
+                                                        <Setter Property="BackgroundColor" Value="#FF5EBDD3"/>
+                                                    </VisualState.Setters>
+                                                </VisualState>
+                                            </VisualStateGroup>
+                                        </VisualStateManager.VisualStateGroups>
+                                    </Button>
                                 </StackLayout>
                             </ViewCell>
                         </DataTemplate>

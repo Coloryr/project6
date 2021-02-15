@@ -3,11 +3,13 @@ using Android.App;
 using Android.Content;
 using Android.Graphics;
 using Android.OS;
+using Android.Widget;
 using AndroidX.Core.App;
 using Xamarin.Forms;
 using AndroidApp = Android.App.Application;
 
 [assembly: Dependency(typeof(ColoryrTrash.App.Droid.AndroidNotificationManager))]
+[assembly: Dependency(typeof(ColoryrTrash.App.Droid.AndroidMessageHand))]
 namespace ColoryrTrash.App.Droid
 {
     [BroadcastReceiver(Enabled = true, Label = "Local Notifications Broadcast Receiver")]
@@ -22,6 +24,13 @@ namespace ColoryrTrash.App.Droid
 
                 AndroidNotificationManager.Instance.Show(title, message);
             }
+        }
+    }
+    public class AndroidMessageHand : IMessageHand
+    { 
+        public void Message(string title, string text)
+        {
+            Toast.MakeText(MainActivity.MainActivity_, text, ToastLength.Short).Show();
         }
     }
     public class AndroidNotificationManager : INotificationManager

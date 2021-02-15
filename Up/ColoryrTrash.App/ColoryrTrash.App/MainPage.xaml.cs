@@ -20,7 +20,7 @@ namespace ColoryrTrash.App
             flyoutPage.listView.ItemSelected += OnItemSelected;
         }
 
-        void OnItemSelected(object sender, SelectedItemChangedEventArgs e)
+        private void OnItemSelected(object sender, SelectedItemChangedEventArgs e)
         {
             var item = e.SelectedItem as FlyoutPageItem;
             if (item != null)
@@ -28,6 +28,8 @@ namespace ColoryrTrash.App
                 if (NowSel != item.Name)
                     Switch(item.Name);
             }
+            flyoutPage.listView.SelectedItem = null;
+            IsPresented = false;
         }
         public void Switch(string name)
         {
@@ -46,7 +48,6 @@ namespace ColoryrTrash.App
                     Detail = App.mapPage_;
                     break;
             }
-            IsPresented = false;
             NowSel = name;
         }
 

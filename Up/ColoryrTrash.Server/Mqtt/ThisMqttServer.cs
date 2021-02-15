@@ -52,7 +52,7 @@ namespace ColoryrTrash.Server.Mqtt
                 }
                 else if (arg.ApplicationMessage.Topic.StartsWith(DataArg.TopicAppClient))
                 {
-
+                    AppServer.AppReceived(arg.ClientId, arg.ApplicationMessage.Payload);
                 }
                 else if (arg.ApplicationMessage.Topic.StartsWith(DataArg.TopicTrashClient))
                 {

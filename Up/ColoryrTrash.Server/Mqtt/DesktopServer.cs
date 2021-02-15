@@ -195,7 +195,7 @@ namespace ColoryrTrash.Server.Mqtt
             {
                 Send(ClientId, new DataPackObj
                 {
-                    Type = DataType.GetTrashGroups,
+                    Type = DataType.Login,
                     Res = false,
                     Data = "账户错误"
                 });

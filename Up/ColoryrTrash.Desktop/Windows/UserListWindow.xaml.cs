@@ -98,7 +98,7 @@ namespace ColoryrTrash.Desktop.Windows
             {
                 return;
             }
-            App.MqttUtils.AddUser(res.UUID, Tools.EnBase64(res.Nick));
+            App.MqttUtils.AddUser(res.UUID, Tools.GenSHA1(res.Nick));
         }
 
         private void MoveGroup_Click(object sender, RoutedEventArgs e)
@@ -124,7 +124,7 @@ namespace ColoryrTrash.Desktop.Windows
             }).Set();
             if (string.IsNullOrWhiteSpace(res.Nick))
                 return;
-            App.MqttUtils.SetUserPass(obj.ID, Tools.EnBase64(res.Nick));
+            App.MqttUtils.SetUserPass(obj.ID, Tools.GenSHA1(res.Nick));
         }
         private void DeleteUser_Click(object sender, RoutedEventArgs e)
         {

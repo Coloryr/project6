@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 
 namespace ColoryrTrash.App
@@ -28,6 +29,8 @@ namespace ColoryrTrash.App
         public static NavigationPage loginPage_;
         public static NavigationPage mapPage_;
 
+        public static IMessageHand MessageHand;
+
         private static App ThisApp;
         private static INotificationManager notificationManager;
 
@@ -43,6 +46,7 @@ namespace ColoryrTrash.App
             InitializeComponent();
 
             notificationManager = DependencyService.Get<INotificationManager>();
+            MessageHand = DependencyService.Get<IMessageHand>();
             fileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "config.json");
             Config = ConfigSave.Config(new ConfigObj()
             {
@@ -100,11 +104,34 @@ namespace ColoryrTrash.App
                     Nick = "垃圾桶",
                 });
             });
+            Task.Run(() =>
+            {
+                Thread.Sleep(1000);
+                if (MqttUtils.Start().Result && Config.AutoLogin)
+                {
+                    MqttUtils.Token = Config.Token;
+                    MqttUtils.CheckLogin(Config.Token);
+                }
+                if (!IsLogin)
+                {
+                    mainPage.Switch("Login");
+                }
+            });
         }
 
         public static void Show(string title, string text)
         {
-            notificationManager.SendNotification(title, text);
+            if (DeviceInfo.Platform == DevicePlatform.Android)
+            {
+                ThisApp.Dispatcher.BeginInvokeOnMainThread(() =>
+                {
+                    MessageHand.Message(title, text);
+                });
+            }
+            else
+            {
+                notificationManager.SendNotification(title, text);
+            }
         }
         public static void LoginDone()
         {
@@ -139,21 +166,8 @@ namespace ColoryrTrash.App
             MqttUtils.Login(pass);
         }
 
-        protected override async void OnStart()
+        protected override void OnStart()
         {
-            if (!await MqttUtils.Start())
-            {
-                return;
-            }
-            if (Config.AutoLogin)
-            {
-                MqttUtils.Token = Config.Token;
-                MqttUtils.CheckLogin(Config.Token);
-            }
-            if (!IsLogin)
-            {
-                mainPage.Switch("Login");
-            }
         }
 
         protected override void OnSleep()

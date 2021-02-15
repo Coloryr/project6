@@ -41,7 +41,7 @@ namespace ColoryrTrash.App.Pages
 
         private async void Login_Clicked(object sender, EventArgs e)
         {
-            if (App.IsLogin)
+            if (!App.IsLogin)
             {
                 if (IsLoging)
                     return;

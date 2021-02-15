@@ -287,7 +287,17 @@ namespace ColoryrTrash.Server
         {
             return ID_Group.ContainsKey(id);
         }
-
+        public string GetPass(string user)
+        {
+            if (ID_Group.ContainsKey(user))
+            {
+                var group = ID_Group[user];
+                var obj = Groups[group];
+                var item = obj.List[user];
+                return item.Pass;
+            }
+            return null;
+        }
         public void Start()
         {
             if (!Directory.Exists(FilePath))
