@@ -11,9 +11,9 @@
         <ListView Margin="4,28,4,4" Name="List">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="用户ID" Width="100" DisplayMemberBinding="{Binding UUID}"/>
-                    <GridViewColumn Header="组" Width="240" DisplayMemberBinding="{Binding Nick}"/>
-                    <GridViewColumn Header="上线时间" Width="150" DisplayMemberBinding="{Binding Time}"/>
+                    <GridViewColumn Header="用户ID" Width="100" DisplayMemberBinding="{Binding ID}"/>
+                    <GridViewColumn Header="组" Width="240" DisplayMemberBinding="{Binding Group}"/>
+                    <GridViewColumn Header="上线时间" Width="150" DisplayMemberBinding="{Binding LoginTime}"/>
                 </GridView>
             </ListView.View>
             <ListView.ContextMenu>

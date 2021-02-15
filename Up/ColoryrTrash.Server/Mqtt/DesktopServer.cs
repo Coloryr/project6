@@ -20,7 +20,7 @@ namespace ColoryrTrash.Server.Mqtt
                 Data = group,
                 Data1 = JsonConvert.SerializeObject(item)
             };
-            Task.Run(() => SendAll(JsonConvert.SerializeObject(send)));
+            Task.Run(() => SendAll(send));
         }
         public static void RenameUserGroup(string old, string group)
         {
@@ -31,7 +31,7 @@ namespace ColoryrTrash.Server.Mqtt
                 Data = old,
                 Data1 = group
             };
-            Task.Run(() => SendAll(JsonConvert.SerializeObject(send)));
+            Task.Run(() => SendAll(send));
         }
         public static void AddUserGroup(string group)
         {
@@ -41,7 +41,7 @@ namespace ColoryrTrash.Server.Mqtt
                 Res = true,
                 Data = group
             };
-            Task.Run(() => SendAll(JsonConvert.SerializeObject(send)));
+            Task.Run(() => SendAll(send));
         }
         public static void MoveUserGroup(string id, string group)
         {
@@ -52,7 +52,7 @@ namespace ColoryrTrash.Server.Mqtt
                 Data = id,
                 Data1 = group
             };
-            Task.Run(() => SendAll(JsonConvert.SerializeObject(send)));
+            Task.Run(() => SendAll(send));
         }
 
         public static void AddTrashGroup(string group)
@@ -63,7 +63,7 @@ namespace ColoryrTrash.Server.Mqtt
                 Res = true,
                 Data = group
             };
-            Task.Run(() => SendAll(JsonConvert.SerializeObject(send)));
+            Task.Run(() => SendAll(send));
         }
 
         public static void RenameTrashGroup(string old, string group)
@@ -75,7 +75,7 @@ namespace ColoryrTrash.Server.Mqtt
                 Data = old,
                 Data1 = group
             };
-            Task.Run(() => SendAll(JsonConvert.SerializeObject(send)));
+            Task.Run(() => SendAll(send));
         }
 
         public static void MoveTrashGroup(string uuid, string group)
@@ -87,7 +87,7 @@ namespace ColoryrTrash.Server.Mqtt
                 Data = uuid,
                 Data1 = group
             };
-            Task.Run(() => SendAll(JsonConvert.SerializeObject(send)));
+            Task.Run(() => SendAll(send));
         }
 
         public static void UpdateTrashItem(string group, TrashSaveObj obj)
@@ -99,14 +99,35 @@ namespace ColoryrTrash.Server.Mqtt
                 Data = group,
                 Data1 = JsonConvert.SerializeObject(obj)
             };
-            Task.Run(() => SendAll(JsonConvert.SerializeObject(send)));
+            Task.Run(() => SendAll(send));
         }
-        public static async void SendAll(string data)
+        public static void AddUser(string group)
         {
+            var send = new DataPackObj
+            {
+                Type = DataType.AddUser,
+                Res = true,
+                Data = group
+            };
+            Task.Run(() => SendAll(send));
+        }
+        public static void Remove(string id)
+        {
+            var send = new DataPackObj
+            {
+                Type = DataType.DeleteUser,
+                Res = true,
+                Data = id
+            };
+            Task.Run(() => SendAll(send));
+        }
+        public static async void SendAll(object data)
+        {
+            var temp = JsonConvert.SerializeObject(data);
             var message = new MqttApplicationMessage()
             {
                 Topic = DataArg.TopicDesktopServer,
-                Payload = Encoding.UTF8.GetBytes(data)
+                Payload = Encoding.UTF8.GetBytes(temp)
             };
             await ThisMqttServer.PublishAsync(message);
         }
@@ -128,15 +149,6 @@ namespace ColoryrTrash.Server.Mqtt
             string User = ClientId;
             if (User == null)
                 return;
-            if (!ServerMain.Config.User.ContainsKey(User))
-            {
-                Send(ClientId, new DataPackObj
-                {
-                    Type = obj.Type,
-                    Res = false
-                });
-                return;
-            }
             string Token = obj.Token;
             if (obj.Type == DataType.CheckLogin)
             {
@@ -349,12 +361,12 @@ namespace ColoryrTrash.Server.Mqtt
                         });
                     }
                     break;
-                case DataType.RemoveUser:
+                case DataType.DeleteUser:
                     if (!ServerMain.UserData.CheckID(temp))
                     {
                         Send(ClientId, new DataPackObj
                         {
-                            Type = DataType.RemoveUser,
+                            Type = DataType.DeleteUser,
                             Res = true,
                             Data = "账户不存在"
                         });
@@ -365,7 +377,7 @@ namespace ColoryrTrash.Server.Mqtt
                         ServerMain.UserLogOut($"用户[{User}]删除账户[{temp}]");
                         Send(ClientId, new DataPackObj
                         {
-                            Type = DataType.RemoveUser,
+                            Type = DataType.DeleteUser,
                             Res = true,
                             Data = "账户删除成功"
                         });
@@ -389,7 +401,7 @@ namespace ColoryrTrash.Server.Mqtt
                         {
                             Type = DataType.SetUser,
                             Res = true,
-                            Data = "账户删除成功"
+                            Data = $"账户[{temp}]密码已修改"
                         });
                     }
                     break;
@@ -415,16 +427,7 @@ namespace ColoryrTrash.Server.Mqtt
                     }
                     break;
                 case DataType.MoveUserGroup:
-                    if (ServerMain.UserData.CheckID(temp))
-                    {
-                        Send(ClientId, new DataPackObj
-                        {
-                            Type = DataType.MoveUserGroup,
-                            Res = true,
-                            Data = $"账户[{temp}]不存在"
-                        });
-                    }
-                    else if(!ServerMain.UserData.MoveGroup(temp, temp1))
+                    if(!ServerMain.UserData.MoveGroup(temp, temp1))
                     {
                         Send(ClientId, new DataPackObj
                         {
@@ -478,7 +481,7 @@ namespace ColoryrTrash.Server.Mqtt
                     {
                         Send(ClientId, new DataPackObj
                         {
-                            Type = DataType.AddUser,
+                            Type = DataType.GetUserGroupInfo,
                             Res = true,
                             Data1 = $"账户组[{temp}]不存在"
                         });
@@ -490,6 +493,46 @@ namespace ColoryrTrash.Server.Mqtt
                             Type = DataType.GetUserGroupInfo,
                             Res = true,
                             Data = JsonConvert.SerializeObject(ServerMain.UserData.Groups[temp])
+                        });
+                    }
+                    break;
+                case DataType.GetUserGroupBind:
+                    if (!ServerMain.UserData.Groups.ContainsKey(temp))
+                    {
+                        Send(ClientId, new DataPackObj
+                        {
+                            Type = DataType.GetUserGroupBind,
+                            Res = true,
+                            Data1 = $"账户组[{temp}]不存在"
+                        });
+                    }
+                    else
+                    {
+                        Send(ClientId, new DataPackObj
+                        {
+                            Type = DataType.GetUserGroupBind,
+                            Res = true,
+                            Data = JsonConvert.SerializeObject(ServerMain.UserData.Groups[temp].Bind)
+                        });
+                    }
+                    break;
+                case DataType.SetUserGroupBind:
+                    if (!ServerMain.UserData.SetBind(temp, temp1))
+                    {
+                        Send(ClientId, new DataPackObj
+                        {
+                            Type = DataType.SetUserGroupBind,
+                            Res = true,
+                            Data1 = $"账户组[{temp}]绑定失败"
+                        });
+                    }
+                    else
+                    {
+                        Send(ClientId, new DataPackObj
+                        {
+                            Type = DataType.SetUserGroupBind,
+                            Res = true,
+                            Data = $"账户组[{temp}]绑定成功"
                         });
                     }
                     break;

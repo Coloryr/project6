@@ -29,9 +29,10 @@ namespace ColoryrTrash.Desktop.Windows
             }
             else
             {
+                User.IsReadOnly = true;
                 this.obj = obj;
             }
-            DataContext = obj;
+            DataContext = this.obj;
         }
         public SearchObj Set()
         {

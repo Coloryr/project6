@@ -98,7 +98,7 @@ namespace ColoryrTrash.Server
         private Task thread;
         private CancellationTokenSource token = new();
 
-        private const string EmptyGroup = "空的组";
+        public const string EmptyGroup = "空的组";
         private object Lock = new object();
 
         private bool Save = false;
@@ -148,7 +148,8 @@ namespace ColoryrTrash.Server
         }
         public bool RenameGroup(string old, string group)
         {
-            if (!IsFileNameValid(group) || old == EmptyGroup || !Groups.ContainsKey(old))
+            if (!IsFileNameValid(group) || old == EmptyGroup || 
+                !Groups.ContainsKey(old) || Groups.ContainsKey(group))
             {
                 return false;
             }
@@ -160,6 +161,13 @@ namespace ColoryrTrash.Server
                     item.Name = group;
                     Groups.Remove(old);
                     Groups.Add(group, item);
+                    foreach (var item1 in ID_Group)
+                    {
+                        if (item1.Value == old)
+                        {
+                            ID_Group[item1.Key] = group;
+                        }
+                    }
                     DesktopServer.RenameUserGroup(old, group);
                 }
                 SaveGroup(group);
@@ -198,6 +206,8 @@ namespace ColoryrTrash.Server
                         LoginTime = Time
                     };
                     group.List.Add(id, item);
+                    ID_Group.Add(id, EmptyGroup);
+                    DesktopServer.AddUser(EmptyGroup);
                 }
                 SaveGroup(EmptyGroup);
             }
@@ -221,6 +231,7 @@ namespace ColoryrTrash.Server
                 var group = Groups[temp];
                 group.List.Remove(id);
                 ID_Group.Remove(id);
+                DesktopServer.Remove(id);
             }
             SaveGroup(temp);
         }
@@ -240,6 +251,8 @@ namespace ColoryrTrash.Server
         }
         public bool MoveGroup(string id, string group)
         {
+            if (!ID_Group.ContainsKey(id))
+                return false;
             string oldgroup = ID_Group[id];
             if (oldgroup == group || !Groups.ContainsKey(group))
                 return false;
@@ -251,9 +264,22 @@ namespace ColoryrTrash.Server
                 var obj1 = Groups[group];
                 obj1.List.Add(id, item);
                 ID_Group[id] = group;
-                DesktopServer.MoveTrashGroup(id, group);
+                DesktopServer.MoveUserGroup(id, group);
             }
             SaveGroup(oldgroup);
+            SaveGroup(group);
+            return true;
+        }
+
+        public bool SetBind(string group, string list)
+        {
+            if (!Groups.ContainsKey(group))
+                return false;
+            lock (Lock)
+            {
+                var obj = Groups[group];
+                obj.Bind = JsonConvert.DeserializeObject<List<string>>(list);
+            }
             SaveGroup(group);
             return true;
         }
@@ -293,7 +319,8 @@ namespace ColoryrTrash.Server
                 Groups.Add(EmptyGroup, new UserDataSaveObj
                 {
                     Name = EmptyGroup,
-                    List = new()
+                    List = new(),
+                    Bind = new()
                 });
                 SaveGroup(EmptyGroup);
             }
@@ -416,9 +443,10 @@ namespace ColoryrTrash.Server
                 return true;
             }
         }
-        public bool RenameGroup(string temp, string temp1)
+        public bool RenameGroup(string old, string group)
         {
-            if (!IsFileNameValid(temp1) || temp == EmptyGroup || !Groups.ContainsKey(temp))
+            if (!IsFileNameValid(group) || old == EmptyGroup || 
+                !Groups.ContainsKey(old) || Groups.ContainsKey(group))
             {
                 return false;
             }
@@ -426,14 +454,21 @@ namespace ColoryrTrash.Server
             {
                 lock (Lock)
                 {
-                    var item = Groups[temp];
-                    item.Name = temp1;
-                    Groups.Remove(temp);
-                    Groups.Add(temp1, item);
-                    DesktopServer.RenameTrashGroup(temp, temp1);
+                    var item = Groups[old];
+                    item.Name = group;
+                    Groups.Remove(old);
+                    Groups.Add(group, item);
+                    foreach (var item1 in UUID_Group)
+                    {
+                        if (item1.Value == old)
+                        {
+                            UUID_Group[item1.Key] = group;
+                        }
+                    }
+                    DesktopServer.RenameTrashGroup(old, group);
                 }
-                SaveGroup(temp1);
-                DeleteGroup(temp);
+                SaveGroup(group);
+                DeleteGroup(old);
                 return true;
             }
         }

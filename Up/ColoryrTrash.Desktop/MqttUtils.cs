@@ -37,7 +37,6 @@ namespace ColoryrTrash.Desktop
                 isok = false;
             }
         }
-
         private void OnSubscriberMessageReceived(MqttApplicationMessageReceivedEventArgs arg)
         {
             try
@@ -91,6 +90,7 @@ namespace ColoryrTrash.Desktop
                         case DataType.GetTrashGroups:
                             var list = JsonConvert.DeserializeObject<List<string>>(obj.Data);
                             App.ListWindow_?.SetList(list);
+                            App.BindWindow_?.SetList(list);
                             break;
                         case DataType.GetTrashGroupInfo:
                             if (obj.Data == null)
@@ -136,6 +136,22 @@ namespace ColoryrTrash.Desktop
                         case DataType.RenameUserGroup:
                             App.ShowA("修改账户组名字", obj.Data);
                             break;
+                        case DataType.GetUserGroupBind:
+                            if (obj.Data != null)
+                            {
+                                var list4 = JsonConvert.DeserializeObject<List<string>>(obj.Data);
+                                App.BindWindow_?.SetGroup(list4);
+                            }
+                            break;
+                        case DataType.AddUserGroup:
+                            App.ShowA("添加账户组", obj.Data);
+                            break;
+                        case DataType.SetUser:
+                            App.ShowA("设置账户密码", obj.Data);
+                            break;
+                        case DataType.SetUserGroupBind:
+                            App.ShowA("账户组绑定", obj.Data);
+                            break;
                     }
                 }
                 else if (arg.ApplicationMessage.Topic == DataArg.TopicDesktopServer)
@@ -157,6 +173,21 @@ namespace ColoryrTrash.Desktop
                             var obj1 = JsonConvert.DeserializeObject<TrashSaveObj>(obj.Data1);
                             App.ListWindow_.Updata(obj.Data, obj1);
                             break;
+                        case DataType.AddUserGroup:
+                            App.UserListWindow_.AddGroup(obj.Data);
+                            break;
+                        case DataType.RenameUserGroup:
+                            App.UserListWindow_.RenameGroup(obj.Data, obj.Data1);
+                            break;
+                        case DataType.MoveUserGroup:
+                            App.UserListWindow_.MoveGroup(obj.Data, obj.Data1);
+                            break;
+                        case DataType.AddUser:
+                            App.UserListWindow_.AddUser(obj.Data);
+                            break;
+                        case DataType.DeleteUser:
+                            App.UserListWindow_.RemoveUser(obj.Data);
+                            break;
                     }
                 }
             }
@@ -165,19 +196,12 @@ namespace ColoryrTrash.Desktop
                 App.LogError(ex);
             }
         }
-
-        internal void AddUserGroup(string res)
-        {
-            throw new NotImplementedException();
-        }
-
         private void OnMqttClientDisConnected(MqttClientDisconnectedEventArgs arg)
         {
             App.Log("服务器连接断开");
             if (!IsConnecting)
                 App.DisConnect();
         }
-
         private void OnMqttClientConnected(MqttClientConnectedEventArgs arg)
         {
             App.Log("服务器已连接");
@@ -389,6 +413,69 @@ namespace ColoryrTrash.Desktop
                 Type = DataType.RenameUserGroup,
                 Data = old,
                 Data1 = group
+            };
+            Send(JsonConvert.SerializeObject(obj));
+        }
+        public void GetGroupBind(string name)
+        {
+            var obj = new DataPackObj
+            {
+                Token = App.Config.Token,
+                Type = DataType.GetUserGroupBind,
+                Data = name
+            };
+            Send(JsonConvert.SerializeObject(obj));
+        }
+        public void SetGroupBind(string name, List<string> group)
+        {
+            var obj = new DataPackObj
+            {
+                Token = App.Config.Token,
+                Type = DataType.SetUserGroupBind,
+                Data = name,
+                Data1 = JsonConvert.SerializeObject(group)
+            };
+            Send(JsonConvert.SerializeObject(obj));
+        }
+        public void AddUserGroup(string group)
+        {
+            var obj = new DataPackObj
+            {
+                Token = App.Config.Token,
+                Type = DataType.AddUserGroup,
+                Data = group
+            };
+            Send(JsonConvert.SerializeObject(obj));
+        }
+        public void SetUserPass(string id, string pass)
+        {
+            var obj = new DataPackObj
+            {
+                Token = App.Config.Token,
+                Type = DataType.SetUser,
+                Data = id,
+                Data1 = pass
+            };
+            Send(JsonConvert.SerializeObject(obj));
+        }
+        public void MoveUserGroup(string id, string res)
+        {
+            var obj = new DataPackObj
+            {
+                Token = App.Config.Token,
+                Type = DataType.MoveUserGroup,
+                Data = id,
+                Data1 = res
+            };
+            Send(JsonConvert.SerializeObject(obj));
+        }
+        public void DeleteUser(string id)
+        {
+            var obj = new DataPackObj
+            {
+                Token = App.Config.Token,
+                Type = DataType.DeleteUser,
+                Data = id
             };
             Send(JsonConvert.SerializeObject(obj));
         }

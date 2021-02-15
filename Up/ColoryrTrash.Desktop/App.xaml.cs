@@ -26,6 +26,7 @@ namespace ColoryrTrash.Desktop
         public static ListWindow ListWindow_;
         public static UserListWindow UserListWindow_;
         public static MakeHardway MakeHardway_;
+        public static BindWindow BindWindow_;
 
         public static string RunLocal;
         public static bool IsLogin;

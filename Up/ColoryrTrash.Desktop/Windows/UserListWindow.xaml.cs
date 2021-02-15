@@ -103,16 +103,39 @@ namespace ColoryrTrash.Desktop.Windows
 
         private void MoveGroup_Click(object sender, RoutedEventArgs e)
         {
-
+            if (List.SelectedItem == null)
+                return;
+            var obj = List.SelectedItem as UserSaveObj;
+            var res = new GroupChose(list, obj.ID, GroupList.SelectedItem as string).Set();
+            if (res != GroupList.SelectedItem as string)
+            {
+                App.MqttUtils.MoveUserGroup(obj.ID, res);
+            }
         }
 
         private void SetPass_Click(object sender, RoutedEventArgs e)
         {
-
+            if (List.SelectedItem == null)
+                return;
+            var obj = List.SelectedItem as UserSaveObj;
+            var res = new UserWindow(new SearchObj
+            {
+                UUID = obj.ID
+            }).Set();
+            if (string.IsNullOrWhiteSpace(res.Nick))
+                return;
+            App.MqttUtils.SetUserPass(obj.ID, Tools.EnBase64(res.Nick));
         }
         private void DeleteUser_Click(object sender, RoutedEventArgs e)
         {
-
+            if (List.SelectedItem == null)
+                return;
+            var obj = List.SelectedItem as UserSaveObj;
+            var res = new ChoseWindow("删除账户", $"是否要删除账户[{obj.ID}]").Set();
+            if (res)
+            {
+                App.MqttUtils.DeleteUser(obj.ID);
+            }
         }
         private void AddGroup_Click(object sender, RoutedEventArgs e)
         {
@@ -146,14 +169,102 @@ namespace ColoryrTrash.Desktop.Windows
             if (GroupList.SelectedItem == null)
                 return;
             var res = new InputWindow("设置组名字", GroupList.SelectedItem as string).Set();
+            if (res == GroupList.SelectedItem as string)
+                return;
             if (!string.IsNullOrWhiteSpace(res))
                 App.MqttUtils.RenameUserGroup(GroupList.SelectedItem as string, res);
         }
+        public void RenameGroup(string old, string group)
+        {
+            Dispatcher.Invoke(() =>
+            {
+                if (GroupList.Items.Contains(old))
+                {
+                    list.Remove(old);
+                    list.Add(group);
+                    bool chose = false;
+                    if (GroupList.SelectedItem as string == old)
+                    {
+                        chose = true;
+                    }
+                    GroupList.Items.Add(group);
+                    if (chose)
+                    {
+                        GroupList.SelectedItem = group;
+                    }
+                    GroupList.Items.Remove(old);
+                }
+            });
+        }
+        public void MoveGroup(string id, string group)
+        {
+            Dispatcher.Invoke(() =>
+            {
+                if (GroupList.SelectedItem as string != group)
+                {
+                    foreach (var item in List.Items)
+                    {
+                        var obj = item as UserSaveObj;
+                        if (obj.ID == id)
+                        {
+                            List.Items.Remove(obj);
+                            return;
+                        }
+                    }
+                }
+                else
+                {
+                    GetInfo(group);
+                }
+            });
+        }
         private void Bind_Click(object sender, RoutedEventArgs e)
         {
-            GroupList.Items.Clear();
-            List.Items.Clear();
-            GetList();
+            if (GroupList.SelectedItem == null)
+                return;
+            if (App.BindWindow_ == null)
+            {
+                new BindWindow(GroupList.SelectedItem as string).Show();
+            }
+            else
+            {
+                App.BindWindow_.Activate();
+            }
+        }
+
+        public void AddGroup(string data)
+        {
+            Dispatcher.Invoke(() =>
+            {
+                list.Add(data);
+                GroupList.Items.Add(data);
+            });
+        }
+
+        public void AddUser(string data)
+        {
+            Dispatcher.Invoke(() =>
+            {
+                if (GroupList.SelectedItem as string == data)
+                {
+                    GetInfo(data);
+                }
+            });
+        }
+        public void RemoveUser(string id)
+        {
+            Dispatcher.Invoke(() =>
+            {
+                foreach (var item in List.Items)
+                {
+                    var temp = item as UserSaveObj;
+                    if (temp.ID == id)
+                    {
+                        List.Items.Remove(item);
+                        return;
+                    }
+                }
+            });
         }
     }
 }

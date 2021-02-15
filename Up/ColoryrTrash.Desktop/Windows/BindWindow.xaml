@@ -5,14 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ColoryrTrash.Desktop.Windows"
         mc:Ignorable="d"
-        Title="垃圾桶组绑定" Height="128" Width="333">
+        Title="垃圾桶组绑定" Height="135" Width="331" ResizeMode="NoResize" Icon="/icon.png" Closed="Window_Closed">
     <Grid>
         <Rectangle Fill="#FFF4F4F5" Stroke="#FF5ABED6" StrokeThickness="2"/>
         <Label Content="用户组：" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="2,2,0,0"/>
         <Label Content="选择垃圾桶组：" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="2,27,0,0"/>
         <ComboBox Width="160" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="7,52,0,0" Height="20"
                   Name="List"/>
-        <ListView Margin="172,2,0,0" Height="98" Width="149" VerticalAlignment="Top" HorizontalAlignment="Left"
+        <ListView Margin="172,4,0,0" Height="98" Width="149" VerticalAlignment="Top" HorizontalAlignment="Left"
                   Name="GroupList">
             <ListView.View>
                 <GridView>
@@ -21,17 +21,17 @@
             </ListView.View>
             <ListView.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Header="删除" Click="MenuItem_Click"/>
+                    <MenuItem Header="删除" Click="Delete_Click"/>
                 </ContextMenu>
             </ListView.ContextMenu>
         </ListView>
         <Label Content="空" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="60,2,0,0" Name="User"/>
         <Button Content="刷新" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="7,77,0,0"
-                Height="20" Width="50"/>
+                Height="20" Width="50" Click="Re_Click"/>
         <Button Content="保存" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="62,77,0,0"
-            Height="20" Width="50"/>
+                Height="20" Width="50" Click="Save_Click"/>
         <Button Content="添加" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="117,77,0,0"
-            Height="20" Width="50"/>
+                Height="20" Width="50" Click="AddGroup_Click"/>
 
     </Grid>
 </Window>

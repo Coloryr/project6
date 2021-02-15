@@ -9,7 +9,8 @@
     <Grid>
         <Rectangle Fill="#FFF4F4F5" Stroke="#FF5ABED6" StrokeThickness="2"/>
         <Label Content="用户名" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="2,2,0,0"/>
-        <TextBox Text="{Binding UUID}" TextWrapping="Wrap" Width="120" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="48,6,0,0"/>
+        <TextBox Text="{Binding UUID}" TextWrapping="Wrap" Width="120" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="48,6,0,0"
+                 Name="User"/>
         <Label Content="密码" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="8,23,0,0"/>
         <PasswordBox Width="120" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="48,27,0,0" Name="Pass"/>
 

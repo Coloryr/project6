@@ -11,7 +11,8 @@ namespace Lib
         GetUserGroups, GetUserGroupInfo,
         GetUserGroup, GetUsetTask,
         AddUserGroup, MoveUserGroup, RenameUserGroup,
-        AddUser, RemoveUser, SetUser, SetUserTask
+        AddUser, DeleteUser, SetUser, SetUserTask,
+        GetUserGroupBind, SetUserGroupBind
     }
     public enum ItemState
     {

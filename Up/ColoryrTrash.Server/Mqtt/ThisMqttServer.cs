@@ -99,6 +99,10 @@ namespace ColoryrTrash.Server.Mqtt
             {
                 arg.ReasonCode = MqttConnectReasonCode.Success;
             }
+            else if (ServerMain.UserData.ID_Group.ContainsKey(user))
+            {
+                arg.ReasonCode = MqttConnectReasonCode.Success;
+            }
             else
             {
                 string pass = arg.Password;
