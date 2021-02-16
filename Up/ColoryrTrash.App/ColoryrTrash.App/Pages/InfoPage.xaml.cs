@@ -62,7 +62,7 @@ namespace ColoryrTrash.App.Pages
             }
             else
             {
-                App.Show("登录","未登录");
+                App.Show("登录", "未登录");
                 Re.IsRefreshing = false;
                 App.mainPage.Switch(PageName.LoginPage);
             }
@@ -87,7 +87,16 @@ namespace ColoryrTrash.App.Pages
 
         private void Button_Clicked(object sender, EventArgs e)
         {
-
+            Button button = sender as Button;
+            if (button == null)
+                return;
+            IEnumerable<TrashSaveObj> query = null;
+            string uuid = button.CommandParameter as string;
+            query = from items in list where items.UUID == uuid select items;
+            var item = query.FirstOrDefault();
+            App.mapPage.AddPoint(item);
+            App.mapPage.TurnTo(uuid);
+            App.mainPage.Switch(PageName.MapPage);
         }
     }
 }

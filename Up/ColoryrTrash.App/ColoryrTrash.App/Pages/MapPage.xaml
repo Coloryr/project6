@@ -3,5 +3,27 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="ColoryrTrash.App.Pages.MapPage"
              Title="垃圾桶地图">
-    <WebView x:Name="Web"/>
+    <Grid>
+        <WebView x:Name="Web"/>
+        <StackLayout VerticalOptions="Start" HorizontalOptions="Start">
+            <Button HeightRequest="40" WidthRequest="80" Text="定位" HorizontalOptions="Start"
+                VerticalOptions="Start" Style="{DynamicResource buttonStyle}" Clicked="Button_Clicked">
+                <VisualStateManager.VisualStateGroups>
+                    <VisualStateGroup x:Name="CommonStates">
+                        <VisualState x:Name="Normal">
+                            <VisualState.Setters>
+                                <Setter Property="BackgroundColor" Value="Transparent"/>
+                            </VisualState.Setters>
+                        </VisualState>
+                        <VisualState x:Name="Pressed">
+                            <VisualState.Setters>
+                                <Setter Property="BackgroundColor" Value="#FF5EBDD3"/>
+                            </VisualState.Setters>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateManager.VisualStateGroups>
+            </Button>
+            <Switch IsToggled="false" HorizontalOptions="Start" VerticalOptions="Start" x:Name="Auto"/>
+        </StackLayout>
+    </Grid>
 </ContentPage>

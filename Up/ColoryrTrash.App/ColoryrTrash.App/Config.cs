@@ -12,6 +12,7 @@ namespace ColoryrTrash.App
         public string Token { get; set; }
         public bool AutoLogin { get; set; }
     }
+
     class ConfigSave
     {
         private static object Locker = new object();
@@ -32,10 +33,13 @@ namespace ColoryrTrash.App
                 lock (Locker)
                 {
                     obj = JsonConvert.DeserializeObject<T>(File.ReadAllText(FilePath));
-                    if (obj1 == null)
-                        obj = new T();
-                    else
-                        obj = obj1;
+                    if (obj == null)
+                    {
+                        if (obj1 == null)
+                            obj = new T();
+                        else
+                            obj = obj1;
+                    }
                     Save(obj, FilePath);
                 }
             }

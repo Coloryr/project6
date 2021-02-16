@@ -27,6 +27,7 @@
     var map;
     var myIcon;
     var points = new Array();
+    var selfmark;
     function loadJScript() {
         var script = document.createElement('script');
         script.type = 'text/javascript';
@@ -90,6 +91,15 @@
             return true;
         }
         return false;
+    }
+    function selfpoint(x, y) {
+        if (selfmark != null) {
+            map.removeOverlay(selfmark);
+        }
+        var point = new BMapGL.Point(x, y);
+        selfmark = new BMapGL.Marker(point);
+        map.addOverlay(selfmark);
+        return true;
     }
     function clearpoint() {
         map.clearOverlays();

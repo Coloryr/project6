@@ -1,6 +1,9 @@
 ﻿using Lib;
+using System;
 using System.Collections.Generic;
-
+using System.Threading;
+using System.Threading.Tasks;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -11,11 +14,27 @@ namespace ColoryrTrash.App.Pages
     {
         private readonly Dictionary<string, TrashSaveObj> Points = new Dictionary<string, TrashSaveObj>();
         private readonly object Lock = new object();
+        private TrashSaveObj To;
+        private Thread Time;
         public MapPage()
         {
             InitializeComponent();
             Web.Navigated += Web_Navigated;
             Web.Source = $"http://localhost:{App.Config.HttpPort}";
+            Time = new Thread(TimeTask);
+            Time.Start();
+        }
+
+        private void TimeTask()
+        {
+            while (true)
+            {
+                if (Auto.IsToggled)
+                {
+                    Local();
+                }
+                Thread.Sleep(1000);
+            }
         }
 
         private void Web_Navigated(object sender, WebNavigatedEventArgs e)
@@ -26,6 +45,12 @@ namespace ColoryrTrash.App.Pages
                 foreach (var item in Points.Values)
                 {
                     AddPoint(item.X, item.Y, item.UUID, GetString(item));
+                }
+                if (To != null)
+                {
+                    double X = To.X / 1000000;
+                    double Y = To.Y / 1000000;
+                    Turn(X, Y);
                 }
             }
         }
@@ -41,17 +66,74 @@ namespace ColoryrTrash.App.Pages
         {
             lock (Lock)
             {
-                Points.Add(item.UUID, item);
+                if (Points.ContainsKey(item.UUID))
+                    Points[item.UUID] = item;
+                else
+                    Points.Add(item.UUID, item);
+            }
+        }
+        private void Disable()
+        {
+            Dispatcher.BeginInvokeOnMainThread(() =>
+            {
+                Auto.IsToggled = false;
+            });
+        }
+        private async void Local(bool turn = false)
+        {
+            try
+            {
+                var location = await Geolocation.GetLocationAsync();
+
+                if (location != null)
+                {
+                    AddSelf(location.Longitude, location.Latitude);
+                    if (turn)
+                    {
+                        Turn(location.Longitude, location.Latitude);
+                    }
+                }
+            }
+            catch (FeatureNotSupportedException fnsEx)
+            {
+                Disable();
+                App.Show("定位", "不支持定位");
+            }
+            catch (FeatureNotEnabledException fneEx)
+            {
+                Disable();
+                App.Show("定位", "定位没有开启");
+            }
+            catch (PermissionException pEx)
+            {
+                Disable();
+                App.Show("定位", "定位没有权限");
+            }
+            catch (Exception ex)
+            {
+                // Unable to get location
             }
         }
         private void AddPoint(double x, double y, string title, string text)
         {
             double X = x / 1000000;
             double Y = y / 1000000;
-            string temp = $"addpoint({X}, {Y},'{title}','{text}')";
-            Web.EvaluateJavaScriptAsync(temp);
+            Web.EvaluateJavaScriptAsync($"addpoint({X}, {Y},'{title}','{text}')");
         }
 
+        public void TurnTo(string uuid)
+        {
+            To = Points[uuid];
+        }
+
+        private void Turn(double x, double y)
+        {
+            Web.EvaluateJavaScriptAsync($"turnto({x}, {y})");
+        }
+        public void AddSelf(double x, double y)
+        {
+            Web.EvaluateJavaScriptAsync($"selfpoint({x}, {y})");
+        }
         public void ClearPoint()
         {
             Web.EvaluateJavaScriptAsync("clearpoint()");
@@ -60,6 +142,11 @@ namespace ColoryrTrash.App.Pages
         {
             Points.Remove(name);
             Web.EvaluateJavaScriptAsync($"removepoint({name})");
+        }
+
+        private void Button_Clicked(object sender, EventArgs e)
+        {
+            Local(true);
         }
     }
 }

@@ -45,7 +45,8 @@
                                         </StackLayout>
                                     </Grid>
                                     <Button Text="定位" Style="{DynamicResource buttonStyle}" WidthRequest="80" Margin="0,0,5,0"
-                                                VerticalOptions="Center" HorizontalOptions="EndAndExpand" Clicked="Button_Clicked">
+                                                VerticalOptions="Center" HorizontalOptions="EndAndExpand" Clicked="Button_Clicked"
+                                                CommandParameter="{Binding UUID}">
                                         <VisualStateManager.VisualStateGroups>
                                             <VisualStateGroup x:Name="CommonStates">
                                                 <VisualState x:Name="Normal">
