@@ -95,17 +95,6 @@ namespace ColoryrTrash.App
 
             Task.Run(() =>
             {
-                Thread.Sleep(5000);
-                mapPage.AddPoint(new TrashSaveObj
-                {
-                    X = 116408293,
-                    Y = 39918477,
-                    UUID = "UUID",
-                    Nick = "垃圾桶",
-                });
-            });
-            Task.Run(() =>
-            {
                 Thread.Sleep(1000);
                 if (MqttUtils.Start().Result && Config.AutoLogin)
                 {
@@ -154,6 +143,7 @@ namespace ColoryrTrash.App
             helloPage.ClearGroup();
             loginPage.Updata();
             infoPage.Clear();
+            mapPage.Clear();
             mainPage.Switch(PageName.LoginPage);
         }
         private static void Save()

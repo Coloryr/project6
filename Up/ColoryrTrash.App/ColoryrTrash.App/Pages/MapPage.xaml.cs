@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
-using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -37,8 +36,18 @@ namespace ColoryrTrash.App.Pages
             }
         }
 
-        private void Web_Navigated(object sender, WebNavigatedEventArgs e)
+        private async void Web_Navigated(object sender, WebNavigatedEventArgs e)
         {
+            Thread.Sleep(500);
+            while (true)
+            {
+                var res = await Web.EvaluateJavaScriptAsync("isDone()");
+                if (res == "true")
+                {
+                    break;
+                }
+                Thread.Sleep(500);
+            }
             ClearPoint();
             lock (Lock)
             {
@@ -48,11 +57,13 @@ namespace ColoryrTrash.App.Pages
                 }
                 if (To != null)
                 {
-                    double X = To.X / 1000000;
-                    double Y = To.Y / 1000000;
+                    Thread.Sleep(500);
+                    double X = (double)To.X / 1000000;
+                    double Y = (double)To.Y / 1000000;
                     Turn(X, Y);
                 }
             }
+            Local();
         }
 
         private string GetString(TrashSaveObj item)
@@ -94,24 +105,20 @@ namespace ColoryrTrash.App.Pages
                     }
                 }
             }
-            catch (FeatureNotSupportedException fnsEx)
+            catch (FeatureNotSupportedException)
             {
                 Disable();
                 App.Show("定位", "不支持定位");
             }
-            catch (FeatureNotEnabledException fneEx)
+            catch (FeatureNotEnabledException)
             {
                 Disable();
                 App.Show("定位", "定位没有开启");
             }
-            catch (PermissionException pEx)
+            catch (PermissionException)
             {
                 Disable();
                 App.Show("定位", "定位没有权限");
-            }
-            catch (Exception ex)
-            {
-                // Unable to get location
             }
         }
         private void AddPoint(double x, double y, string title, string text)
@@ -147,6 +154,12 @@ namespace ColoryrTrash.App.Pages
         private void Button_Clicked(object sender, EventArgs e)
         {
             Local(true);
+        }
+
+        internal void Clear()
+        {
+            Points.Clear();
+            ClearPoint();
         }
     }
 }
