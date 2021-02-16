@@ -15,12 +15,12 @@
                 <Label Text="地址:" FontSize="20"
                    VerticalOptions="Center" 
                    HorizontalOptions="Center"/>
-                <Entry WidthRequest="140" x:Name="IP"
+                <Entry WidthRequest="160" x:Name="IP"
                    ClearButtonVisibility="WhileEditing"/>
                 <Label Text="端口:" FontSize="20"
                    VerticalOptions="Center" 
                    HorizontalOptions="Center"/>
-                <Entry WidthRequest="74" x:Name="Port"
+                <Entry WidthRequest="84" x:Name="Port"
                    ClearButtonVisibility="WhileEditing"
                    Placeholder="数字"/>
             </StackLayout>
@@ -28,7 +28,7 @@
                 <Label Text="用户:" FontSize="20"
                    VerticalOptions="Center" 
                    HorizontalOptions="Center"/>
-                <Entry WidthRequest="270" x:Name="User"
+                <Entry WidthRequest="300" x:Name="User"
                    Placeholder="输入用户名"
                    ClearButtonVisibility="WhileEditing"/>
             </StackLayout>
@@ -36,7 +36,7 @@
                 <Label Text="密码:" FontSize="20"
                    VerticalOptions="Center" 
                    HorizontalOptions="Center"/>
-                <Entry WidthRequest="270"
+                <Entry WidthRequest="300"
                    IsPassword="True" x:Name="Pass"
                    Placeholder="输入密码"
                    ClearButtonVisibility="WhileEditing"/>

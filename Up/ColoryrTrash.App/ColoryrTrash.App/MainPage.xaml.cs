@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ColoryrTrash.App.Pages;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,7 +14,7 @@ namespace ColoryrTrash.App
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class MainPage : FlyoutPage
     {
-        private string NowSel;
+        private PageName NowSel;
         public MainPage()
         {
             InitializeComponent();
@@ -31,20 +32,20 @@ namespace ColoryrTrash.App
             flyoutPage.listView.SelectedItem = null;
             IsPresented = false;
         }
-        public void Switch(string name)
+        public void Switch(PageName name)
         {
             switch (name)
             {
-                case "Main":
+                case PageName.MainPage:
                     Detail = App.helloPage_;
                     break;
-                case "Info":
+                case PageName.InfoPage:
                     Detail = App.infoPage_;
                     break;
-                case "Login":
+                case PageName.LoginPage:
                     Detail = App.loginPage_;
                     break;
-                case "Map":
+                case PageName.MapPage:
                     Detail = App.mapPage_;
                     break;
             }

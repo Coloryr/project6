@@ -96,6 +96,60 @@ namespace ColoryrTrash.Server.Mqtt
             }
             string temp = obj.Data;
             string temp1 = obj.Data1;
+            switch (obj.Type)
+            {
+                case DataType.GetUserGroup:
+                    if (ServerMain.UserData.ID_Group.ContainsKey(temp))
+                    {
+                        Send(ClientId, new DataPackObj
+                        {
+                            Type = DataType.GetTrashGroupInfo,
+                            Res = true,
+                            Data = ServerMain.UserData.ID_Group[temp]
+                        });
+                    }
+                    else
+                    {
+                        Send(ClientId, new DataPackObj
+                        {
+                            Type = DataType.GetTrashGroupInfo,
+                            Res = true,
+                            Data1 = "没有组"
+                        });
+                    }
+                    break;
+                case DataType.GetUserTask:
+                    if (ServerMain.UserData.ID_Group.ContainsKey(temp))
+                    {
+                        var group = ServerMain.UserData.ID_Group[temp];
+                        var obj1 = ServerMain.UserData.Groups[group];
+                        var list = new List<TrashSaveObj>();
+                        foreach(var item in obj1.Bind)
+                        {
+                            if (ServerMain.SaveData.Groups.ContainsKey(item))
+                            {
+                                var list1 = ServerMain.SaveData.Groups[item].List;
+                                list.AddRange(list1.Values);
+                            }
+                        }
+                        Send(ClientId, new DataPackObj
+                        {
+                            Type = DataType.GetUserTask,
+                            Res = true,
+                            Data = JsonConvert.SerializeObject(list)
+                        });
+                    }
+                    else
+                    {
+                        Send(ClientId, new DataPackObj
+                        {
+                            Type = DataType.GetUserTask,
+                            Res = true,
+                            Data1 = "没有垃圾桶"
+                        });
+                    }
+                    break;
+            }
         }
     }
 }

@@ -9,7 +9,7 @@ namespace Lib
         AddTrashGroup, MoveTrashGroup, RenameTrashGroup,
         SetTrashNick, CheckTrashUUID,
         GetUserGroups, GetUserGroupInfo,
-        GetUserGroup, GetUsetTask,
+        GetUserGroup, GetUserTask,
         AddUserGroup, MoveUserGroup, RenameUserGroup,
         AddUser, DeleteUser, SetUser, SetUserTask,
         GetUserGroupBind, SetUserGroupBind

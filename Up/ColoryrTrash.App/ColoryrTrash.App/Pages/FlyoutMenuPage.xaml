@@ -21,10 +21,10 @@
         <ListView x:Name="listView" x:FieldModifier="public">
             <ListView.ItemsSource>
                 <x:Array Type="{x:Type local:FlyoutPageItem}">
-                    <local:FlyoutPageItem Name="Main" Title="欢迎" IconSource="map.png"/>
-                    <local:FlyoutPageItem Name="Info" Title="垃圾桶列表" IconSource="map.png"/>
-                    <local:FlyoutPageItem Name="Login" Title="用户信息" IconSource="map.png"/>
-                    <local:FlyoutPageItem Name="Map" Title="地图定位" IconSource="map.png"/>
+                    <local:FlyoutPageItem Name="MainPage" Title="欢迎" IconSource="map.png"/>
+                    <local:FlyoutPageItem Name="InfoPage" Title="垃圾桶列表" IconSource="map.png"/>
+                    <local:FlyoutPageItem Name="LoginPage" Title="用户信息" IconSource="map.png"/>
+                    <local:FlyoutPageItem Name="MapPage" Title="地图定位" IconSource="map.png"/>
                 </x:Array>
             </ListView.ItemsSource>
             <ListView.ItemTemplate>

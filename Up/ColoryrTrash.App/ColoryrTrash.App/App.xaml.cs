@@ -114,7 +114,7 @@ namespace ColoryrTrash.App
                 }
                 if (!IsLogin)
                 {
-                    mainPage.Switch("Login");
+                    mainPage.Switch(PageName.LoginPage);
                 }
             });
         }
@@ -138,7 +138,11 @@ namespace ColoryrTrash.App
             IsLogin = true;
             Save();
             mainPage.SetName(Config.User);
+            helloPage.SetName(Config.User);
             loginPage.Updata();
+            mainPage.Switch(PageName.MainPage);
+            MqttUtils.GetInfo();
+            MqttUtils.GetItems();
         }
         public static void LoginOut()
         {
@@ -146,7 +150,11 @@ namespace ColoryrTrash.App
             IsLogin = false;
             Save();
             mainPage.ClearName();
+            helloPage.ClearName();
+            helloPage.ClearGroup();
             loginPage.Updata();
+            infoPage.Clear();
+            mainPage.Switch(PageName.LoginPage);
         }
         private static void Save()
         {

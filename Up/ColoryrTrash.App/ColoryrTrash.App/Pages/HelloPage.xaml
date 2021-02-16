@@ -10,10 +10,6 @@
                 <Label Margin="40,20,0,0" FontSize="20" Text="群组:"/>
                 <Label Margin="10,20,0,0" FontSize="20" Text="组" x:Name="Group"/>
             </StackLayout>
-            <StackLayout Orientation="Horizontal">
-                <Label Margin="40,20,0,0" FontSize="20" Text="登录时间:"/>
-                <Label Margin="10,20,0,0" FontSize="20" Text="2020" x:Name="LoginTime"/>
-            </StackLayout>
         </StackLayout>
     </Grid>
 </ContentPage>

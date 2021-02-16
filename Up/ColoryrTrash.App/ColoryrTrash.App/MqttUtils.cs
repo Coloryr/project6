@@ -38,31 +38,64 @@ namespace ColoryrTrash.App
                 {
                     string Message = Encoding.UTF8.GetString(arg.ApplicationMessage.Payload);
                     var obj = JsonConvert.DeserializeObject<DataPackObj>(Message);
+                    if (obj.Type == DataType.Login)
+                    {
+                        if (obj.Res)
+                        {
+                            Token = obj.Data;
+                            App.LoginDone();
+                            App.IsLogin = true;
+                            App.Show("登录", "登录成功");
+                        }
+                        else
+                        {
+                            App.IsLogin = false;
+                            App.Show("登录", obj.Data);
+                        }
+                        return;
+                    }
+                    else if (obj.Type == DataType.CheckLogin)
+                    {
+                        if (obj.Res == false)
+                        {
+                            App.Show("自动登录", "自动登录失败");
+                        }
+                        else
+                        {
+                            App.IsLogin = true;
+                            Token = App.Config.Token;
+                            App.Show("自动登录", "已自动登录");
+                        }
+                        return;
+                    }
+                    if (!obj.Res)
+                    {
+                        App.IsLogin = false;
+                        App.Show("登录", obj.Data);
+                        App.LoginOut();
+                        return;
+                    }
                     switch (obj.Type)
                     {
-                        case DataType.CheckLogin:
-                            if (obj.Res == false)
+                        case DataType.GetUserGroup:
+                            if (obj.Data == null)
                             {
-                                App.Show("自动登录", "自动登录失败");
+                                App.Show("组获取", obj.Data1);
                             }
                             else
                             {
-                                App.IsLogin = true;
-                                App.Show("自动登录", "已自动登录");
+                                App.helloPage.SetGroup(obj.Data);
                             }
                             break;
-                        case DataType.Login:
-                            if (obj.Res)
+                        case DataType.GetUserTask:
+                            if (obj.Data == null)
                             {
-                                Token = obj.Data;
-                                App.LoginDone();
-                                App.IsLogin = true;
-                                App.Show("登录", "登录成功");
+                                App.Show("垃圾桶列表获取", obj.Data1);
                             }
                             else
                             {
-                                App.IsLogin = false;
-                                App.Show("登录", obj.Data);
+                                var list = JsonConvert.DeserializeObject<List<TrashSaveObj>>(obj.Data);
+                                App.infoPage.SetList(list);
                             }
                             break;
                     }
@@ -181,6 +214,27 @@ namespace ColoryrTrash.App
             {
                 Type = DataType.Login,
                 Data = Tools.GenSHA1(pass)
+            };
+            Send(JsonConvert.SerializeObject(obj));
+        }
+
+        public void GetInfo()
+        {
+            var obj = new DataPackObj
+            {
+                Token = Token,
+                Type = DataType.GetUserGroup,
+                Data = App.Config.User
+            };
+            Send(JsonConvert.SerializeObject(obj));
+        }
+        public void GetItems()
+        {
+            var obj = new DataPackObj
+            {
+                Token = Token,
+                Type = DataType.GetUserTask,
+                Data = App.Config.User
             };
             Send(JsonConvert.SerializeObject(obj));
         }

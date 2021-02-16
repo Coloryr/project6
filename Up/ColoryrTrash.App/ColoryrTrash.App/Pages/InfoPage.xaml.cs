@@ -28,13 +28,44 @@ namespace ColoryrTrash.App.Pages
         }
         public void SetList(List<TrashSaveObj> list)
         {
-            this.list = list;
+            if (list == null)
+            {
+                App.Show("垃圾桶组", "垃圾桶组获取失败");
+            }
+            else
+            {
+                Clear();
+                this.list.AddRange(list);
+                Update();
+            }
+        }
+        public void Clear()
+        {
+            list.Clear();
+            NowList.Clear();
+        }
+
+        private void Update()
+        {
+            IEnumerable<TrashSaveObj> query = null;
+            query = from items in list orderby items.Capacity descending select items;
+            NowList.AddRange(query);
+            List.ItemsSource = NowList;
+            Re.IsRefreshing = false;
         }
 
         private void Re_Refreshing(object sender, EventArgs e)
         {
-            List.ItemsSource = NowList;
-            Re.IsRefreshing = false;
+            if (App.IsLogin)
+            {
+                App.MqttUtils.GetItems();
+            }
+            else
+            {
+                App.Show("登录","未登录");
+                Re.IsRefreshing = false;
+                App.mainPage.Switch(PageName.LoginPage);
+            }
         }
 
         private string GetString(TrashSaveObj item)
