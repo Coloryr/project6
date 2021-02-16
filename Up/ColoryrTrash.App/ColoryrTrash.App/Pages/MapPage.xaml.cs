@@ -58,9 +58,7 @@ namespace ColoryrTrash.App.Pages
                 if (To != null)
                 {
                     Thread.Sleep(500);
-                    double X = (double)To.X / 1000000;
-                    double Y = (double)To.Y / 1000000;
-                    Turn(X, Y);
+                    Turn(To.X, To.Y);
                 }
             }
             Local();
@@ -68,7 +66,7 @@ namespace ColoryrTrash.App.Pages
 
         private string GetString(TrashSaveObj item)
         {
-            return $"垃圾桶别称:{item.Nick}<br/>垃圾桶坐标:{(double)item.X / 1000000}, {(double)item.Y / 1000000}" +
+            return $"垃圾桶别称:{item.Nick}<br/>垃圾桶坐标:{item.X}, {item.Y}" +
                 $"<br/>垃圾桶容量:{item.Capacity}<br/>垃圾桶是否打开:{item.Open}" +
                 $"<br/>垃圾桶状态:{item.State}<br/>垃圾桶上线时间:{item.Time}";
         }
@@ -126,9 +124,7 @@ namespace ColoryrTrash.App.Pages
         }
         private void AddPoint(double x, double y, string title, string text)
         {
-            double X = x / 1000000;
-            double Y = y / 1000000;
-            Web.EvaluateJavaScriptAsync($"addpoint({X}, {Y},'{title}','{text}')");
+            Web.EvaluateJavaScriptAsync($"addpoint({x}, {y},'{title}','{text}')");
         }
 
         public void TurnTo(string uuid)

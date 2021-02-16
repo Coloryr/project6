@@ -78,8 +78,7 @@ namespace ColoryrTrash.Server
                 {
                     Port = 12345,
                     User = "Admin",
-                    Password = "123456",
-                    Topic = "Topic/Server/#"
+                    Password = "123456"
                 }
             }, FilePath);
         }

@@ -13,7 +13,8 @@
 #define UUID_Add 0x00
 #define SET_Add 0x20
 #define IP_Add 0x30
-#define Port_Add 0x24
+#define User_Add 0x40
+#define Pass_Add 0x50
 #define Bit_Add 0x9e
 #define Test_Add 0x67
 
@@ -28,6 +29,7 @@ private:
     void readUUID();
     void readIP();
     void readSet();
+    void readMqtt();
     
 public:
     EEPROM();
@@ -36,6 +38,7 @@ public:
     void saveUUID();
     void saveIP();
     void saveSet();
+    void saveMqtt();
     bool isOK();
 };
 

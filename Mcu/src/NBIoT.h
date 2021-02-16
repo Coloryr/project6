@@ -4,6 +4,8 @@
 #include "Arduino.h"
 
 extern uint8_t UUID[16];
+extern uint8_t User[16];
+extern uint8_t Pass[16];
 
 extern uint8_t IP[4];
 extern uint16_t Port;
@@ -29,7 +31,7 @@ public:
     bool haveCard();
     bool isOnline();
     void startSocket();
-    void startMqtt(uint8_t *User, uint8_t *Pass);
+    void startMqtt();
     void send(uint8_t *data);
     bool setGnssOpen(bool open);
     void readGnss();

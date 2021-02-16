@@ -70,7 +70,7 @@ namespace ColoryrTrash.App.Pages
 
         private string GetString(TrashSaveObj item)
         {
-            return $"垃圾桶别称:{item.Nick}\n垃圾桶坐标:{(double)item.X / 1000000}, {(double)item.Y / 1000000}" +
+            return $"垃圾桶别称:{item.Nick}\n垃圾桶坐标:{item.X}, {item.Y}" +
                 $"\n垃圾桶容量:{item.Capacity}\n垃圾桶是否打开:{item.Open}" +
                 $"\n垃圾桶状态:{item.State}\n垃圾桶上线时间:{item.Time}";
         }

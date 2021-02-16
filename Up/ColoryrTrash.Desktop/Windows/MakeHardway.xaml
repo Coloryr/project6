@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ColoryrTrash.Desktop.Windows"
         mc:Ignorable="d"
-        Title="硬件编辑" Height="317" Width="439" ResizeMode="NoResize" Closing="Window_Closing">
+        Title="硬件编辑" Height="397" Width="439" ResizeMode="NoResize" Closing="Window_Closing">
     <Grid>
         <Rectangle Fill="#FFF4F4F5" Stroke="#FF5ABED6" StrokeThickness="2"/>
         <GroupBox Header="串口信息" Margin="4,4,0,0" HorizontalAlignment="Left" Width="231" Height="100" VerticalAlignment="Top">
@@ -140,6 +140,22 @@
                 <Label Content="距离2状态" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="87,0,0,0"/>
                 <TextBox Text="0" TextWrapping="Wrap" VerticalAlignment="Center" Height="20" HorizontalAlignment="Left" Width="22" Margin="152,0,0,0"
                     TextAlignment="Center" IsReadOnly="True" Name="R2B"/>
+            </Grid>
+        </GroupBox>
+        <GroupBox Header="MQTT设置" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="4,289,0,0" Height="76" Width="425"
+            x:Name="Group5" IsEnabled="False">
+            <Grid>
+                <Label Content="参数1" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                <Button Content="编辑" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="367,27,0,0" Height="20" Width="50"
+                        x:Name="SetMqtt_Button" Click="SetMqtt_Click"/>
+                <Button Content="读取" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="312,27,0,0" Height="20" Width="50"
+                        x:Name="ReadMqtt_Button" Click="ReadMqtt_Click"/>
+                <TextBox Text="000000000000000" TextWrapping="Wrap" VerticalAlignment="Top" Height="20" HorizontalAlignment="Left" Width="112" Margin="41,3,0,0"
+                        x:Name="MQTT1" TextChanged="MQTT1_TextChanged"/>
+                <Label Content="参数2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,25,0,0"/>
+                <TextBox Text="000000000000000" TextWrapping="Wrap" VerticalAlignment="Top" Height="20" HorizontalAlignment="Left" Width="112" Margin="41,28,0,0"
+                        x:Name="MQTT2" TextChanged="MQTT1_TextChanged"/>
+                <Label Content="至多15位数字字母，不能是汉字" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="158,0,0,0"/>
             </Grid>
         </GroupBox>
     </Grid>

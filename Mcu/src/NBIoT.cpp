@@ -4,11 +4,18 @@
 NBIoT *IoT;
 
 uint8_t UUID[16];
+uint8_t User[16];
+uint8_t Pass[16];
 
 uint8_t IP[4];
 uint16_t Port;
 
 uint8_t SIM[20];
+
+String X;
+String Y;
+String Time_YMD;
+String Time_HMS;
 
 void IoTRead(void *arg)
 {
@@ -26,6 +33,11 @@ void IoTRead(void *arg)
 NBIoT::NBIoT()
 {
     Serial2.begin(115200);
+    Serial2.println("AT");
+    delay(500);
+    Serial2.println("ATE0");
+    delay(500);
+    Serial2.flush();
     check();
     if (!ok)
         return;
@@ -37,7 +49,6 @@ NBIoT::NBIoT()
     checkOnline();
     // xTaskCreate(IoTRead, "IoT", 1024, NULL, 5, NULL);
     setGnssOpen(true);
-    readGnss();
 }
 
 void NBIoT::check()
@@ -199,9 +210,9 @@ bool NBIoT::setGnssOpen(bool open)
 //         delay(300);
 //         data = Serial2.readString();
 //         data.trim();
-// #ifdef DEBUG
-//         Serial.println(data.c_str());
-// #endif
+#ifdef DEBUG
+        Serial.println(data.c_str());
+#endif
         return true;
     }
     return false;
@@ -209,13 +220,58 @@ bool NBIoT::setGnssOpen(bool open)
 
 void NBIoT::readGnss()
 {
-    // Serial2.println("AT+QGNSSRD=\"NMEA/RMC\"");
-    Serial2.println("AT+QGNSSRD?");
+    Serial2.println("AT+QGNSSRD=\"NMEA/RMC\"");
     delay(200);
     String data = Serial2.readString();
     data.trim();
 #ifdef DEBUG
     Serial.println(data.c_str());
+#endif
+    data.replace("+QGNSSRD: $GNRMC,", "");
+    if (data[0] == ',')
+    {
+#ifdef DEBUG
+        Serial.println("无效的数据");
+#endif
+        return;
+    }
+    Time_HMS = data.substring(0, 9);
+    data = data.substring(10);
+    if (data[0] == 'V')
+    {
+#ifdef DEBUG
+        Serial.println("无效的定位");
+#endif
+        data = data.substring(8);
+        if (data[0] == ',')
+        {
+#ifdef DEBUG
+            Serial.println("无效的时间");
+#endif
+            return;
+        }
+        else
+        {
+            Time_YMD = data.substring(0, 6);
+            return;
+        }
+        return;
+    }
+    else
+    {
+#ifdef DEBUG
+        Serial.println("有效的定位");
+#endif
+        data = data.substring(2);
+        X = data.substring(0, 9);
+        data = data.substring(12);
+        Y = data.substring(0, 10);
+        data = data.substring(20);
+        Time_YMD = data.substring(0, 6);
+    }
+#ifdef DEBUG
+    Serial.printf("当前时间:%s, %s\n", Time_YMD.c_str(), Time_HMS.c_str());
+    Serial.printf("当前坐标:%s, %s\n", X.c_str(), Y.c_str());
 #endif
 }
 
@@ -239,10 +295,23 @@ void NBIoT::startSocket()
     if (!ok || !card || !online)
         return;
 }
-void NBIoT::startMqtt(uint8_t *User, uint8_t *Pass)
+void NBIoT::startMqtt()
 {
     if (!ok || !card || !online)
         return;
+    Serial2.printf("AT+QMTOPEN=0,\"%s\",%d\n", IP, Port);
+    delay(300);
+    String data = Serial2.readString();
+    data.trim();
+#ifdef DEBUG
+    Serial2.println(data);
+#endif
+    Serial2.printf("AT+QMTCONN=0,\"%s\",\"%s\",\"%s\"", UUID, User, Pass);
+    data = Serial2.readString();
+    data.trim();
+#ifdef DEBUG
+    Serial2.println(data);
+#endif
 }
 void NBIoT::send(uint8_t *data)
 {

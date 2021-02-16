@@ -135,7 +135,8 @@ namespace ColoryrTrash.Desktop.Windows
                 Group1.IsEnabled =
                 Group2.IsEnabled =
                 Group3.IsEnabled =
-                Group4.IsEnabled = false;
+                Group4.IsEnabled =
+                Group5.IsEnabled = false;
             }
         }
 
@@ -161,13 +162,15 @@ namespace ColoryrTrash.Desktop.Windows
                         Group1.IsEnabled =
                         Group2.IsEnabled =
                         Group3.IsEnabled =
-                        Group4.IsEnabled = true;
+                        Group4.IsEnabled =
+                        Group5.IsEnabled = true;
                         State_Led.Fill = Brushes.LawnGreen;
                     });
                     ReadUUID_();
                     ReadIP_();
-                    ReadSensor_();
+                    //ReadSensor_();
                     ReadSetting_();
+                    ReadMqtt_();
                 }
                 else
                 {
@@ -1136,6 +1139,175 @@ namespace ColoryrTrash.Desktop.Windows
                 if (temp > 8196)
                 {
                     box.Text = "";
+                }
+            }
+        }
+
+        private void MQTT1_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (IsLoad)
+                return;
+            TextBox box = sender as TextBox;
+            if (box == null)
+                return;
+            if (box.Text.Length > 15)
+            {
+                box.Text = "";
+            }
+            else
+            {
+                if (!CheckInput(box.Text))
+                {
+                    box.Text = "";
+                    return;
+                }
+            }
+        }
+        private bool MqttCheck()
+        {
+            if (MQTT1.Text.Length == 0 || MQTT1.Text.Length == 0)
+                return false;
+            if (!CheckInput(MQTT1.Text) || !CheckInputNumber(MQTT2.Text))
+                return false;
+            return true;
+        }
+        private void SetMqtt_Click(object sender, RoutedEventArgs e)
+        {
+            if (IsSend)
+                return;
+            if (!IsConnect)
+            {
+                App.ShowB("设置", "设备未连接");
+                return;
+            }
+            if (!MqttCheck())
+            {
+                App.ShowB("设置", "MQTT设置填写错误");
+                return;
+            }
+            IsSend = true;
+            SetMqtt_Button.IsEnabled = false;
+            var temp = new byte[32];
+            var temp1 = Encoding.UTF8.GetBytes(MQTT1.Text);
+            var temp2 = Encoding.UTF8.GetBytes(MQTT2.Text);
+            Array.Copy(temp1, 0, temp, 0, Math.Min(16, temp1.Length));
+            Array.Copy(temp2, 0, temp, 16, Math.Min(16, temp2.Length));
+            Task.Run(() =>
+            {
+                var data = HardPack.MakeSetPack(PackType.Mqtt, temp);
+                Serial.Write(data, 0, data.Length);
+                Thread.Sleep(1000);
+                if (Serial.BytesToRead <= 0)
+                {
+                    App.ShowB("设置", "设备未响应");
+                    Dispatcher.Invoke(() => SetMqtt_Button.IsEnabled = true);
+                    IsSend = false;
+                    return;
+                }
+                data = new byte[Serial.BytesToRead];
+                Serial.Read(data, 0, Serial.BytesToRead);
+                if (HardPack.CheckOK(data))
+                {
+                    App.ShowA("设置", "MQTT设置已设置");
+                }
+                else
+                {
+                    App.ShowB("设置", "MQTT设置设置失败");
+                }
+                Dispatcher.Invoke(() => SetMqtt_Button.IsEnabled = true);
+                IsSend = false;
+            });
+        }
+
+        private void ReadMqtt_()
+        {
+            IsRead = true;
+            Dispatcher.Invoke(() => ReadMqtt_Button.IsEnabled = false);
+            var data = HardPack.MakeReadPack(PackType.Mqtt);
+            Serial.Write(data, 0, 6);
+            Thread.Sleep(1000);
+            if (Serial.BytesToRead > 0)
+            {
+                var temp = new byte[Serial.BytesToRead];
+                int len = Serial.BytesToRead - 6;
+                Serial.Read(temp, 0, Serial.BytesToRead);
+                var res = HardPack.CheckType(temp);
+                if (res == PackType.Mqtt)
+                {
+                    var temp1 = new byte[len];
+                    Array.Copy(temp, 6, temp1, 0, len);
+                    Dispatcher.Invoke(() => ReadMqtt(temp1));
+                }
+                App.ShowA("读信息", "MQTT设置已读取");
+            }
+            else
+            {
+                App.ShowB("读信息", "设备未响应");
+            }
+            Dispatcher.Invoke(() => ReadMqtt_Button.IsEnabled = true);
+            IsRead = false;
+        }
+        private async void ReadMqtt_Click(object sender, RoutedEventArgs e)
+        {
+            if (IsRead)
+                return;
+            if (IsConnect)
+            {
+                IsRead = true;
+                ReadMqtt_Button.IsEnabled = false;
+                var data = HardPack.MakeReadPack(PackType.Mqtt);
+                Serial.Write(data, 0, 6);
+                await Task.Run(() =>
+                {
+                    Thread.Sleep(1000);
+                    if (Serial.BytesToRead > 0)
+                    {
+                        var temp = new byte[Serial.BytesToRead];
+                        int len = Serial.BytesToRead - 6;
+                        Serial.Read(temp, 0, Serial.BytesToRead);
+                        var res = HardPack.CheckType(temp);
+                        if (res == PackType.Mqtt)
+                        {
+                            var temp1 = new byte[len];
+                            Array.Copy(temp, 6, temp1, 0, len);
+                            Dispatcher.Invoke(() => ReadMqtt(temp1));
+                        }
+                        App.ShowA("读信息", "MQTT设置已读取");
+                    }
+                    else
+                    {
+                        App.ShowB("读信息", "设备未响应");
+                    }
+                    Dispatcher.Invoke(() => ReadMqtt_Button.IsEnabled = true);
+                    IsRead = false;
+                });
+            }
+            else
+            {
+                App.ShowB("读信息", "设备未连接");
+            }
+        }
+        private void ReadMqtt(byte[] data)
+        {
+            if (data.Length != 32)
+            {
+                App.ShowB("读信息", "数据包错误");
+                return;
+            }
+            for (int a = 0; a < 16; a++)
+            {
+                if (data[a] == 0)
+                {
+                    MQTT1.Text = Encoding.UTF8.GetString(data, 0, a);
+                    break;
+                }
+            }
+            for (int a = 0; a < 16; a++)
+            {
+                if (data[a + 16] == 0)
+                {
+                    MQTT2.Text = Encoding.UTF8.GetString(data, 16, a);
+                    break;
                 }
             }
         }

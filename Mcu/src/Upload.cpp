@@ -27,7 +27,7 @@ void Upload::tick()
 {
     if (Serial.available() > 0)
     {
-        Serial.readBytes(readbuff, 24);
+        Serial.readBytes(readbuff, Serial.available());
         check();
     }
 }
@@ -121,6 +121,15 @@ void Upload::sendRead(uint8_t type)
         writebuff[13] = VL53L0B->status;
         send(14);
         break;
+    case 4:
+        buildPack(4);
+        for (uint8_t a = 0; a < 16; a++)
+        {
+            writebuff[a + 6] = User[a];
+            writebuff[a + 22] = Pass[a];
+        }
+        send(38);
+        break;
     }
 }
 void Upload::sendWrite(uint8_t type)
@@ -158,6 +167,14 @@ void Upload::sendWrite(uint8_t type)
         tow.u8[1] = readbuff[10];
         Port = tow.u16;
         ThisEEPROM->saveIP();
+        break;
+    case 4:
+        for (uint8_t a = 0; a < 16; a++)
+        {
+            User[a] = readbuff[5 + a];
+            Pass[a] = readbuff[21 + a];
+        }
+        ThisEEPROM->saveMqtt();
         break;
     }
     reset();

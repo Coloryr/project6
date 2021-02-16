@@ -24,23 +24,25 @@ void TaskUpload(void *data)
 
 void setup()
 {
-    delay(2000);
+    delay(200);
     Serial.begin(115200);
     Serial.setTimeout(100);
-
+#ifdef DEBUG
+    Serial.println("Start");
+#endif
     // ThisServo = new Servo();
     IoT = new NBIoT();
-    // ThisEEPROM = new EEPROM();
-    // IO = new IOInput();
-    // VL53L0A = new VL53L0(VL53L0_A, '0');
-    // VL53L0B = new VL53L0(VL53L0_B, '1');
+    ThisEEPROM = new EEPROM();
+    IO = new IOInput();
+    VL53L0A = new VL53L0(VL53L0_A, '0');
+    VL53L0B = new VL53L0(VL53L0_B, '1');
 
     // VL53L0A->check();
     // VL53L0B->check();
 
-    // ThisEEPROM->init();
+    ThisEEPROM->init();
 
-    // Up = new Upload();
+    Up = new Upload();
 
     // if (NetWork_State)
     // {
@@ -59,7 +61,7 @@ void loop()
     // VL53L0A->update();
     // VL53L0B->update();
     delay(10000);
-    IoT->readGnss();
+    // IoT->readGnss();
     // BLE->Tick();
     // for (int d = 1; d < 180; d += 1)
     // {

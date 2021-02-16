@@ -4,7 +4,7 @@ namespace ColoryrTrash.Desktop
 {
     public enum PackType
     {
-        UUID, Set, IP, Sensor, None
+        UUID, Set, IP, Sensor, Mqtt, None
     }
     class HardPack
     {
