@@ -31,6 +31,8 @@ namespace ColoryrTrash.App
 
         public static IMessageHand MessageHand;
 
+        public static string GroupName;
+
         private static App ThisApp;
         private static INotificationManager notificationManager;
 

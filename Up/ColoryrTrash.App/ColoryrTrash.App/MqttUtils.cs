@@ -86,6 +86,7 @@ namespace ColoryrTrash.App
                             else
                             {
                                 App.helloPage.SetGroup(obj.Data);
+                                App.GroupName = obj.Data;
                             }
                             break;
                         case DataType.GetUserTask:
@@ -107,7 +108,12 @@ namespace ColoryrTrash.App
                     var obj = JsonConvert.DeserializeObject<DataPackObj>(Message);
                     switch (obj.Type)
                     {
-                        
+                        case DataType.SetUserGroupBind:
+                            if(App.GroupName == obj.Data)
+                            {
+                                GetItems();
+                            }
+                            break;
                     }
                 }
             }

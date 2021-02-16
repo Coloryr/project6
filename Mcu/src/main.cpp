@@ -13,18 +13,25 @@ uint8_t mode;
 bool Bluetooth_State;
 bool NetWork_State;
 
-void TaskUpload(void *data)
+uint8_t *buff = new uint8_t[1024];
+
+void test(void *data)
 {
     for (;;)
     {
-        Up->tick();
+        if (Serial.available() > 0)
+        {
+            int size = Serial.available();
+            Serial.readBytes(buff, size);
+            Serial2.write(buff, size);
+        }
         delay(50);
     }
 }
 
 void setup()
 {
-    delay(200);
+    delay(2000);
     Serial.begin(115200);
     Serial.setTimeout(100);
 #ifdef DEBUG
@@ -33,16 +40,16 @@ void setup()
     // ThisServo = new Servo();
     IoT = new NBIoT();
     ThisEEPROM = new EEPROM();
-    IO = new IOInput();
-    VL53L0A = new VL53L0(VL53L0_A, '0');
-    VL53L0B = new VL53L0(VL53L0_B, '1');
+    // IO = new IOInput();
+    // VL53L0A = new VL53L0(VL53L0_A, '0');
+    // VL53L0B = new VL53L0(VL53L0_B, '1');
 
     // VL53L0A->check();
     // VL53L0B->check();
 
     ThisEEPROM->init();
 
-    Up = new Upload();
+    // Up = new Upload();
 
     // if (NetWork_State)
     // {
@@ -52,7 +59,8 @@ void setup()
     // {
     //     BLE = new MyBLE(Client);
     // }
-    xTaskCreate(TaskUpload, "Upload", 1024, NULL, 5, NULL);
+    xTaskCreate(test, "Upload", 1024, NULL, 5, NULL);
+    IoT->startMqtt();
 }
 
 void loop()

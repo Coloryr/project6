@@ -534,6 +534,12 @@ namespace ColoryrTrash.Server.Mqtt
                             Res = true,
                             Data = $"账户组[{temp}]绑定成功"
                         });
+                        AppServer.SendAll(new DataPackObj
+                        {
+                            Type = DataType.SetUserGroupBind,
+                            Res = true,
+                            Data = temp
+                        });
                     }
                     break;
             }

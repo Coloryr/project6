@@ -667,8 +667,8 @@ namespace ColoryrTrash.Desktop.Windows
             temp[2] = byte.Parse(IP2.Text);
             temp[3] = byte.Parse(IP3.Text);
             var temp2 = HardPack.IntToByte(int.Parse(Port0.Text));
-            temp[4] = temp2[1];
-            temp[5] = temp2[0];
+            temp[4] = temp2[0];
+            temp[5] = temp2[1];
             Task.Run(() =>
             {
                 var data = HardPack.MakeSetPack(PackType.IP, temp);

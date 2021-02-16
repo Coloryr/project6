@@ -103,7 +103,7 @@ namespace ColoryrTrash.Server.Mqtt
                     {
                         Send(ClientId, new DataPackObj
                         {
-                            Type = DataType.GetTrashGroupInfo,
+                            Type = DataType.GetUserGroup,
                             Res = true,
                             Data = ServerMain.UserData.ID_Group[temp]
                         });

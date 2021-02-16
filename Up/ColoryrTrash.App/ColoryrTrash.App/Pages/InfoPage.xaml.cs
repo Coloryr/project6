@@ -1,6 +1,7 @@
 ﻿using Lib;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,17 +15,11 @@ namespace ColoryrTrash.App.Pages
     public partial class InfoPage : ContentPage
     {
         private List<TrashSaveObj> list = new List<TrashSaveObj>();
-        private List<TrashSaveObj> NowList = new List<TrashSaveObj>();
+        private ObservableCollection<TrashSaveObj> NowList = new ObservableCollection<TrashSaveObj>();
         public InfoPage()
         {
             InitializeComponent();
-            NowList.Add(new TrashSaveObj
-            {
-                UUID = "UUID",
-                Nick = "智能垃圾桶",
-                Capacity = 10,
-                State = ItemState.Ok
-            });
+            List.ItemsSource = NowList;
         }
         public void SetList(List<TrashSaveObj> list)
         {
@@ -49,9 +44,14 @@ namespace ColoryrTrash.App.Pages
         {
             IEnumerable<TrashSaveObj> query = null;
             query = from items in list orderby items.Capacity descending select items;
-            NowList.AddRange(query);
-            List.ItemsSource = NowList;
-            Re.IsRefreshing = false;
+            foreach (var item in query)
+            {
+                NowList.Add(item);
+            }
+            Dispatcher.BeginInvokeOnMainThread(() =>
+            {
+                Re.IsRefreshing = false;
+            });
         }
 
         private void Re_Refreshing(object sender, EventArgs e)

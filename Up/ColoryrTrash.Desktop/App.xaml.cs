@@ -81,8 +81,8 @@ namespace ColoryrTrash.Desktop
                 HttpServer.Start();
                 HttpServer.BeginGetContext(ContextReady, null);
 
-                new MakeHardway().ShowDialog();
-                return;
+                //new MakeHardway().ShowDialog();
+                //return;
 
                 Login();
             }

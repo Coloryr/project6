@@ -10,6 +10,11 @@ uint8_t Pass[16];
 uint8_t IP[4];
 uint16_t Port;
 
+const String TopicTrashServer = "trash/server";
+const String TopicTrashClient = "trash/client";
+
+String SelfTopic;
+
 uint8_t SIM[20];
 
 String X;
@@ -299,19 +304,52 @@ void NBIoT::startMqtt()
 {
     if (!ok || !card || !online)
         return;
-    Serial2.printf("AT+QMTOPEN=0,\"%s\",%d\n", IP, Port);
+    Serial2.println("AT+QMTCLOSE=0");
     delay(300);
+    Serial2.flush();
+#ifdef DEBUG
+    Serial.printf("AT+QMTOPEN=0,\"%d.%d.%d.%d\",%d\n", IP[0], IP[1], IP[2], IP[3], Port);
+#endif
+    Serial2.printf("AT+QMTOPEN=0,\"%d.%d.%d.%d\",%d", IP[0], IP[1], IP[2], IP[3], Port);
+    Serial2.println();
+    delay(5000);
     String data = Serial2.readString();
     data.trim();
 #ifdef DEBUG
-    Serial2.println(data);
+    Serial.println(data.c_str());
 #endif
-    Serial2.printf("AT+QMTCONN=0,\"%s\",\"%s\",\"%s\"", UUID, User, Pass);
-    data = Serial2.readString();
-    data.trim();
+    if (data.startsWith("+QMTOPEN: 0,0"))
+    {
 #ifdef DEBUG
-    Serial2.println(data);
+        Serial.println("MQTT服务器已连接");
 #endif
+#ifdef DEBUG
+        Serial.printf("AT+QMTCONN=0,\"%s\",\"%s\",\"%s\"\n", UUID, User, Pass);
+#endif
+        Serial2.printf("AT+QMTCONN=0,\"%s\",\"%s\",\"%s\"", UUID, User, Pass);
+        Serial2.println();
+        delay(2000);
+        data = Serial2.readString();
+        data.trim();
+#ifdef DEBUG
+        Serial.println(data.c_str());
+#endif
+        if (!data.startsWith("+QMTCONN: 0,0,0"))
+        {
+            mqtt = false;
+            return;
+        }
+        SelfTopic = TopicTrashClient + "/";
+        char *uuid = new char[16];
+        for (uint8_t a = 0; a < 16; a++)
+        {
+            uuid[a] = UUID[a];
+        }
+        SelfTopic += uuid;
+        Serial2.printf("AT+QMTSUB=0,1,\"%s\",1", TopicTrashServer);
+        Serial2.println();
+        mqtt = true;
+    }
 }
 void NBIoT::send(uint8_t *data)
 {

@@ -15,12 +15,22 @@ const uint8_t ReadPack[5] = {0x52, 0x45, 0x41, 0x44, 0x3A};
 const uint8_t SetPack[4] = {0x53, 0x45, 0x54, 0x3A};
 const uint8_t OKPack[] = {0x4F, 0x4B};
 
+void TaskUpload(void *data)
+{
+    for (;;)
+    {
+        Up->tick();
+        delay(50);
+    }
+}
+
 Upload::Upload()
 {
     readbuff = new uint8_t[64];
     writebuff = new uint8_t[64];
     open = false;
     reset();
+    xTaskCreate(TaskUpload, "Upload", 1024, NULL, 5, NULL);
 }
 
 void Upload::tick()
