@@ -153,6 +153,7 @@ namespace ColoryrTrash.Desktop
 
         public static void DisConnect()
         {
+            IsLogin = false;
             ShowB("连接", "服务器连接断开");
             ThisApp.Dispatcher.Invoke(() =>
             {

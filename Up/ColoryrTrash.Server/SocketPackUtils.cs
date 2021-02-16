@@ -44,7 +44,8 @@ namespace ColoryrTrash.Server
                 {
                     0 => ItemState.Ok,
                     1 => ItemState.Error,
-                    2 => ItemState.LowBattery
+                    2 => ItemState.LowBattery,
+                    _ => ItemState.Error
                 };
                 ServerMain.SaveData.UpData(uuid, x, y, capacity, open, state);
             }
@@ -74,7 +75,8 @@ namespace ColoryrTrash.Server
                     {
                         0 => ItemState.Ok,
                         1 => ItemState.Error,
-                        2 => ItemState.LowBattery
+                        2 => ItemState.LowBattery,
+                        _ => ItemState.Error
                     };
                     ServerMain.SaveData.UpData(uuid, x, y, capacity, open, state);
                 }

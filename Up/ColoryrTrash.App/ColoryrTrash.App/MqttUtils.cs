@@ -64,6 +64,7 @@ namespace ColoryrTrash.App
                         {
                             App.IsLogin = true;
                             Token = App.Config.Token;
+                            App.LoginDone();
                             App.Show("自动登录", "已自动登录");
                         }
                         return;
@@ -110,7 +111,7 @@ namespace ColoryrTrash.App
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 //App.LogError(ex);
             }
@@ -178,7 +179,7 @@ namespace ColoryrTrash.App
                 IsConnecting = false;
                 return true;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 //App.LogError(e);
             }
@@ -192,7 +193,7 @@ namespace ColoryrTrash.App
             {
                 await Client.DisconnectAsync();
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 //App.LogError(e);
             }

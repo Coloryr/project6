@@ -94,14 +94,17 @@ namespace ColoryrTrash.App.Pages
         {
             try
             {
-                var location = await Geolocation.GetLocationAsync();
+                var request = new GeolocationRequest(GeolocationAccuracy.Best, TimeSpan.FromSeconds(10));
+                CancellationTokenSource cts = new CancellationTokenSource();
+                var location = await Geolocation.GetLocationAsync(request, cts.Token);
 
                 if (location != null)
                 {
-                    AddSelf(location.Longitude, location.Latitude);
+                    var res = ConvertGPS.Gps84_To_bd09(new PointLatLng(location.Latitude, location.Longitude));
+                    AddSelf(res.Lng, res.Lat);
                     if (turn)
                     {
-                        Turn(location.Longitude, location.Latitude);
+                        Turn(res.Lng, res.Lat);
                     }
                 }
             }

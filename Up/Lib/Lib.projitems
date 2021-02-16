@@ -9,6 +9,7 @@
     <Import_RootNamespace>Lib</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)ConvertGPS.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DataPackObj.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Tools.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DataArg.cs" />
