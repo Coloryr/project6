@@ -405,6 +405,9 @@ void NBIoT::send()
         data.trim();
         if (!data.startsWith("OK"))
         {
+#ifdef DEBUG
+            Serial.println(data.c_str());
+#endif
             mqtt = false;
         }
     }
@@ -427,6 +430,9 @@ void NBIoT::sendSIM()
         data.trim();
         if (!data.startsWith("OK"))
         {
+#ifdef DEBUG
+            Serial.println(data.c_str());
+#endif
             mqtt = false;
         }
     }

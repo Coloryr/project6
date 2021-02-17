@@ -31,6 +31,7 @@ void longTask(void *arg)
         {
             busy = true;
             IoT->init();
+            delay(100);
             IoT->setGnssOpen(true);
             busy = false;
         }
@@ -46,7 +47,9 @@ void longTask(void *arg)
             {
                 busy = true;
                 IoT->sendSIM();
+                delay(100);
                 IoT->readGnss();
+                delay(100);
                 IoT->send();
                 timego = 0;
                 SendOnce = false;
@@ -58,6 +61,7 @@ void longTask(void *arg)
                 timego = 0;
                 busy = true;
                 IoT->readGnss();
+                delay(100);
                 IoT->send();
                 busy = false;
             }
@@ -80,7 +84,7 @@ void tick()
     if (IO->readOpen())
     {
         IsOpen = true;
-        Time = 80;
+        Time = 40;
         ThisServo->open();
         return;
     }
@@ -182,5 +186,5 @@ void loop()
     tick();
     if (!busy)
         IoT->tick();
-    delay(50);
+    delay(100);
 }
