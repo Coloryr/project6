@@ -28,9 +28,6 @@ bool IOInput::readOpen()
         delay(10);
         if (digitalRead(Open_IN) == LOW)
         {
-#ifdef DEBUG
-            Serial.println("key open is down");
-#endif
             return true;
         }
     }
@@ -43,9 +40,6 @@ bool IOInput::readClose()
         delay(10);
         if (digitalRead(Close_IN) == LOW)
         {
-#ifdef DEBUG
-            Serial.println("key close is down");
-#endif
             return true;
         }
     }
@@ -54,9 +48,6 @@ bool IOInput::readClose()
 bool IOInput::isClose()
 {
     uint16_t temp = readADC();
-#ifdef DEBUG
-    Serial.printf("adc:%d\n", temp);
-#endif
     if (last)
     {
         if (temp > ADC_HIGH)

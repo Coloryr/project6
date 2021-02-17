@@ -9,6 +9,7 @@ Servo::Servo()
 {
     ledcSetup(Channel, Freq, Resolution); // 设置通道
     ledcAttachPin(ServoIO, Channel);      // 将通道与对应的引脚连接
+    close();
 }
 
 void Servo::open()

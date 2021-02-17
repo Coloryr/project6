@@ -927,11 +927,11 @@ namespace ColoryrTrash.Desktop.Windows
             temp[0] = temp2[1];
             temp[1] = temp2[0];
             temp2 = HardPack.IntToByte(int.Parse(WADC2.Text));
-            temp[2] = temp2[1];
-            temp[3] = temp2[0];
+            temp[2] = temp2[0];
+            temp[3] = temp2[1];
             temp2 = HardPack.IntToByte(int.Parse(WADC1.Text));
-            temp[4] = temp2[1];
-            temp[5] = temp2[0];
+            temp[4] = temp2[0];
+            temp[5] = temp2[1];
             temp[6] = byte.Parse(WServo1.Text);
             temp[7] = byte.Parse(WServo2.Text);
             Task.Run(() =>
@@ -1051,9 +1051,9 @@ namespace ColoryrTrash.Desktop.Windows
             }
             int temp = HardPack.ByteToInt(data[1], data[0]);
             WDis.Text = temp.ToString();
-            temp = HardPack.ByteToInt(data[3], data[2]);
+            temp = HardPack.ByteToInt(data[2], data[3]);
             WADC2.Text = temp.ToString();
-            temp = HardPack.ByteToInt(data[5], data[4]);
+            temp = HardPack.ByteToInt(data[4], data[5]);
             WADC1.Text = temp.ToString();
             WServo1.Text = data[6].ToString();
             WServo2.Text = data[7].ToString();

@@ -87,6 +87,7 @@ void VL53L0::update()
 #ifdef DEBUG
         Serial.printf("VL53L0:%c No ready\n", index);
 #endif
+        status = 0;
         close();
         return;
     }
@@ -102,9 +103,6 @@ void VL53L0::update()
     tow.u8[0] = buff[11];
     count[2] = tow.u16;
     status = ((buff[0] & 0x78) >> 3);
-#ifdef DEBUG
-    Serial.printf("VL53L0:%c ambient count = %4d signal count = %4d distance = %4d status = %d \n", index, count[0], count[1], count[2], status);
-#endif
     close();
 }
 

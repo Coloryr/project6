@@ -36,6 +36,9 @@ public:
     bool setGnssOpen(bool open);
     void readGnss();
     void startRead();
+    void init();
+    bool isMqtt();
+    bool isSocket();
 };
 
 #endif

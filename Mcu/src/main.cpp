@@ -14,6 +14,32 @@ bool IsOpen;
 uint8_t Capacity;
 uint8_t Time;
 
+void longTask(void *arg)
+{
+    uint8_t count;
+    for (;;)
+    {
+        if (!IoT->isOnline())
+        {
+            init();
+        }
+        else if (!IoT->isMqtt())
+        {
+            IoT->startMqtt();
+        }
+        else
+        {
+            count++;
+            if (count > 1800)
+            {
+                count = 0;
+                IoT->send();
+            }
+        }
+        delay(1000);
+    }
+}
+
 void tick()
 {
     if (Time > 0)
@@ -23,6 +49,7 @@ void tick()
         {
             ThisServo->close();
         }
+        return;
     }
     if (IO->readOpen())
     {
@@ -57,8 +84,8 @@ void tick()
     {
         if (VL53L0A->count[2] <= Distance)
         {
-            double temp = VL53L0A->count[2] / Distance;
-            sum = temp * 100;
+            double temp = (double)VL53L0A->count[2] / (double)Distance;
+            sum += temp * 100;
             count++;
         }
     }
@@ -66,25 +93,26 @@ void tick()
     {
         if (VL53L0B->count[2] <= Distance)
         {
-            double temp = VL53L0B->count[2] / Distance;
-            sum = temp * 100;
+            double temp = (double)VL53L0B->count[2] / (double)Distance;
+            sum += temp * 100;
             count++;
         }
     }
     Capacity = sum / count;
+    Serial.printf("Battery:%d\n", IO->readBattery());
 }
 
 void setup()
 {
-    delay(2000);
+    delay(200);
     Serial.begin(115200);
     Serial.setTimeout(100);
 #ifdef DEBUG
     Serial.println("Start");
 #endif
-    ThisServo = new Servo();
-    IoT = new NBIoT();
     ThisEEPROM = new EEPROM();
+    ThisEEPROM->init();
+    ThisServo = new Servo();
     IO = new IOInput();
     VL53L0A = new VL53L0(VL53L0_A, '0');
     VL53L0B = new VL53L0(VL53L0_B, '1');
@@ -92,9 +120,9 @@ void setup()
     VL53L0A->check();
     VL53L0B->check();
 
-    ThisEEPROM->init();
-
     Up = new Upload();
+    delay(2000);
+    IoT = new NBIoT();
 
     // if (NetWork_State)
     // {
@@ -104,8 +132,6 @@ void setup()
     // {
     //     BLE = new MyBLE(Client);
     // }
-    IoT->startMqtt();
-    IoT->startRead();
 }
 
 void loop()

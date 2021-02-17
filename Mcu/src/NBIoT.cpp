@@ -43,6 +43,16 @@ NBIoT::NBIoT()
     delay(500);
     Serial2.println("ATE0");
     delay(500);
+    init();
+}
+
+void NBIoT::init()
+{
+    ok = false;
+    card = false;
+    socket = false;
+    online = false;
+    mqtt = false;
     Serial2.flush();
     check();
     if (!ok)
@@ -300,6 +310,15 @@ bool NBIoT::isOnline()
     return online;
 }
 
+bool NBIoT::isMqtt()
+{
+    return mqtt;
+}
+bool NBIoT::isSocket()
+{
+    return socket;
+}
+
 void NBIoT::startSocket()
 {
     if (!ok || !card || !online)
@@ -388,7 +407,7 @@ void NBIoT::send()
     {
 #ifdef DEBUG
         Serial.printf("AT+QMTPUB=0,1,1,0,\"%s\",\"%s,%s,%s,%s,%s,%s,%d,%d\"\n", SelfTopic.c_str(),
-                      UUID, X.c_str(), Y.c_str(), Time_YMD.c_str(), Time_HMS.c_str(), IO->readOpen(), IO->readBattery());
+                      UUID, X.c_str(), Y.c_str(), Time_YMD.c_str(), Time_HMS.c_str(), Close, IO->readBattery());
 #endif
     }
 }

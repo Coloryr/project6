@@ -5,7 +5,7 @@
 #include "main.h"
 
 #define ADC_IN 34
-#define Battery_IN 15
+#define Battery_IN 35
 
 #define Open_IN 12
 #define Close_IN 14
