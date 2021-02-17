@@ -10,6 +10,7 @@
 #include "Upload.h"
 
 bool Close;
+bool busy;
 bool IsOpen;
 bool SendOnce;
 uint8_t State;
@@ -23,41 +24,45 @@ uint8_t Time;
 
 void longTask(void *arg)
 {
-    uint16_t timego;
+    uint16_t timego = 0;
     for (;;)
     {
         if (!IoT->isOnline())
         {
+            busy = true;
             IoT->init();
-            delay(100);
             IoT->setGnssOpen(true);
+            busy = false;
         }
         else if (!IoT->isMqtt())
         {
+            busy = true;
             IoT->startMqtt();
+            busy = false;
         }
         else
         {
             if (SendOnce)
             {
+                busy = true;
                 IoT->sendSIM();
-                delay(100);
                 IoT->readGnss();
-                delay(100);
                 IoT->send();
                 timego = 0;
                 SendOnce = false;
+                busy = false;
             }
             timego++;
-            if (timego > 1800)
+            if (timego > 360)
             {
                 timego = 0;
+                busy = true;
                 IoT->readGnss();
-                delay(100);
                 IoT->send();
+                busy = false;
             }
         }
-        delay(1000);
+        delay(5000);
     }
 }
 
@@ -160,7 +165,7 @@ void setup()
     delay(2000);
     IoT = new NBIoT();
 
-    xTaskCreate(longTask, "task", 4096, NULL, 5, NULL);
+    xTaskCreate(longTask, "task", 8192, NULL, 3, NULL);
     // if (NetWork_State)
     // {
     //     BLE = new MyBLE(Server);
@@ -175,5 +180,7 @@ void setup()
 void loop()
 {
     tick();
+    if (b !usy)
+        IoT->tick();
     delay(50);
 }

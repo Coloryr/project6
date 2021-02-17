@@ -33,7 +33,7 @@ namespace ColoryrTrash.Server.Mqtt
             {
                 string uuid = temp[0];
                 string sim = temp[1];
-                ServerMain.SaveData.UpSIM(uuid, sim);
+                ServerMain.SaveData.UpSIM(uuid, sim); 
             }
             else
             {
@@ -65,12 +65,13 @@ namespace ColoryrTrash.Server.Mqtt
                     year += 2000;
                     int hour = int.Parse(HMS.Substring(0, 2));
                     hour += 8;
-                    string Time = $"{year}-{month}-{day}T{hour.ToString("0:D2")}:" +
+                    string Time = $"{year}-{month}-{day}T{string.Format("{0:D2}", hour)}:" +
                         $"{HMS.Substring(2, 2)}:{HMS.Substring(4, 2)}";
                     int state = int.Parse(State);
                     ServerMain.SaveData.UpData(uuid, res.Lng, res.Lat,
                         int.Parse(Capacity), Close != "1",
                         (ItemState)state, int.Parse(Battery), Time);
+                    Send(ClientId, "OK");
                 }
                 catch
                 {

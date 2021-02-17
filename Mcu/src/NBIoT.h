@@ -35,12 +35,11 @@ public:
     void send();
     bool setGnssOpen(bool open);
     void readGnss();
-    void startRead();
     void init();
     bool isMqtt();
     bool isSocket();
     void sendSIM();
-    void mqttDown();
+    void tick();
 };
 
 #endif
