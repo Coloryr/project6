@@ -11,7 +11,7 @@
         <ListView Margin="4,28,4,4" Name="List">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="UUID" Width="100" DisplayMemberBinding="{Binding UUID}"/>
+                    <GridViewColumn Header="UUID" Width="150" DisplayMemberBinding="{Binding UUID}"/>
                     <GridViewColumn Header="备注" Width="240" DisplayMemberBinding="{Binding Nick}"/>
                     <GridViewColumn Header="经度" Width="70" DisplayMemberBinding="{Binding X}"/>
                     <GridViewColumn Header="维度" Width="70" DisplayMemberBinding="{Binding Y}"/>
