@@ -32,6 +32,10 @@ namespace ColoryrTrash.App.Pages
                 Clear();
                 this.list.AddRange(list);
                 Update();
+                Dispatcher.BeginInvokeOnMainThread(() =>
+                {
+                    Re.IsRefreshing = false;
+                });
             }
         }
         public void Clear()
@@ -48,10 +52,6 @@ namespace ColoryrTrash.App.Pages
             {
                 NowList.Add(item);
             }
-            Dispatcher.BeginInvokeOnMainThread(() =>
-            {
-                Re.IsRefreshing = false;
-            });
         }
 
         private void Re_Refreshing(object sender, EventArgs e)
@@ -98,6 +98,16 @@ namespace ColoryrTrash.App.Pages
             App.mapPage.AddPoint(item);
             App.mapPage.TurnTo(uuid);
             App.mainPage.Switch(PageName.MapPage);
+        }
+
+        internal void Update(TrashSaveObj obj)
+        {
+            IEnumerable<TrashSaveObj> query = null;
+            query = from items in list where items.UUID == obj.UUID select items;
+            var item = query.FirstOrDefault();
+            list.Remove(item);
+            list.Add(obj);
+            Update();
         }
     }
 }

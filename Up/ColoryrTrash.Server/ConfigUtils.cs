@@ -94,13 +94,8 @@ namespace ColoryrTrash.Server
         public readonly Dictionary<string, UserDataSaveObj> Groups = new();
         public readonly Dictionary<string, string> ID_Group = new();
 
-        private Task thread;
-        private CancellationTokenSource token = new();
-
         public const string EmptyGroup = "空的组";
         private object Lock = new object();
-
-        private bool Save = false;
 
         private string[] errorStr = new string[] { "/", "\\", ":", ",", "*", "?", "\"", "<", ">", "|" };
 
@@ -333,23 +328,9 @@ namespace ColoryrTrash.Server
                 });
                 SaveGroup(EmptyGroup);
             }
-
-            thread = Task.Run(() =>
-            {
-                while (true)
-                {
-                    if (Save)
-                    {
-                        SaveAll();
-                        Save = false;
-                    }
-                    Thread.Sleep(30000);
-                }
-            }, token.Token);
         }
         public void Stop()
         {
-            token.Cancel();
             SaveAll();
         }
         public void SaveGroup(string group)
@@ -556,6 +537,7 @@ namespace ColoryrTrash.Server
                     item.Time = Time;
                     item.Battery = battery;
                     DesktopServer.UpdateTrashItem(group, item);
+                    AppServer.UpdateTrashItem(group, item);
                 }
                 Save = true;
             }
@@ -642,7 +624,7 @@ namespace ColoryrTrash.Server
                 });
                 SaveGroup(EmptyGroup);
             }
-
+            token = new();
             thread = Task.Run(() =>
             {
                 while (true)

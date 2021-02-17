@@ -79,8 +79,8 @@
         map.addOverlay(marker);
         // 创建信息窗口
         var opts = {
-            width: 200,
-            height: 150,
+            width: 250,
+            height: 230,
             title: name
         };
         var infoWindow = new BMapGL.InfoWindow(text, opts);

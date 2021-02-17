@@ -114,6 +114,12 @@ namespace ColoryrTrash.App
                                 GetItems();
                             }
                             break;
+                        case DataType.UpdataTrash:
+                            if(App.GroupName == obj.Data)
+                            {
+                                App.infoPage.Update(JsonConvert.DeserializeObject<TrashSaveObj>(obj.Data1));
+                            }
+                            break;
                     }
                 }
             }

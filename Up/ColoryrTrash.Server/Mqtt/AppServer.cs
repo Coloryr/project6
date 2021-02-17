@@ -151,5 +151,17 @@ namespace ColoryrTrash.Server.Mqtt
                     break;
             }
         }
+
+        internal static void UpdateTrashItem(string group, TrashSaveObj item)
+        {
+            var send = new DataPackObj
+            {
+                Type = DataType.UpdataTrash,
+                Res = true,
+                Data = group,
+                Data1 = JsonConvert.SerializeObject(item)
+            };
+            Task.Run(() => SendAll(send));
+        }
     }
 }
