@@ -5,6 +5,7 @@
 #include "main.h"
 
 #define ADC_IN 34
+#define Battery_IN 15
 
 #define Open_IN 12
 #define Close_IN 14
@@ -21,7 +22,8 @@ public:
     bool readOpen();
     bool readClose();
     bool isClose();
-};
+    uint16_t readBattery();
 
+};
 
 #endif

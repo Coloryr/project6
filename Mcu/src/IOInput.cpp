@@ -13,6 +13,7 @@ IOInput::IOInput()
     pinMode(ADC_IN, ANALOG);
     pinMode(Open_IN, INPUT_PULLUP);
     pinMode(Close_IN, INPUT_PULLUP);
+    pinMode(Battery_IN, ANALOG);
 }
 
 uint16_t IOInput::readADC()
@@ -80,4 +81,9 @@ bool IOInput::isClose()
             return false;
         }
     }
+}
+
+uint16_t IOInput::readBattery()
+{
+    return analogRead(Battery_IN);
 }

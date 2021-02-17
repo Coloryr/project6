@@ -32,10 +32,10 @@ public:
     bool isOnline();
     void startSocket();
     void startMqtt();
-    void send(uint8_t *data);
+    void send();
     bool setGnssOpen(bool open);
     void readGnss();
-
+    void startRead();
 };
 
 #endif

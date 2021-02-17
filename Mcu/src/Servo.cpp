@@ -13,11 +13,17 @@ Servo::Servo()
 
 void Servo::open()
 {
+#ifdef DEBUG
+    Serial.println("Open Trash");
+#endif
     setServo(openset);
 }
 
 void Servo::close()
 {
+#ifdef DEBUG
+    Serial.println("Close Trash");
+#endif
     setServo(closeset);
 }
 

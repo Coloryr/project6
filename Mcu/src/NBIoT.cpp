@@ -1,5 +1,6 @@
 #include "NBIoT.h"
 #include "main.h"
+#include "IOInput.h"
 
 NBIoT *IoT;
 
@@ -52,8 +53,12 @@ NBIoT::NBIoT()
     if (getQuality() == 99)
         return;
     checkOnline();
-    // xTaskCreate(IoTRead, "IoT", 1024, NULL, 5, NULL);
     setGnssOpen(true);
+}
+
+void NBIoT::startRead()
+{
+    xTaskCreate(IoTRead, "IoT", 1024, NULL, 5, NULL);
 }
 
 void NBIoT::check()
@@ -312,6 +317,8 @@ void NBIoT::startMqtt()
 #endif
     Serial2.printf("AT+QMTOPEN=0,\"%d.%d.%d.%d\",%d", IP[0], IP[1], IP[2], IP[3], Port);
     Serial2.println();
+    delay(300);
+    Serial2.flush();
     delay(5000);
     String data = Serial2.readString();
     data.trim();
@@ -328,6 +335,8 @@ void NBIoT::startMqtt()
 #endif
         Serial2.printf("AT+QMTCONN=0,\"%s\",\"%s\",\"%s\"", UUID, User, Pass);
         Serial2.println();
+        delay(300);
+        Serial2.flush();
         delay(2000);
         data = Serial2.readString();
         data.trim();
@@ -340,21 +349,46 @@ void NBIoT::startMqtt()
             return;
         }
         SelfTopic = TopicTrashClient + "/";
-        char *uuid = new char[16];
         for (uint8_t a = 0; a < 16; a++)
         {
-            uuid[a] = UUID[a];
+            SelfTopic += (char)UUID[a];
         }
-        SelfTopic += uuid;
-        Serial2.printf("AT+QMTSUB=0,1,\"%s\",1", TopicTrashServer);
+#ifdef DEBUG
+        Serial.printf("AT+QMTSUB=0,1,\"%s\",1\n", TopicTrashServer.c_str());
+#endif
+        Serial2.printf("AT+QMTSUB=0,1,\"%s\",1", TopicTrashServer.c_str());
         Serial2.println();
+        delay(2000);
+        data = Serial2.readString();
+        data.trim();
+#ifdef DEBUG
+        Serial.println(data.c_str());
+#endif
+#ifdef DEBUG
+        Serial.printf("AT+QMTSUB=0,1,\"%s\",1\n", SelfTopic.c_str());
+#endif
+        Serial2.printf("AT+QMTSUB=0,2,\"%s\",1", SelfTopic.c_str());
+        Serial2.println();
+        delay(2000);
+        data = Serial2.readString();
+        data.trim();
+#ifdef DEBUG
+        Serial.println(data.c_str());
+#endif
         mqtt = true;
     }
 }
-void NBIoT::send(uint8_t *data)
+void NBIoT::send()
 {
     if (!ok || !card || !online)
         return;
     if (!socket && !mqtt)
         return;
+    if (mqtt)
+    {
+#ifdef DEBUG
+        Serial.printf("AT+QMTPUB=0,1,1,0,\"%s\",\"%s,%s,%s,%s,%s,%s,%d,%d\"\n", SelfTopic.c_str(),
+                      UUID, X.c_str(), Y.c_str(), Time_YMD.c_str(), Time_HMS.c_str(), IO->readOpen(), IO->readBattery());
+#endif
+    }
 }

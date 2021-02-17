@@ -5,9 +5,8 @@
 
 #define DEBUG true
 
-extern uint8_t mode;
-extern bool Bluetooth_State;
-extern bool NetWork_State;
+extern uint8_t Capacity;
+extern bool Close;
 
 extern class MyBLE *BLE;
 extern class Servo *ThisServo;
@@ -17,5 +16,7 @@ extern class VL53L0 *VL53L0B;
 extern class EEPROM* ThisEEPROM;
 extern class IOInput *IO;
 extern class Upload *Up;
+
+uint8_t SumDistance();
 
 #endif

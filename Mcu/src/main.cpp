@@ -9,24 +9,69 @@
 #include "IOInput.h"
 #include "Upload.h"
 
-uint8_t mode;
-bool Bluetooth_State;
-bool NetWork_State;
+bool Close;
+bool IsOpen;
+uint8_t Capacity;
+uint8_t Time;
 
-uint8_t *buff = new uint8_t[1024];
-
-void test(void *data)
+void tick()
 {
-    for (;;)
+    if (Time > 0)
     {
-        if (Serial.available() > 0)
+        Time--;
+        if (Time == 0)
         {
-            int size = Serial.available();
-            Serial.readBytes(buff, size);
-            Serial2.write(buff, size);
+            ThisServo->close();
         }
-        delay(50);
     }
+    if (IO->readOpen())
+    {
+        IsOpen = true;
+        Time = 80;
+        ThisServo->open();
+        return;
+    }
+    bool close = IO->isClose();
+    bool close1 = IO->readClose();
+    if (close && close1)
+    {
+        Close = true;
+    }
+    else
+    {
+        Close = false;
+    }
+    if (!close)
+        return;
+    if (VL53L0A->isOK())
+    {
+        VL53L0A->update();
+    }
+    if (VL53L0B->isOK())
+    {
+        VL53L0B->update();
+    }
+    double sum = 0;
+    uint8_t count = 0;
+    if (VL53L0A->status == 11)
+    {
+        if (VL53L0A->count[2] <= Distance)
+        {
+            double temp = VL53L0A->count[2] / Distance;
+            sum = temp * 100;
+            count++;
+        }
+    }
+    if (VL53L0B->status == 11)
+    {
+        if (VL53L0B->count[2] <= Distance)
+        {
+            double temp = VL53L0B->count[2] / Distance;
+            sum = temp * 100;
+            count++;
+        }
+    }
+    Capacity = sum / count;
 }
 
 void setup()
@@ -37,19 +82,19 @@ void setup()
 #ifdef DEBUG
     Serial.println("Start");
 #endif
-    // ThisServo = new Servo();
+    ThisServo = new Servo();
     IoT = new NBIoT();
     ThisEEPROM = new EEPROM();
-    // IO = new IOInput();
-    // VL53L0A = new VL53L0(VL53L0_A, '0');
-    // VL53L0B = new VL53L0(VL53L0_B, '1');
+    IO = new IOInput();
+    VL53L0A = new VL53L0(VL53L0_A, '0');
+    VL53L0B = new VL53L0(VL53L0_B, '1');
 
-    // VL53L0A->check();
-    // VL53L0B->check();
+    VL53L0A->check();
+    VL53L0B->check();
 
     ThisEEPROM->init();
 
-    // Up = new Upload();
+    Up = new Upload();
 
     // if (NetWork_State)
     // {
@@ -59,22 +104,12 @@ void setup()
     // {
     //     BLE = new MyBLE(Client);
     // }
-    xTaskCreate(test, "Upload", 1024, NULL, 5, NULL);
     IoT->startMqtt();
+    IoT->startRead();
 }
 
 void loop()
 {
-    // IO->isclose();
-    // VL53L0A->update();
-    // VL53L0B->update();
-    delay(10000);
-    // IoT->readGnss();
-    // BLE->Tick();
-    // for (int d = 1; d < 180; d += 1)
-    // {
-    //     ThisServo->SetServo(d);
-    //     Serial.printf("value=%d\n", d);
-    //     delay(500);
-    // }
+    tick();
+    delay(50);
 }
