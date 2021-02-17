@@ -54,6 +54,10 @@ namespace ColoryrTrash.Server.Mqtt
                     Type = DataType.CheckLogin,
                     Res = res
                 });
+                if (res)
+                {
+                    ServerMain.UserData.UserLogin(User);
+                }
                 return;
             }
             else if (obj.Type == DataType.Login)
@@ -81,6 +85,7 @@ namespace ColoryrTrash.Server.Mqtt
                         Res = true,
                         Data = uuid
                     });
+                    ServerMain.UserData.UserLogin(User);
                 }
                 return;
             }
@@ -158,7 +163,7 @@ namespace ColoryrTrash.Server.Mqtt
             }
         }
 
-        internal static void UpdateTrashItem(string group, TrashSaveObj item)
+        public static void UpdateTrashItem(string group, TrashSaveObj item)
         {
             var send = new DataPackObj
             {

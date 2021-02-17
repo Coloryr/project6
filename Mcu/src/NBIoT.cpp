@@ -28,9 +28,9 @@ NBIoT::NBIoT()
     Serial2.begin(115200);
     Serial2.setTimeout(100);
     Serial2.println("AT");
-    delay(500);
+    delay(200);
     Serial2.println("ATE0");
-    delay(500);
+    delay(200);
     init();
 }
 
@@ -336,7 +336,7 @@ void NBIoT::startMqtt()
     Serial2.println();
     delay(300);
     Serial2.flush();
-    delay(10000);
+    delay(5000);
     String data = Serial2.readString();
     data.trim();
     if (!data.startsWith("+QMTOPEN: 0,0"))
@@ -355,7 +355,7 @@ void NBIoT::startMqtt()
     Serial2.println();
     delay(300);
     Serial2.flush();
-    delay(2000);
+    delay(5000);
     data = Serial2.readString();
     data.trim();
     if (!data.startsWith("+QMTCONN: 0,0,0"))
@@ -374,12 +374,12 @@ void NBIoT::startMqtt()
     {
         SelfTopic += (char)UUID[a];
     }
-    Serial2.printf("AT+QMTSUB=0,1,\"%s\",0", TopicTrashServer.c_str());
+    // Serial2.printf("AT+QMTSUB=0,1,\"%s\",1", TopicTrashServer.c_str());
+    // Serial2.println();
+    // delay(5000);
+    Serial2.printf("AT+QMTSUB=0,2,\"%s\",1", SelfTopic.c_str());
     Serial2.println();
-    delay(2000);
-    Serial2.printf("AT+QMTSUB=0,2,\"%s\",0", SelfTopic.c_str());
-    Serial2.println();
-    delay(2000);
+    delay(5000);
     Serial2.flush();
     mqtt = true;
     SendOnce = true;

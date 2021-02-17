@@ -113,6 +113,7 @@ namespace ColoryrTrash.App.Pages
             var item = query.FirstOrDefault();
             list.Remove(item);
             list.Add(obj);
+            NowList.Clear();
             Update();
         }
     }
