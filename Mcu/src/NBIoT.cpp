@@ -250,7 +250,7 @@ void NBIoT::readGnss()
     }
     data.replace("+QGNSSRD: $GNRMC,", "");
     if (data[0] == ',')
-    
+    {
         return;
     }
     Time_HMS = data.substring(0, 9);

@@ -180,7 +180,7 @@ void setup()
 void loop()
 {
     tick();
-    if (b !usy)
+    if (!busy)
         IoT->tick();
     delay(50);
 }
