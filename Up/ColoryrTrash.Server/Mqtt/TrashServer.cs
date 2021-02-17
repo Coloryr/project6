@@ -1,4 +1,5 @@
 ﻿using Lib;
+using MQTTnet;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -63,10 +64,9 @@ namespace ColoryrTrash.Server.Mqtt
                     int year = int.Parse(YMD.Substring(4, 2));
                     year += 2000;
                     int hour = int.Parse(HMS.Substring(0, 2));
-                    int minute = int.Parse(HMS.Substring(2, 2));
-                    int second = int.Parse(HMS.Substring(4, 2));
                     hour += 8;
-                    string Time = $"{year}-{month}-{day}T{hour}:{minute}:{second}";
+                    string Time = $"{year}-{month}-{day}T{hour.ToString("0:D2")}:" +
+                        $"{HMS.Substring(2, 2)}:{HMS.Substring(4, 2)}";
                     int state = int.Parse(State);
                     ServerMain.SaveData.UpData(uuid, res.Lng, res.Lat,
                         int.Parse(Capacity), Close != "1",
@@ -77,6 +77,16 @@ namespace ColoryrTrash.Server.Mqtt
 
                 }
             }
+        }
+
+        public static async void Send(string uuid, string data)
+        {
+            var message = new MqttApplicationMessage()
+            {
+                Topic = DataArg.TopicTrashServer + "/" + uuid,
+                Payload = Encoding.UTF8.GetBytes(data)
+            };
+            await ThisMqttServer.PublishAsync(message);
         }
     }
 }

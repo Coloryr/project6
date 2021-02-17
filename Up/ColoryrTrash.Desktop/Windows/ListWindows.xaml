@@ -28,7 +28,7 @@
                     <MenuItem Header="追踪" Click="Track_Click"/>
                     <MenuItem Header="更改组" Click="MoveGroup_Click"/>
                     <MenuItem Header="修改备注" Click="SetNick_Click"/>
-                    <MenuItem Header="下发指令"/>
+                    <MenuItem Header="下发指令" Click="ReadNow_Click"/>
                 </ContextMenu>
             </ListView.ContextMenu>
         </ListView>

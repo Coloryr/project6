@@ -13,7 +13,7 @@
                             <ViewCell>
                                 <StackLayout Orientation="Horizontal">
                                     <Grid>
-                                        <Image Source="map.png" WidthRequest="70" VerticalOptions="Start"
+                                        <Image Source="map.png" WidthRequest="60" VerticalOptions="Start"
                                                    HorizontalOptions="Start"/>
                                         
                                         <!--<Label Margin="70,5,0,0" Text="状态"/>

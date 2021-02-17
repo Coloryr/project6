@@ -40,6 +40,7 @@ public:
     bool isMqtt();
     bool isSocket();
     void sendSIM();
+    void mqttDown();
 };
 
 #endif

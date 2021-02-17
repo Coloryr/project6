@@ -149,6 +149,12 @@ namespace ColoryrTrash.Server.Mqtt
                         });
                     }
                     break;
+                case DataType.UpdataNow:
+                    if (ServerMain.SaveData.CheckUUID(temp))
+                    {
+                        TrashServer.Send(temp, "Up");
+                    }
+                    break;
             }
         }
 

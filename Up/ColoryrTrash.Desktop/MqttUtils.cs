@@ -152,6 +152,9 @@ namespace ColoryrTrash.Desktop
                         case DataType.SetUserGroupBind:
                             App.ShowA("账户组绑定", obj.Data);
                             break;
+                        case DataType.UpdataNow:
+                            App.ShowA("数据更新", obj.Data);
+                            break;
                     }
                 }
                 else if (arg.ApplicationMessage.Topic == DataArg.TopicDesktopServer)
@@ -196,6 +199,7 @@ namespace ColoryrTrash.Desktop
                 App.LogError(ex);
             }
         }
+
         private void OnMqttClientDisConnected(MqttClientDisconnectedEventArgs arg)
         {
             App.Log("服务器连接断开");
@@ -476,6 +480,16 @@ namespace ColoryrTrash.Desktop
                 Token = App.Config.Token,
                 Type = DataType.DeleteUser,
                 Data = id
+            };
+            Send(JsonConvert.SerializeObject(obj));
+        }
+        internal void ReadNow(string uuid)
+        {
+            var obj = new DataPackObj
+            {
+                Token = App.Config.Token,
+                Type = DataType.UpdataNow,
+                Data = uuid
             };
             Send(JsonConvert.SerializeObject(obj));
         }

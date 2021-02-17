@@ -45,10 +45,11 @@ void longTask(void *arg)
                 IoT->readGnss();
                 delay(100);
                 IoT->send();
+                timego = 0;
                 SendOnce = false;
             }
             timego++;
-            if (timego > 10)
+            if (timego > 1800)
             {
                 timego = 0;
                 IoT->readGnss();

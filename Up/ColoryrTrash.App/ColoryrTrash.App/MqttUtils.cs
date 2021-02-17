@@ -251,5 +251,15 @@ namespace ColoryrTrash.App
             };
             Send(JsonConvert.SerializeObject(obj));
         }
+        public void Updata(string uuid)
+        {
+            var obj = new DataPackObj
+            {
+                Token = Token,
+                Type = DataType.UpdataNow,
+                Data = uuid
+            };
+            Send(JsonConvert.SerializeObject(obj));
+        }
     }
 }

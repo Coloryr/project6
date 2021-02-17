@@ -23,14 +23,48 @@ String Y;
 String Time_YMD;
 String Time_HMS;
 
+bool busy;
+
 void IoTRead(void *arg)
 {
+#ifdef DEBUG
+    Serial.println("开始读数据");
+#endif
     for (;;)
     {
-        if (Serial2.available() > 0)
+        if (!busy && Serial2.available() > 0)
         {
+            Serial.println("收到数据");
             String data = Serial2.readString();
-            Serial.print(data.c_str());
+            data.trim();
+#ifdef DEBUG
+            Serial.println(data.c_str());
+#endif
+            if (data.startsWith("+QMTRECV: 0,"))
+            {
+                data.replace("+QMTRECV: 0,", "");
+                data = data.substring(3);
+#ifdef DEBUG
+                Serial.println(data.c_str());
+#endif
+                int index = data.indexOf(',');
+                String topic = data.substring(0, index - 1);
+                String data1 = data.substring(index + 2, data.length() - 1);
+#ifdef DEBUG
+                Serial.printf("Topic:%s, Data:%s\n", topic.c_str(), data1.c_str());
+#endif
+                if (topic.equals(SelfTopic))
+                {
+                    if (data1.equals("Up"))
+                    {
+                        SendOnce = true;
+                    }
+                }
+            }
+            else if (data.startsWith("+QMTSTAT: 0,1"))
+            {
+                IoT->mqttDown();
+            }
         }
         delay(10);
     }
@@ -44,6 +78,7 @@ NBIoT::NBIoT()
     Serial2.println("ATE0");
     delay(500);
     init();
+    startRead();
 }
 
 void NBIoT::init()
@@ -68,11 +103,12 @@ void NBIoT::init()
 
 void NBIoT::startRead()
 {
-    xTaskCreate(IoTRead, "IoT", 1024, NULL, 5, NULL);
+    xTaskCreate(IoTRead, "IoT", 2048, NULL, 5, NULL);
 }
 
 void NBIoT::check()
 {
+    busy = true;
     Serial2.println("ATE0");
     delay(300);
     String data = Serial2.readString();
@@ -94,9 +130,12 @@ void NBIoT::check()
 #endif
         ok = false;
     }
+    busy = false;
 }
 void NBIoT::getCard()
 {
+    busy = true;
+    Serial2.flush();
     Serial2.println("AT+CIMI");
     delay(300);
     String data = Serial2.readString();
@@ -131,10 +170,13 @@ void NBIoT::getCard()
         }
         card = true;
     }
+    busy = false;
 }
 
 void NBIoT::checkOnline()
 {
+    busy = true;
+    Serial2.flush();
     Serial2.println("AT+CGATT?");
     delay(300);
     String data = Serial2.readString();
@@ -163,10 +205,13 @@ void NBIoT::checkOnline()
             online = false;
         }
     }
+    busy = false;
 }
 
 uint8_t NBIoT::getQuality()
 {
+    busy = true;
+    Serial2.flush();
     Serial2.println("AT+CESQ");
     delay(300);
     String data = Serial2.readString();
@@ -195,11 +240,14 @@ uint8_t NBIoT::getQuality()
             return quality;
         }
     }
+    busy = false;
     return 99;
 }
 
 bool NBIoT::setGnssOpen(bool open)
 {
+    busy = true;
+    Serial2.flush();
     Serial2.println("AT+QGNSSC?");
     delay(500);
     String data = Serial2.readString();
@@ -233,13 +281,16 @@ bool NBIoT::setGnssOpen(bool open)
 #ifdef DEBUG
         Serial.println(data.c_str());
 #endif
+        busy = false;
         return true;
     }
+    busy = false;
     return false;
 }
 
 void NBIoT::readGnss()
 {
+    busy = true;
     Serial2.flush();
     Serial2.println("AT+QGNSSRD=\"NMEA/RMC\"");
     delay(200);
@@ -251,6 +302,7 @@ void NBIoT::readGnss()
     data.replace("+QGNSSRD: $GNRMC,", "");
     if (data[0] == ',')
     {
+        busy = false;
         return;
     }
     Time_HMS = data.substring(0, 9);
@@ -266,13 +318,14 @@ void NBIoT::readGnss()
 #ifdef DEBUG
             Serial.println("无效的时间");
 #endif
+            busy = false;
             return;
         }
         else
         {
             Time_YMD = data.substring(0, 6);
-            return;
         }
+        busy = false;
         return;
     }
     else
@@ -292,6 +345,7 @@ void NBIoT::readGnss()
     Serial.printf("当前时间:%s, %s\n", Time_YMD.c_str(), Time_HMS.c_str());
     Serial.printf("当前坐标:%s, %s\n", X.c_str(), Y.c_str());
 #endif
+    busy = false;
 }
 
 bool NBIoT::isOK()
@@ -318,6 +372,11 @@ bool NBIoT::isSocket()
     return socket;
 }
 
+void NBIoT::mqttDown()
+{
+    mqtt = false;
+}
+
 void NBIoT::startSocket()
 {
     if (!ok || !card || !online)
@@ -327,6 +386,8 @@ void NBIoT::startMqtt()
 {
     if (!ok || !card || !online)
         return;
+    busy = true;
+    Serial2.flush();
 #ifdef DEBUG
     Serial.println("正在断开MQTT服务器");
 #endif
@@ -375,7 +436,7 @@ void NBIoT::startMqtt()
 #ifdef DEBUG
     Serial.println("MQTT服务器认证成功");
 #endif
-    SelfTopic = TopicTrashClient + "/";
+    SelfTopic = TopicTrashServer + "/";
     for (uint8_t a = 0; a < 16; a++)
     {
         SelfTopic += (char)UUID[a];
@@ -398,6 +459,7 @@ void NBIoT::startMqtt()
 #endif
     mqtt = true;
     SendOnce = true;
+    busy = false;
 }
 void NBIoT::send()
 {
@@ -407,6 +469,8 @@ void NBIoT::send()
         return;
     if (mqtt)
     {
+        busy = true;
+        Serial2.flush();
 #ifdef DEBUG
         Serial.printf("AT+QMTPUB=0,1,1,0,\"%s\",\"%s,%s,%s,%s,%s,%d,%d,%d,%d\"\n",
                       TopicTrashClient.c_str(),
@@ -434,6 +498,7 @@ void NBIoT::send()
             mqtt = false;
         }
     }
+    busy = false;
 }
 void NBIoT::sendSIM()
 {
@@ -443,12 +508,13 @@ void NBIoT::sendSIM()
         return;
     if (mqtt)
     {
+        busy = true;
+        Serial2.flush();
 #ifdef DEBUG
         Serial.printf("AT+QMTPUB=0,1,1,0,\"%s\",\"%s,%s\"\n",
                       TopicTrashClient.c_str(),
                       UUID, SIM);
 #endif
-        Serial2.flush();
         Serial2.printf("AT+QMTPUB=0,1,1,0,\"%s\",\"%s,%s\"",
                        TopicTrashClient.c_str(),
                        UUID, SIM);
@@ -464,4 +530,5 @@ void NBIoT::sendSIM()
             mqtt = false;
         }
     }
+    busy = false;
 }

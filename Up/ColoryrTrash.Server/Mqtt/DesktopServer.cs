@@ -542,6 +542,27 @@ namespace ColoryrTrash.Server.Mqtt
                         });
                     }
                     break;
+                case DataType.UpdataNow:
+                    if (!ServerMain.SaveData.CheckUUID(temp))
+                    {
+                        Send(ClientId, new DataPackObj
+                        {
+                            Type = DataType.UpdataNow,
+                            Res = true,
+                            Data1 = $"更新垃圾桶[{temp}]失败"
+                        });
+                    }
+                    else
+                    {
+                        Send(ClientId, new DataPackObj
+                        {
+                            Type = DataType.UpdataNow,
+                            Res = true,
+                            Data = $"正在更新垃圾桶[{temp}]"
+                        });
+                        TrashServer.Send(temp, "Up");
+                    }
+                    break;
             }
         }
     }

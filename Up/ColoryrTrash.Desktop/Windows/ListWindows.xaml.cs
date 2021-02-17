@@ -267,5 +267,13 @@ namespace ColoryrTrash.Desktop.Windows
                 App.MakeHardway_.Activate();
             }
         }
+
+        private void ReadNow_Click(object sender, RoutedEventArgs e)
+        {
+            if (List.SelectedItem == null)
+                return;
+            var obj = List.SelectedItem as TrashSaveObj;
+            App.MqttUtils.ReadNow(obj.UUID);
+        }
     }
 }

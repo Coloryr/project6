@@ -83,7 +83,13 @@ namespace ColoryrTrash.App.Pages
             var obj = List.SelectedItem as TrashSaveObj;
             List.SelectedItem = null;
             if (obj != null)
-                await DisplayAlert($"垃圾桶:{obj.UUID}", GetString(obj), "OK");
+            {
+                var res = await DisplayAlert($"垃圾桶:{obj.UUID}", GetString(obj), "更新", "OK");
+                if (res)
+                {
+                    App.MqttUtils.Updata(obj.UUID);
+                }
+            }
         }
 
         private void Button_Clicked(object sender, EventArgs e)
