@@ -47,7 +47,7 @@ namespace ColoryrTrash.App.Pages
         private void Update()
         {
             IEnumerable<TrashSaveObj> query = null;
-            query = from items in list orderby items.Capacity descending select items;
+            query = from items in list orderby items.Capacity select items;
             foreach (var item in query)
             {
                 NowList.Add(item);

@@ -40,6 +40,8 @@ public:
     bool isSocket();
     void sendSIM();
     void tick();
+    void test();
+    
 };
 
 #endif

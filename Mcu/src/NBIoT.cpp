@@ -34,6 +34,26 @@ NBIoT::NBIoT()
     init();
 }
 
+void NBIoT::test()
+{
+    if (mqtt)
+    {
+        Serial2.flush();
+        Serial2.println("AT+QMTCONN?");
+        delay(300);
+        String data = Serial2.readString();
+        data.trim();
+#ifdef DEBUG
+        Serial.println(data.c_str());
+#endif
+        if (!data.startsWith("+QMTCONN: 0,3"))
+        {
+            mqtt = false;
+        }
+        return;
+    }
+}
+
 void NBIoT::tick()
 {
     if (Serial2.available() > 0)
@@ -400,16 +420,6 @@ void NBIoT::send()
                        Time_YMD.c_str(), Time_HMS.c_str(),
                        Close, IO->readBattery(), State, Capacity);
         Serial2.println();
-        delay(500);
-        String data = Serial2.readString();
-        data.trim();
-        if (!data.startsWith("OK"))
-        {
-#ifdef DEBUG
-            Serial.println(data.c_str());
-#endif
-            mqtt = false;
-        }
     }
 }
 void NBIoT::sendSIM()
@@ -425,15 +435,5 @@ void NBIoT::sendSIM()
                        TopicTrashClient.c_str(),
                        UUID, SIM);
         Serial2.println();
-        delay(500);
-        String data = Serial2.readString();
-        data.trim();
-        if (!data.startsWith("OK"))
-        {
-#ifdef DEBUG
-            Serial.println(data.c_str());
-#endif
-            mqtt = false;
-        }
     }
 }

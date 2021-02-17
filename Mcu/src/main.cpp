@@ -43,6 +43,9 @@ void longTask(void *arg)
         }
         else
         {
+            busy = true;
+            IoT->test();
+            busy = false;
             if (SendOnce)
             {
                 busy = true;
