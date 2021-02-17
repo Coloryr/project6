@@ -115,9 +115,10 @@ namespace ColoryrTrash.Desktop.Windows
 
         private string GetString(TrashSaveObj item)
         {
-            return $"垃圾桶别称:{item.Nick}<br/>垃圾桶坐标:{item.X}, {item.Y}" +
-                $"<br/>垃圾桶容量:{item.Capacity}<br/>垃圾桶是否打开:{item.Open}" +
-                $"<br/>垃圾桶状态:{item.State}<br/>垃圾桶上线时间:{item.Time}";
+            return $"别称:{item.Nick}<br/>坐标:{item.X}, {item.Y}" +
+                $"<br/>容量:{item.Capacity}<br/>是否打开:{item.Open}" +
+                $"<br/>状态:{item.State}<br/>上线时间:{item.Time}" +
+                $"<br/>SIM卡号:{item.SIM}<br/>电量:{item.Battery}";
         }
 
         private void Track_Click(object sender, RoutedEventArgs e)
@@ -125,7 +126,7 @@ namespace ColoryrTrash.Desktop.Windows
             if (List.SelectedItem == null)
                 return;
             var obj = List.SelectedItem as TrashSaveObj;
-            if (obj.X == 0 && obj.Y == 0)
+            if (ConvertGPS.outOfChina(obj.Y, obj.X))
             {
                 App.ShowA("追踪", "无法追踪");
                 return;
@@ -133,7 +134,8 @@ namespace ColoryrTrash.Desktop.Windows
             else
             {
                 App.MainWindow_.ClearPoint();
-                App.MainWindow_.AddPoint(obj.X, obj.Y, obj.UUID, GetString(obj));
+                App.MainWindow_.AddPoint(obj.X, obj.Y, $"垃圾桶:{obj.UUID}", GetString(obj));
+                App.MainWindow_.Turn(obj.X, obj.Y);
             }
         }
 

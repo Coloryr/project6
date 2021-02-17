@@ -42,12 +42,14 @@ namespace ColoryrTrash.Server
                 bool open = data[21] == 0x01;
                 ItemState state = data[22] switch
                 {
-                    0 => ItemState.Ok,
-                    1 => ItemState.Error,
-                    2 => ItemState.LowBattery,
-                    _ => ItemState.Error
+                    0 => ItemState.正常,
+                    1 => ItemState.初始化,
+                    2 => ItemState.初始化完成,
+                    3 => ItemState.距离传感器错误,
+                    4 => ItemState.Null,
+                    5 => ItemState.快满了
                 };
-                ServerMain.SaveData.UpData(uuid, x, y, capacity, open, state);
+                ServerMain.SaveData.UpData(uuid, x, y, capacity, open, state, 0, "");
             }
         }
 
@@ -73,12 +75,14 @@ namespace ColoryrTrash.Server
                     bool open = data[27] == 0x01;
                     ItemState state = data[28] switch
                     {
-                        0 => ItemState.Ok,
-                        1 => ItemState.Error,
-                        2 => ItemState.LowBattery,
-                        _ => ItemState.Error
+                        0 => ItemState.正常,
+                        1 => ItemState.初始化,
+                        2 => ItemState.初始化完成,
+                        3 => ItemState.距离传感器错误,
+                        4 => ItemState.Null,
+                        5 => ItemState.快满了
                     };
-                    ServerMain.SaveData.UpData(uuid, x, y, capacity, open, state);
+                    ServerMain.SaveData.UpData(uuid, x, y, capacity, open, state, 0, "");
                 }
             }
         }

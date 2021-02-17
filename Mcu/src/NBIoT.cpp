@@ -226,10 +226,10 @@ bool NBIoT::setGnssOpen(bool open)
 #ifdef DEBUG
         Serial.printf("NB-IoT:GNSS模式设置为:%d\n", open);
 #endif
-//         Serial2.println("AT+QGNSSAGPS=1");
-//         delay(300);
-//         data = Serial2.readString();
-//         data.trim();
+        Serial2.println("AT+QGNSSAGPS=1");
+        delay(300);
+        data = Serial2.readString();
+        data.trim();
 #ifdef DEBUG
         Serial.println(data.c_str());
 #endif
@@ -240,6 +240,7 @@ bool NBIoT::setGnssOpen(bool open)
 
 void NBIoT::readGnss()
 {
+    Serial2.flush();
     Serial2.println("AT+QGNSSRD=\"NMEA/RMC\"");
     delay(200);
     String data = Serial2.readString();
@@ -250,9 +251,6 @@ void NBIoT::readGnss()
     data.replace("+QGNSSRD: $GNRMC,", "");
     if (data[0] == ',')
     {
-#ifdef DEBUG
-        Serial.println("无效的数据");
-#endif
         return;
     }
     Time_HMS = data.substring(0, 9);
@@ -289,6 +287,7 @@ void NBIoT::readGnss()
         data = data.substring(20);
         Time_YMD = data.substring(0, 6);
     }
+    delay(200);
 #ifdef DEBUG
     Serial.printf("当前时间:%s, %s\n", Time_YMD.c_str(), Time_HMS.c_str());
     Serial.printf("当前坐标:%s, %s\n", X.c_str(), Y.c_str());
@@ -328,74 +327,77 @@ void NBIoT::startMqtt()
 {
     if (!ok || !card || !online)
         return;
+#ifdef DEBUG
+    Serial.println("正在断开MQTT服务器");
+#endif
     Serial2.println("AT+QMTCLOSE=0");
     delay(300);
     Serial2.flush();
-#ifdef DEBUG
-    Serial.printf("AT+QMTOPEN=0,\"%d.%d.%d.%d\",%d\n", IP[0], IP[1], IP[2], IP[3], Port);
-#endif
     Serial2.printf("AT+QMTOPEN=0,\"%d.%d.%d.%d\",%d", IP[0], IP[1], IP[2], IP[3], Port);
     Serial2.println();
     delay(300);
     Serial2.flush();
-    delay(5000);
+    delay(10000);
     String data = Serial2.readString();
     data.trim();
 #ifdef DEBUG
     Serial.println(data.c_str());
 #endif
-    if (data.startsWith("+QMTOPEN: 0,0"))
+    if (!data.startsWith("+QMTOPEN: 0,0"))
     {
 #ifdef DEBUG
-        Serial.println("MQTT服务器已连接");
+        mqtt = false;
+        return;
+        Serial.println("MQTT服务器连接失败");
 #endif
-#ifdef DEBUG
-        Serial.printf("AT+QMTCONN=0,\"%s\",\"%s\",\"%s\"\n", UUID, User, Pass);
-#endif
-        Serial2.printf("AT+QMTCONN=0,\"%s\",\"%s\",\"%s\"", UUID, User, Pass);
-        Serial2.println();
-        delay(300);
-        Serial2.flush();
-        delay(2000);
-        data = Serial2.readString();
-        data.trim();
-#ifdef DEBUG
-        Serial.println(data.c_str());
-#endif
-        if (!data.startsWith("+QMTCONN: 0,0,0"))
-        {
-            mqtt = false;
-            return;
-        }
-        SelfTopic = TopicTrashClient + "/";
-        for (uint8_t a = 0; a < 16; a++)
-        {
-            SelfTopic += (char)UUID[a];
-        }
-#ifdef DEBUG
-        Serial.printf("AT+QMTSUB=0,1,\"%s\",1\n", TopicTrashServer.c_str());
-#endif
-        Serial2.printf("AT+QMTSUB=0,1,\"%s\",1", TopicTrashServer.c_str());
-        Serial2.println();
-        delay(2000);
-        data = Serial2.readString();
-        data.trim();
-#ifdef DEBUG
-        Serial.println(data.c_str());
-#endif
-#ifdef DEBUG
-        Serial.printf("AT+QMTSUB=0,1,\"%s\",1\n", SelfTopic.c_str());
-#endif
-        Serial2.printf("AT+QMTSUB=0,2,\"%s\",1", SelfTopic.c_str());
-        Serial2.println();
-        delay(2000);
-        data = Serial2.readString();
-        data.trim();
-#ifdef DEBUG
-        Serial.println(data.c_str());
-#endif
-        mqtt = true;
     }
+#ifdef DEBUG
+    Serial.println("MQTT服务器已连接");
+#endif
+    Serial2.printf("AT+QMTCONN=0,\"%s\",\"%s\",\"%s\"", UUID, User, Pass);
+    Serial2.println();
+    delay(300);
+    Serial2.flush();
+    delay(2000);
+    data = Serial2.readString();
+    data.trim();
+#ifdef DEBUG
+    Serial.println(data.c_str());
+#endif
+    if (!data.startsWith("+QMTCONN: 0,0,0"))
+    {
+#ifdef DEBUG
+        Serial.println("MQTT服务器认证失败");
+#endif
+        mqtt = false;
+        return;
+    }
+#ifdef DEBUG
+    Serial.println("MQTT服务器认证成功");
+#endif
+    SelfTopic = TopicTrashClient + "/";
+    for (uint8_t a = 0; a < 16; a++)
+    {
+        SelfTopic += (char)UUID[a];
+    }
+    Serial2.printf("AT+QMTSUB=0,1,\"%s\",1", TopicTrashServer.c_str());
+    Serial2.println();
+    delay(2000);
+    data = Serial2.readString();
+    data.trim();
+#ifdef DEBUG
+    Serial.println(data.c_str());
+#endif
+    Serial2.printf("AT+QMTSUB=0,2,\"%s\",1", SelfTopic.c_str());
+    Serial2.println();
+    delay(2000);
+    data = Serial2.readString();
+    data.trim();
+#ifdef DEBUG
+    Serial.println(data.c_str());
+#endif
+    mqtt = true;
+    SendOnce = true;
 }
 void NBIoT::send()
 {
@@ -406,8 +408,60 @@ void NBIoT::send()
     if (mqtt)
     {
 #ifdef DEBUG
-        Serial.printf("AT+QMTPUB=0,1,1,0,\"%s\",\"%s,%s,%s,%s,%s,%s,%d,%d\"\n", SelfTopic.c_str(),
-                      UUID, X.c_str(), Y.c_str(), Time_YMD.c_str(), Time_HMS.c_str(), Close, IO->readBattery());
+        Serial.printf("AT+QMTPUB=0,1,1,0,\"%s\",\"%s,%s,%s,%s,%s,%d,%d,%d,%d\"\n",
+                      TopicTrashClient.c_str(),
+                      UUID,
+                      X.c_str(), Y.c_str(),
+                      Time_YMD.c_str(), Time_HMS.c_str(),
+                      Close, IO->readBattery(), State, Capacity);
 #endif
+        Serial2.flush();
+        Serial2.printf("AT+QMTPUB=0,1,1,0,\"%s\",\"%s,%s,%s,%s,%s,%d,%d,%d,%d\"",
+                       TopicTrashClient.c_str(),
+                       UUID,
+                       X.c_str(), Y.c_str(),
+                       Time_YMD.c_str(), Time_HMS.c_str(),
+                       Close, IO->readBattery(), State, Capacity);
+        Serial2.println();
+        delay(500);
+        String data = Serial2.readString();
+        data.trim();
+#ifdef DEBUG
+        Serial.println(data.c_str());
+#endif
+        if (!data.startsWith("OK"))
+        {
+            mqtt = false;
+        }
+    }
+}
+void NBIoT::sendSIM()
+{
+    if (!ok || !card || !online)
+        return;
+    if (!socket && !mqtt)
+        return;
+    if (mqtt)
+    {
+#ifdef DEBUG
+        Serial.printf("AT+QMTPUB=0,1,1,0,\"%s\",\"%s,%s\"\n",
+                      TopicTrashClient.c_str(),
+                      UUID, SIM);
+#endif
+        Serial2.flush();
+        Serial2.printf("AT+QMTPUB=0,1,1,0,\"%s\",\"%s,%s\"",
+                       TopicTrashClient.c_str(),
+                       UUID, SIM);
+        Serial2.println();
+        delay(500);
+        String data = Serial2.readString();
+        data.trim();
+#ifdef DEBUG
+        Serial.println(data.c_str());
+#endif
+        if (!data.startsWith("OK"))
+        {
+            mqtt = false;
+        }
     }
 }

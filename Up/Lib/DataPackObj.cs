@@ -16,7 +16,7 @@ namespace Lib
     }
     public enum ItemState
     {
-        Ok, Error, LowBattery
+        正常, 初始化, 初始化完成, 距离传感器错误, Null, 快满了
     }
     public class DataPackObj
     {
@@ -43,6 +43,7 @@ namespace Lib
         public bool Open { get; set; }
         public ItemState State { get; set; }
         public string SIM { get; set; }
+        public int Battery { get; set; }
     }
 
     public class UserSaveObj

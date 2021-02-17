@@ -11,17 +11,26 @@
 
 bool Close;
 bool IsOpen;
+bool SendOnce;
+uint8_t State;
+//0 ok
+//1 初始化
+//2 初始化完成
+//3 距离传感器错误
+//5 快满了
 uint8_t Capacity;
 uint8_t Time;
 
 void longTask(void *arg)
 {
-    uint8_t count;
+    uint16_t timego;
     for (;;)
     {
         if (!IoT->isOnline())
         {
-            init();
+            IoT->init();
+            delay(100);
+            IoT->setGnssOpen(true);
         }
         else if (!IoT->isMqtt())
         {
@@ -29,10 +38,21 @@ void longTask(void *arg)
         }
         else
         {
-            count++;
-            if (count > 1800)
+            if (SendOnce)
             {
-                count = 0;
+                IoT->sendSIM();
+                delay(100);
+                IoT->readGnss();
+                delay(100);
+                IoT->send();
+                SendOnce = false;
+            }
+            timego++;
+            if (timego > 10)
+            {
+                timego = 0;
+                IoT->readGnss();
+                delay(100);
                 IoT->send();
             }
         }
@@ -98,12 +118,27 @@ void tick()
             count++;
         }
     }
-    Capacity = sum / count;
-    Serial.printf("Battery:%d\n", IO->readBattery());
+    if (count == 0)
+    {
+        State = 3;
+    }
+    else
+    {
+        Capacity = sum / count;
+        if (Capacity < 10)
+        {
+            State = 5;
+        }
+        else
+        {
+            State = 0;
+        }
+    }
 }
 
 void setup()
 {
+    State = 1;
     delay(200);
     Serial.begin(115200);
     Serial.setTimeout(100);
@@ -124,6 +159,7 @@ void setup()
     delay(2000);
     IoT = new NBIoT();
 
+    xTaskCreate(longTask, "task", 4096, NULL, 5, NULL);
     // if (NetWork_State)
     // {
     //     BLE = new MyBLE(Server);
@@ -132,6 +168,7 @@ void setup()
     // {
     //     BLE = new MyBLE(Client);
     // }
+    State = 2;
 }
 
 void loop()

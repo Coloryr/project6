@@ -27,13 +27,17 @@
     var map;
     var myIcon;
     var points = new Array();
+    var selfmark;
+    var loadDone = "false";
     function loadJScript() {
+        loadDone = "false";
         var script = document.createElement('script');
         script.type = 'text/javascript';
         script.src = 'http://api.map.baidu.com/api?type=webgl&v=1.0&ak=dreuI9roYFEZv2u0kRBbWsriknnzlhZp&callback=init';
         document.body.appendChild(script);
     }
     function init() {
+        loadDone = "false";
         map = new BMapGL.Map('container'); // 创建Map实例
         myIcon = new BMapGL.Icon("/icon.png", new BMapGL.Size(40, 40));
         var point = new BMapGL.Point(116.404, 39.915); // 创建点坐标
@@ -61,6 +65,10 @@
             menu.addItem(new BMapGL.MenuItem(txtMenuItem[i].text, txtMenuItem[i].callback, 100));
         }
         map.addContextMenu(menu);
+        loadDone = "true";
+    }
+    function isDone() {
+        return loadDone;
     }
     function addpoint(x, y, name, text) {
         var point = new BMapGL.Point(x, y); // 创建点坐标
@@ -90,6 +98,15 @@
             return true;
         }
         return false;
+    }
+    function selfpoint(x, y) {
+        if (selfmark != null) {
+            map.removeOverlay(selfmark);
+        }
+        var point = new BMapGL.Point(x, y);
+        selfmark = new BMapGL.Marker(point);
+        map.addOverlay(selfmark);
+        return true;
     }
     function clearpoint() {
         map.clearOverlays();

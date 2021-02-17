@@ -39,6 +39,7 @@ public:
     void init();
     bool isMqtt();
     bool isSocket();
+    void sendSIM();
 };
 
 #endif

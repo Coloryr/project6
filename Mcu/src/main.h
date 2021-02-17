@@ -7,6 +7,8 @@
 
 extern uint8_t Capacity;
 extern bool Close;
+extern uint8_t State;
+extern bool SendOnce;
 
 extern class MyBLE *BLE;
 extern class Servo *ThisServo;

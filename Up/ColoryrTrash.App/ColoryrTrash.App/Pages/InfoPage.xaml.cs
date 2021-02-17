@@ -70,9 +70,10 @@ namespace ColoryrTrash.App.Pages
 
         private string GetString(TrashSaveObj item)
         {
-            return $"垃圾桶别称:{item.Nick}\n垃圾桶坐标:{item.X}, {item.Y}" +
-                $"\n垃圾桶容量:{item.Capacity}\n垃圾桶是否打开:{item.Open}" +
-                $"\n垃圾桶状态:{item.State}\n垃圾桶上线时间:{item.Time}";
+            return $"别称:{item.Nick}\n坐标:{item.X}, {item.Y}" +
+                $"\n容量:{item.Capacity}\n是否打开:{item.Open}" +
+                $"\n状态:{item.State}\n上线时间:{item.Time}" +
+                $"\nSIM卡号:{item.SIM}\n电量:{item.Battery}";
         }
 
         private async void List_ItemSelected(object sender, SelectedItemChangedEventArgs e)
@@ -82,7 +83,7 @@ namespace ColoryrTrash.App.Pages
             var obj = List.SelectedItem as TrashSaveObj;
             List.SelectedItem = null;
             if (obj != null)
-                await DisplayAlert($"UUID:{obj.UUID}", GetString(obj), "OK");
+                await DisplayAlert($"垃圾桶:{obj.UUID}", GetString(obj), "OK");
         }
 
         private void Button_Clicked(object sender, EventArgs e)

@@ -48,7 +48,7 @@ namespace ColoryrTrash.Server
                 {
                     case "stop":
                         Stop();
-                        break;
+                        return;
                 }
             }
         }

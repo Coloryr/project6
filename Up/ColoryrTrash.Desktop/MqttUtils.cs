@@ -164,29 +164,29 @@ namespace ColoryrTrash.Desktop
                             App.ListWindow_.AddGroup(obj.Data);
                             break;
                         case DataType.RenameTrashGroup:
-                            App.ListWindow_.RenameGroup(obj.Data, obj.Data1);
+                            App.ListWindow_?.RenameGroup(obj.Data, obj.Data1);
                             break;
                         case DataType.MoveTrashGroup:
-                            App.ListWindow_.MoveGroup(obj.Data, obj.Data1);
+                            App.ListWindow_?.MoveGroup(obj.Data, obj.Data1);
                             break;
                         case DataType.UpdataTrash:
                             var obj1 = JsonConvert.DeserializeObject<TrashSaveObj>(obj.Data1);
-                            App.ListWindow_.Updata(obj.Data, obj1);
+                            App.ListWindow_?.Updata(obj.Data, obj1);
                             break;
                         case DataType.AddUserGroup:
-                            App.UserListWindow_.AddGroup(obj.Data);
+                            App.UserListWindow_?.AddGroup(obj.Data);
                             break;
                         case DataType.RenameUserGroup:
-                            App.UserListWindow_.RenameGroup(obj.Data, obj.Data1);
+                            App.UserListWindow_?.RenameGroup(obj.Data, obj.Data1);
                             break;
                         case DataType.MoveUserGroup:
-                            App.UserListWindow_.MoveGroup(obj.Data, obj.Data1);
+                            App.UserListWindow_?.MoveGroup(obj.Data, obj.Data1);
                             break;
                         case DataType.AddUser:
-                            App.UserListWindow_.AddUser(obj.Data);
+                            App.UserListWindow_?.AddUser(obj.Data);
                             break;
                         case DataType.DeleteUser:
-                            App.UserListWindow_.RemoveUser(obj.Data);
+                            App.UserListWindow_?.RemoveUser(obj.Data);
                             break;
                     }
                 }

@@ -56,7 +56,7 @@ namespace ColoryrTrash.Server.Mqtt
                 }
                 else if (arg.ApplicationMessage.Topic.StartsWith(DataArg.TopicTrashClient))
                 {
-
+                    TrashServer.TrashReceived(arg.ClientId, arg.ApplicationMessage.Payload);
                 }
             }
             catch (Exception e)

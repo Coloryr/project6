@@ -10,7 +10,7 @@ namespace Lib
         private static double a = 6378245.0;
         private static double ee = 0.00669342162296594323;
         private static double bd_pi = 3.14159265358979324 * 3000.0 / 180.0;
-        static bool outOfChina(double lat, double lon)
+        public static bool outOfChina(double lat, double lon)
         {
             if (lon < 72.004 || lon > 137.8347)
                 return true;

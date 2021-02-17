@@ -18,8 +18,9 @@
                     <GridViewColumn Header="垃圾桶容量" Width="80" DisplayMemberBinding="{Binding Capacity}"/>
                     <GridViewColumn Header="上线时间" Width="150" DisplayMemberBinding="{Binding Time}"/>
                     <GridViewColumn Header="打开" Width="60" DisplayMemberBinding="{Binding Open}"/>
-                    <GridViewColumn Header="状态" Width="60" DisplayMemberBinding="{Binding State}"/>
-                    <GridViewColumn Header="SIM卡号" Width="60" DisplayMemberBinding="{Binding SIM}"/>
+                    <GridViewColumn Header="状态" Width="100" DisplayMemberBinding="{Binding State}"/>
+                    <GridViewColumn Header="SIM卡号" Width="140" DisplayMemberBinding="{Binding SIM}"/>
+                    <GridViewColumn Header="电量" Width="50" DisplayMemberBinding="{Binding Battery}"/>
                 </GridView>
             </ListView.View>
             <ListView.ContextMenu>

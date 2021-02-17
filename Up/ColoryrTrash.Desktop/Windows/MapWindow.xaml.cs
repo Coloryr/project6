@@ -47,13 +47,14 @@ namespace ColoryrTrash.Desktop.Windows
 
         public async void AddPoint(double x, double y, string title, string text)
         {
-            double X = x / 1000000;
-            double Y = y / 1000000;
-            string temp = $"addpoint({X}, {Y},'{title}','{text}')";
+            string temp = $"addpoint({x}, {y},'{title}','{text}')";
             var res = await Map.EvaluateScriptAsync(temp);
             App.Log(res.Message + "|" + res.Result + "|" + temp);
         }
-
+        public void Turn(double x, double y)
+        {
+            Map.EvaluateScriptAsync($"turnto({x}, {y})");
+        }
         public void ClearPoint()
         {
             Map.EvaluateScriptAsync("clearpoint()");

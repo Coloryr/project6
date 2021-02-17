@@ -499,6 +499,7 @@ namespace ColoryrTrash.Server
                         Y = -1
                     };
                     group.List.Add(uuid, item);
+                    UUID_Group.Add(uuid, EmptyGroup);
                     DesktopServer.UpdateTrashItem(EmptyGroup, item);
                 }
                 SaveGroup(EmptyGroup);
@@ -528,10 +529,17 @@ namespace ColoryrTrash.Server
                     item.SIM = sim;
                     DesktopServer.UpdateTrashItem(group, item);
                 }
+                SaveUUID(uuid);
+            }
+            else
+            {
+                AddItem(uuid);
+                UpSIM(uuid, sim);
             }
         }
 
-        public void UpData(string uuid, int x, int y, int capacity, bool open, ItemState state)
+        public void UpData(string uuid, double x, double y, int capacity, 
+            bool open, ItemState state, int battery, string Time)
         {
             if (UUID_Group.ContainsKey(uuid))
             {
@@ -545,8 +553,11 @@ namespace ColoryrTrash.Server
                     item.Y = y;
                     item.Open = open;
                     item.State = state;
+                    item.Time = Time;
+                    item.Battery = battery;
                     DesktopServer.UpdateTrashItem(group, item);
                 }
+                Save = true;
             }
         }
         public bool MoveGroup(string uuid, string group)

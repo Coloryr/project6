@@ -53,7 +53,7 @@ namespace ColoryrTrash.App.Pages
             {
                 foreach (var item in Points.Values)
                 {
-                    AddPoint(item.X, item.Y, item.UUID, GetString(item));
+                    AddPoint(item.X, item.Y, $"垃圾桶:{item.UUID}", GetString(item));
                 }
                 if (To != null)
                 {
@@ -66,9 +66,10 @@ namespace ColoryrTrash.App.Pages
 
         private string GetString(TrashSaveObj item)
         {
-            return $"垃圾桶别称:{item.Nick}<br/>垃圾桶坐标:{item.X}, {item.Y}" +
-                $"<br/>垃圾桶容量:{item.Capacity}<br/>垃圾桶是否打开:{item.Open}" +
-                $"<br/>垃圾桶状态:{item.State}<br/>垃圾桶上线时间:{item.Time}";
+            return $"别称:{item.Nick}<br/>坐标:{item.X}, {item.Y}" +
+                $"<br/>容量:{item.Capacity}<br/>是否打开:{item.Open}" +
+                $"<br/>状态:{item.State}<br/>上线时间:{item.Time}" +
+                $"<br/>SIM卡号:{item.SIM}<br/>电量:{item.Battery}";
         }
 
         public void AddPoint(TrashSaveObj item)
