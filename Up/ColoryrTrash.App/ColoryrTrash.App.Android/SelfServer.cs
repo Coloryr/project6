@@ -1,5 +1,6 @@
 ﻿using Android.App;
 using Android.Content;
+using Android.Content.PM;
 using Android.OS;
 using Android.Runtime;
 using Android.Views;
@@ -28,10 +29,15 @@ namespace ColoryrTrash.App.Droid
         }
 
         public SelfServer Service { get; private set; }
+
     }
+    //[Service(Name = "ColoryrTrash.App.SelfServer",
+    // Process = ":self",
+    // Exported = true)]
     [Service]
     public class SelfServer : Service, ISelfMqtt
     {
+        public const int SERVICE_RUNNING_NOTIFICATION_ID = 10000;
         public IBinder Binder { get; private set; }
         private static MqttClient Client;
         public override IBinder OnBind(Intent intent)
@@ -39,6 +45,7 @@ namespace ColoryrTrash.App.Droid
             Binder = new SelfBinder(this);
             return Binder;
         }
+
         public override void OnCreate()
         {
             Client = new MqttFactory().CreateMqttClient() as MqttClient;

@@ -18,7 +18,6 @@ namespace ColoryrTrash.App.Droid
             ToolbarResource = Resource.Layout.Toolbar;
 
             base.OnCreate(savedInstanceState);
-
             Intent server = new Intent(this, typeof(SelfServer));
             StartService(server);
 

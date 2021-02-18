@@ -121,11 +121,15 @@ namespace ColoryrTrash.App
                         case DataType.Full:
                             if (obj.Data == "")
                             {
-                                App.notificationManager.SendNotification("垃圾桶", $"垃圾桶{obj.Data1}快满");
+                                App.notificationManager.SendNotification("垃圾桶", $"有垃圾桶快满");
                             }
                             else
-                            { 
-                                
+                            {
+                                var list = JsonConvert.DeserializeObject<List<string>>(obj.Data);
+                                if (list.Contains(App.GroupName))
+                                {
+                                    App.notificationManager.SendNotification("垃圾桶", $"有垃圾桶快满");
+                                }
                             }
                             break;
                     }
@@ -140,7 +144,11 @@ namespace ColoryrTrash.App
         public static void OnMqttClientDisConnected(MqttClientDisconnectedEventArgs arg)
         {
             App.Show("服务器", "服务器连接断开");
-            if (!IsConnecting)
+            if (App.Config.AutoLogin)
+            {
+                CheckLogin(App.Config.Token);
+            }
+            else if (!IsConnecting)
                 App.LoginOut();
         }
 
@@ -188,7 +196,7 @@ namespace ColoryrTrash.App
                 };
 
                 options.CleanSession = true;
-                options.KeepAlivePeriod = TimeSpan.FromSeconds(5);
+                options.KeepAlivePeriod = TimeSpan.FromSeconds(60);
                 options.ClientId = App.Config.User;
 
                 await Client.ConnectAsync(options);

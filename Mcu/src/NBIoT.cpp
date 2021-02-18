@@ -43,9 +43,6 @@ void NBIoT::test()
         delay(300);
         String data = Serial2.readString();
         data.trim();
-#ifdef DEBUG
-        Serial.println(data.c_str());
-#endif
         if (!data.startsWith("+QMTCONN: 0,3"))
         {
             mqtt = false;

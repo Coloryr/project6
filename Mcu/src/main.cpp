@@ -93,7 +93,7 @@ void tick()
     }
     bool close = IO->isClose();
     bool close1 = IO->readClose();
-    if (close && close1)
+    if (close ==true && close1 == true)
     {
         Close = true;
     }

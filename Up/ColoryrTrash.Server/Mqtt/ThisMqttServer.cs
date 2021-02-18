@@ -20,6 +20,7 @@ namespace ColoryrTrash.Server.Mqtt
                 .WithDefaultEndpoint()
                 .WithDefaultEndpointPort(ServerMain.Config.MQTT.Port)
                 .WithConnectionValidator(Check)
+                .WithDefaultCommunicationTimeout(TimeSpan.FromSeconds(60))
                 .WithSubscriptionInterceptor(c => c.AcceptSubscription = true)
                 .WithApplicationMessageInterceptor(c => c.AcceptPublish = true);
 
@@ -31,7 +32,8 @@ namespace ColoryrTrash.Server.Mqtt
             Server.ClientUnsubscribedTopicHandler = new MqttServerClientUnsubscribedTopicHandlerDelegate(OnUnsubscribedTopic);
             Server.ApplicationMessageReceivedHandler = new MqttApplicationMessageReceivedHandlerDelegate(OnMessageReceived);
 
-            await Server.StartAsync(optionsBuilder.Build());
+            var res = optionsBuilder.Build();
+            await Server.StartAsync(res);
 
             IsRun = true;
             ServerMain.LogOut("MQTT服务器已启动");

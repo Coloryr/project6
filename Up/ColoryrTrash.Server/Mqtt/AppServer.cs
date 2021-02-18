@@ -192,8 +192,7 @@ namespace ColoryrTrash.Server.Mqtt
                     {
                         Type = DataType.Full,
                         Res = true,
-                        Data = JsonConvert.SerializeObject(list),
-                        Data1 = uuid
+                        Data = JsonConvert.SerializeObject(list)
                     };
                     Task.Run(() => SendAll(send));
                 }

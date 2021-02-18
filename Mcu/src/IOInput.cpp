@@ -42,6 +42,7 @@ bool IOInput::readClose()
         {
             return true;
         }
+        return false;
     }
     return false;
 }
