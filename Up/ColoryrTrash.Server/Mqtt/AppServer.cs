@@ -1,5 +1,6 @@
 ﻿using Lib;
 using MQTTnet;
+using MQTTnet.Protocol;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
@@ -18,6 +19,7 @@ namespace ColoryrTrash.Server.Mqtt
             var message = new MqttApplicationMessage()
             {
                 Topic = DataArg.TopicAppServer,
+                QualityOfServiceLevel = MqttQualityOfServiceLevel.ExactlyOnce,
                 Payload = Encoding.UTF8.GetBytes(temp)
             };
             await ThisMqttServer.PublishAsync(message);
@@ -29,6 +31,7 @@ namespace ColoryrTrash.Server.Mqtt
             var message = new MqttApplicationMessage()
             {
                 Topic = DataArg.TopicAppServer + "/" + uuid,
+                QualityOfServiceLevel = MqttQualityOfServiceLevel.ExactlyOnce,
                 Payload = Encoding.UTF8.GetBytes(data)
             };
             await ThisMqttServer.PublishAsync(message);

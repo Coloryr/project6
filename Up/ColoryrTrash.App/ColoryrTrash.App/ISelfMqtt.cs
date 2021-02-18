@@ -1,7 +1,6 @@
-﻿using MQTTnet;
-using MQTTnet.Client.Options;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Net.Mqtt;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -11,7 +10,7 @@ namespace ColoryrTrash.App
     { 
         bool IsConnected();
         Task PublishAsync(MqttApplicationMessage message);
-        Task ConnectAsync(MqttClientOptions options);
+        Task<SessionState> ConnectAsync(string host, MqttConfiguration options, string id);
         Task SubscribeAsync(string topic);
         Task DisconnectAsync();
     }

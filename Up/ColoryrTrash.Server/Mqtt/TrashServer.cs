@@ -1,5 +1,6 @@
 ﻿using Lib;
 using MQTTnet;
+using MQTTnet.Protocol;
 using System;
 using System.Text;
 
@@ -86,6 +87,7 @@ namespace ColoryrTrash.Server.Mqtt
             var message = new MqttApplicationMessage()
             {
                 Topic = DataArg.TopicTrashServer + "/" + uuid,
+                QualityOfServiceLevel = MqttQualityOfServiceLevel.ExactlyOnce,
                 Payload = Encoding.UTF8.GetBytes(data)
             };
             await ThisMqttServer.PublishAsync(message);

@@ -5,15 +5,10 @@ using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
-using MQTTnet;
-using MQTTnet.Client;
-using MQTTnet.Client.Connecting;
-using MQTTnet.Client.Disconnecting;
-using MQTTnet.Client.Options;
-using MQTTnet.Client.Receiving;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mqtt;
 using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
@@ -39,7 +34,7 @@ namespace ColoryrTrash.App.Droid
     {
         public const int SERVICE_RUNNING_NOTIFICATION_ID = 10000;
         public IBinder Binder { get; private set; }
-        private static MqttClient Client;
+        private IMqttClient Client;
         public override IBinder OnBind(Intent intent)
         {
             Binder = new SelfBinder(this);
@@ -48,30 +43,34 @@ namespace ColoryrTrash.App.Droid
 
         public override void OnCreate()
         {
-            Client = new MqttFactory().CreateMqttClient() as MqttClient;
-            Client.ConnectedHandler = new MqttClientConnectedHandlerDelegate(MqttUtils.OnMqttClientConnected);
-            Client.DisconnectedHandler = new MqttClientDisconnectedHandlerDelegate(MqttUtils.OnMqttClientDisConnected);
-            Client.ApplicationMessageReceivedHandler = new MqttApplicationMessageReceivedHandlerDelegate(MqttUtils.OnSubscriberMessageReceived);
+
         }
 
         public bool IsConnected()
         {
-            return Client.IsConnected;
+            return Client?.IsConnected == true;
         }
 
         public Task PublishAsync(MqttApplicationMessage message)
         {
-            return Client.PublishAsync(message);
+            return Client.PublishAsync(message, MqttQualityOfService.ExactlyOnce);
         }
 
-        public Task ConnectAsync(MqttClientOptions options)
+        public async Task<SessionState> ConnectAsync(string host, MqttConfiguration options, string id)
         {
-            return Client.ConnectAsync(options);
+            if (Client != null)
+            {
+                Client.Dispose();
+            }
+            Client = await MqttClient.CreateAsync(host, options);
+            Client.MessageStream.Subscribe(MqttUtils.OnSubscriberMessageReceived);
+            Client.Disconnected += MqttUtils.OnMqttClientDisConnected;
+            return await Client.ConnectAsync(new MqttClientCredentials(id, id, ""), cleanSession: true);
         }
 
-        public Task SubscribeAsync(string topic)
+        public  Task SubscribeAsync(string topic)
         {
-            return Client.SubscribeAsync(topic);
+            return Client.SubscribeAsync(topic, MqttQualityOfService.ExactlyOnce);
         }
 
         public Task DisconnectAsync()

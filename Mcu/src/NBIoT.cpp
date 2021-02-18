@@ -391,10 +391,10 @@ void NBIoT::startMqtt()
     {
         SelfTopic += (char)UUID[a];
     }
-    // Serial2.printf("AT+QMTSUB=0,1,\"%s\",1", TopicTrashServer.c_str());
+    // Serial2.printf("AT+QMTSUB=0,1,\"%s\",2", TopicTrashServer.c_str());
     // Serial2.println();
     // delay(5000);
-    Serial2.printf("AT+QMTSUB=0,2,\"%s\",1", SelfTopic.c_str());
+    Serial2.printf("AT+QMTSUB=0,2,\"%s\",2", SelfTopic.c_str());
     Serial2.println();
     delay(5000);
     Serial2.flush();
@@ -410,7 +410,7 @@ void NBIoT::send()
     if (mqtt)
     {
 #ifdef DEBUG
-        Serial.printf("AT+QMTPUB=0,1,1,0,\"%s\",\"%s,%s,%s,%s,%s,%d,%d,%d,%d\"\n",
+        Serial.printf("AT+QMTPUB=0,1,2,0,\"%s\",\"%s,%s,%s,%s,%s,%d,%d,%d,%d\"\n",
                       TopicTrashClient.c_str(),
                       UUID,
                       X.c_str(), Y.c_str(),
@@ -418,7 +418,7 @@ void NBIoT::send()
                       Close, IO->readBattery(), State, Capacity);
 #endif
         Serial2.flush();
-        Serial2.printf("AT+QMTPUB=0,1,1,0,\"%s\",\"%s,%s,%s,%s,%s,%d,%d,%d,%d\"",
+        Serial2.printf("AT+QMTPUB=0,1,2,0,\"%s\",\"%s,%s,%s,%s,%s,%d,%d,%d,%d\"",
                        TopicTrashClient.c_str(),
                        UUID,
                        X.c_str(), Y.c_str(),
@@ -436,12 +436,12 @@ void NBIoT::sendSIM()
     if (mqtt)
     {
 #ifdef DEBUG
-        Serial.printf(" AT+QMTPUB=0,1,1,0,\"%s\",\"%s,%s\"\n",
+        Serial.printf(" AT+QMTPUB=0,1,2,0,\"%s\",\"%s,%s\"\n",
                       TopicTrashClient.c_str(),
                       UUID, SIM);
 #endif
         Serial2.flush();
-        Serial2.printf(" AT+QMTPUB=0,1,1,0,\"%s\",\"%s,%s\"",
+        Serial2.printf(" AT+QMTPUB=0,1,2,0,\"%s\",\"%s,%s\"",
                        TopicTrashClient.c_str(),
                        UUID, SIM);
         Serial2.println();

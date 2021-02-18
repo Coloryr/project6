@@ -61,6 +61,7 @@ namespace ColoryrTrash.Desktop.Windows
         }
         private void Window_Closing(object sender, CancelEventArgs e)
         {
+            Serial.Dispose();
             App.MakeHardway_ = null;
         }
         private bool CheckInput(string data)
