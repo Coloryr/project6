@@ -6,15 +6,64 @@ using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
+using System;
 using System.Security;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ColoryrTrash.App.Droid
 {
-    [Activity(Label = "ColoryrTrash.App", Icon = "@mipmap/icon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation | ConfigChanges.UiMode | ConfigChanges.ScreenLayout | ConfigChanges.SmallestScreenSize)]
+    [Service(Name = "ColoryrTrash.Servive", Permission="android.permission.BIND_JOB_SERVICE")]
+    public class TestJob : JobService
+    {
+        private Thread thread;
+        private bool IsRun;
+        
+        private void Task()
+        { 
+            while(IsRun)
+            {
+                try
+                {
+                    if (!MqttUtils.Client.IsConnected)
+                    {
+                        if (App.IsLogin && App.Config.AutoLogin)
+                        {
+                            if (!MqttUtils.Start().Result)
+                            {
+                                App.Config.AutoLogin = false;
+                                return;
+                            }
+                        }
+                    }
+                    Thread.Sleep(1000);
+                }
+                catch (Exception e)
+                { 
+                    
+                }
+            }
+        }
+        public override bool OnStartJob(JobParameters jobParams)
+        {
+            thread = new Thread(Task);
+            IsRun = true;
+            thread.Start();
+            return true;
+        }
+
+        public override bool OnStopJob(JobParameters jobParams)
+        {
+            IsRun = false;
+            return false;
+        }
+    }
+    [Activity(Label = "ColoryrTrash.App", Icon = "@mipmap/icon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize
+    | ConfigChanges.Orientation | ConfigChanges.UiMode | ConfigChanges.ScreenLayout | ConfigChanges.SmallestScreenSize)]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
         public static MainActivity MainActivity_;
+
         protected override void OnCreate(Bundle savedInstanceState)
         {
             MainActivity_ = this;
@@ -23,20 +72,25 @@ namespace ColoryrTrash.App.Droid
 
             base.OnCreate(savedInstanceState);
 
-            //ComponentName componentName = new ComponentName(this, new Self().Class);
-            //JobInfo jobInfo = new JobInfo.Builder(12, componentName)
-            //        .SetRequiredNetworkType(NetworkType.Any)
-            //        .Build();
-            //JobScheduler jobScheduler = (JobScheduler)GetSystemService(JOB_SCHEDULER_SERVICE);
-            //int resultCode = jobScheduler.schedule(jobInfo);
-            //if (resultCode == JobScheduler.RESULT_SUCCESS)
-            //{
-            //    Console.WriteLine(TAG, "Job scheduled!");
-            //}
-            //else
-            //{
-            //    Console.WriteLine(TAG, "Job not scheduled");
-            //}
+            Java.Lang.Class javaClass = Java.Lang.Class.FromType(typeof(TestJob));
+            ComponentName component = new ComponentName(this, javaClass);
+
+            JobInfo.Builder builder = new JobInfo.Builder(1, component)
+                                                 .SetMinimumLatency(1000)
+                                                 .SetOverrideDeadline(5000)
+                                                 .SetRequiredNetworkType(NetworkType.Unmetered);
+            JobInfo jobInfo = builder.Build();
+
+            JobScheduler jobScheduler = (JobScheduler)GetSystemService(JobSchedulerService);
+            int result = jobScheduler.Schedule(jobInfo);
+            if (result == JobScheduler.ResultSuccess)
+            {
+
+            }
+            else
+            {
+                // Couldn't schedule the job.
+            }
 
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
