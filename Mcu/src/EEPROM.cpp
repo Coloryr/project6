@@ -64,6 +64,24 @@ void EEPROM::init()
         Serial.printf("IP:%d.%d.%d.%d, Port:%d\n", IP[0], IP[1], IP[2], IP[3], Port);
         Serial.printf("ADC_High:%d,ADC_Low:%d,Distance:%d\n", ADC_HIGH, ADC_Low, Distance);
         Serial.printf("ServoOpen:%d,ServoClose:%d\n", openset, closeset);
+        Serial.print("UUID:");
+        for (uint8_t a = 0; a < 16; a++)
+        {
+            Serial.printf("%c", UUID[a]);
+        }
+        Serial.println();
+        Serial.print("User:");
+        for (uint8_t a = 0; a < 16; a++)
+        {
+            Serial.printf("%c", User[a]);
+        }
+        Serial.println();
+        Serial.print("Pass:");
+        for (uint8_t a = 0; a < 16; a++)
+        {
+            Serial.printf("%c", Pass[a]);
+        }
+        Serial.println();
         Serial.println("EEPROM init done");
         ok = true;
 #endif
@@ -88,14 +106,6 @@ void EEPROM::readUUID()
 {
     EEPROMIIC->read(UUID_Add, EEPROM_Add, UUID, 8);
     EEPROMIIC->read(UUID_Add + 8, EEPROM_Add, UUID + 8, 8);
-#ifdef DEBUG
-    Serial.print("UUID:");
-    for (uint8_t a = 0; a < 16; a++)
-    {
-        Serial.printf("%c", UUID[a]);
-    }
-    Serial.println();
-#endif
 }
 void EEPROM::readIP()
 {
@@ -136,20 +146,6 @@ void EEPROM::readMqtt()
     EEPROMIIC->read(User_Add + 8, EEPROM_Add, User + 8, 8);
     EEPROMIIC->read(Pass_Add, EEPROM_Add, Pass, 8);
     EEPROMIIC->read(Pass_Add + 8, EEPROM_Add, Pass + 8, 8);
-#ifdef DEBUG
-    Serial.print("User:");
-    for (uint8_t a = 0; a < 16; a++)
-    {
-        Serial.printf("%c", User[a]);
-    }
-    Serial.println();
-    Serial.print("Pass:");
-    for (uint8_t a = 0; a < 16; a++)
-    {
-        Serial.printf("%c", Pass[a]);
-    }
-    Serial.println();
-#endif
 }
 
 void EEPROM::saveAll()
@@ -165,14 +161,6 @@ void EEPROM::saveAll()
 }
 void EEPROM::saveUUID()
 {
-#ifdef DEBUG
-    Serial.print("UUID:");
-    for (uint8_t a = 0; a < 16; a++)
-    {
-        Serial.printf("%c", UUID[a]);
-    }
-    Serial.println();
-#endif
     EEPROMIIC->write(UUID_Add, EEPROM_Add, UUID, 8);
     delay(10);
     EEPROMIIC->write(UUID_Add + 8, EEPROM_Add, UUID + 8, 8);
@@ -211,20 +199,6 @@ void EEPROM::saveSet()
 }
 void EEPROM::saveMqtt()
 {
-#ifdef DEBUG
-    Serial.print("User:");
-    for (uint8_t a = 0; a < 16; a++)
-    {
-        Serial.printf("%c", User[a]);
-    }
-    Serial.println();
-    Serial.print("Pass:");
-    for (uint8_t a = 0; a < 16; a++)
-    {
-        Serial.printf("%c", Pass[a]);
-    }
-    Serial.println();
-#endif
     EEPROMIIC->write(User_Add, EEPROM_Add, User, 8);
     delay(10);
     EEPROMIIC->write(User_Add + 8, EEPROM_Add, User + 8, 8);

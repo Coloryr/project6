@@ -170,6 +170,20 @@ namespace ColoryrTrash.App
 
         protected override void OnResume()
         {
+            if (Config.AutoLogin)
+            {
+                Task.Run(async () =>
+                {
+                    if (!MqttUtils.Client.IsConnected && !await MqttUtils.Start())
+                    {
+                        Show("服务器", "服务器连接断开");
+                        LoginOut();
+                        return;
+                    }
+
+                    MqttUtils.CheckLogin(Config.Token);
+                });
+            }
         }
 
         private void ContextReady(IAsyncResult ar)

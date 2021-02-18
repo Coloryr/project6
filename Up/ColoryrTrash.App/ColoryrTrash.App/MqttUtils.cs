@@ -1,8 +1,14 @@
 ﻿using Lib;
+using MQTTnet;
+using MQTTnet.Client;
+using MQTTnet.Client.Connecting;
+using MQTTnet.Client.Disconnecting;
+using MQTTnet.Client.Options;
+using MQTTnet.Client.Receiving;
+using MQTTnet.Formatter;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Net.Mqtt;
 using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
@@ -16,19 +22,22 @@ namespace ColoryrTrash.App
         private static bool IsConnecting;
 
         public static string Token { get; set; }
-        public static ISelfMqtt Client;
+        public static MqttClient Client;
         public static void Init()
         {
-            Client = DependencyService.Get<ISelfMqtt>();
+            Client = new MqttFactory().CreateMqttClient() as MqttClient;
+            Client.ConnectedHandler = new MqttClientConnectedHandlerDelegate(OnMqttClientConnected);
+            Client.DisconnectedHandler = new MqttClientDisconnectedHandlerDelegate(OnMqttClientDisConnected);
+            Client.ApplicationMessageReceivedHandler = new MqttApplicationMessageReceivedHandlerDelegate(OnSubscriberMessageReceived);
         }
 
-        public static void OnSubscriberMessageReceived(MqttApplicationMessage arg)
+        public static void OnSubscriberMessageReceived(MqttApplicationMessageReceivedEventArgs arg)
         {
             try
             {
-                if (arg.Topic == SelfServerTopic)
+                if (arg.ApplicationMessage.Topic == SelfServerTopic)
                 {
-                    string Message = Encoding.UTF8.GetString(arg.Payload);
+                    string Message = Encoding.UTF8.GetString(arg.ApplicationMessage.Payload);
                     var obj = JsonConvert.DeserializeObject<DataPackObj>(Message);
                     if (obj.Type == DataType.Login)
                     {
@@ -94,9 +103,9 @@ namespace ColoryrTrash.App
                             break;
                     }
                 }
-                else if (arg.Topic == DataArg.TopicAppServer)
+                else if (arg.ApplicationMessage.Topic == DataArg.TopicAppServer)
                 {
-                    string Message = Encoding.UTF8.GetString(arg.Payload);
+                    string Message = Encoding.UTF8.GetString(arg.ApplicationMessage.Payload);
                     var obj = JsonConvert.DeserializeObject<DataPackObj>(Message);
                     switch (obj.Type)
                     {
@@ -135,42 +144,31 @@ namespace ColoryrTrash.App
             }
         }
 
-        public static void OnMqttClientDisConnected(object sender, MqttEndpointDisconnected arg)
+        public static void OnMqttClientDisConnected(MqttClientDisconnectedEventArgs arg)
         {
-            if (IsConnecting)
-                return;
-            if (App.Config.AutoLogin)
-            {
-                Task.Run(async () =>
-                {
-                    if (!await Start())
-                        CheckLogin(App.Config.Token);
-                    else
-                    {
-                        IsConnecting = true;
-                        App.Config.AutoLogin = false;
-                        App.Show("服务器", "服务器连接断开");
-                        App.LoginOut();
-                    }
-                });
-            }
-            else if (!IsConnecting)
+            App.notificationManager.ReceiveNotification(arg.Reason.ToString(), arg.Exception.ToString());
+            if (!IsConnecting)
             {
                 App.Show("服务器", "服务器连接断开");
                 App.LoginOut();
             } 
         }
 
-        //public static void OnMqttClientConnected(MqttClientConnectedEventArgs arg)
-        //{
-        //    App.Show("服务器", "服务器已连接");
-        //}
+        public static void OnMqttClientConnected(MqttClientConnectedEventArgs arg)
+        {
+            App.Show("服务器", "服务器已连接");
+        }
 
         public static void Send(string message)
         {
-            if (Client.IsConnected())
+            if (Client.IsConnected)
             {
-                var obj = new MqttApplicationMessage(SelfClientTopic, Encoding.UTF8.GetBytes(message));
+                var obj = new MqttApplicationMessageBuilder()
+                    .WithTopic(SelfClientTopic)
+                    .WithPayload(Encoding.UTF8.GetBytes(message))
+                    .WithExactlyOnceQoS()
+                    .WithRetainFlag()
+                    .Build();
                 Client.PublishAsync(obj);
             }
         }
@@ -179,19 +177,31 @@ namespace ColoryrTrash.App
             try
             {
                 IsConnecting = true;
-                if (Client.IsConnected())
+                if (Client.IsConnected)
                     await Stop();
-                var configuration = new MqttConfiguration
+                var options = new MqttClientOptions
                 {
-                    BufferSize = 128 * 1024,
-                    Port = App.Config.Port,
-                    KeepAliveSecs = 10,
-                    WaitTimeoutSecs = 60,
-                    MaximumQualityOfService = MqttQualityOfService.ExactlyOnce,
-                    AllowWildcardsInTopicFilters = true
+                    ProtocolVersion = MqttProtocolVersion.V311,
+                    ChannelOptions = new MqttClientTcpOptions
+                    {
+                        Server = App.Config.IP,
+                        Port = App.Config.Port
+                    }
+                };
+                if (options.ChannelOptions == null)
+                {
+                    throw new InvalidOperationException();
+                }
+                options.Credentials = new MqttClientCredentials
+                {
+                    Username = App.Config.User
                 };
 
-                await Client.ConnectAsync(App.Config.IP, configuration, App.Config.User);
+                options.CleanSession = true;
+                options.KeepAlivePeriod = TimeSpan.FromSeconds(5);
+                options.ClientId = App.Config.User;
+
+                await Client.ConnectAsync(options);
                 SelfServerTopic = DataArg.TopicAppServer + "/" + App.Config.User;
                 SelfClientTopic = DataArg.TopicAppClient + "/" + App.Config.User;
                 await Client.SubscribeAsync(SelfServerTopic);
