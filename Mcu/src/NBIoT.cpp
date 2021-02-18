@@ -346,21 +346,20 @@ void NBIoT::startMqtt()
 #ifdef DEBUG
     Serial.println("正在断开MQTT服务器");
 #endif
+    Serial2.flush();
     Serial2.println("AT+QMTCLOSE=0");
     delay(300);
     Serial2.flush();
     Serial2.printf("AT+QMTOPEN=0,\"%d.%d.%d.%d\",%d", IP[0], IP[1], IP[2], IP[3], Port);
     Serial2.println();
-    delay(300);
-    Serial2.flush();
     delay(5000);
     String data = Serial2.readString();
     data.trim();
-    if (!data.startsWith("+QMTOPEN: 0,0"))
+    if (!data.endsWith("+QMTOPEN: 0,0"))
     {
-#ifdef DEBUG
         mqtt = false;
         return;
+#ifdef DEBUG
         Serial.println("MQTT服务器连接失败");
 #endif
     }
@@ -370,12 +369,10 @@ void NBIoT::startMqtt()
     Serial2.flush();
     Serial2.printf("AT+QMTCONN=0,\"%s\",\"%s\",\"%s\"", UUID, User, Pass);
     Serial2.println();
-    delay(300);
-    Serial2.flush();
     delay(5000);
     data = Serial2.readString();
     data.trim();
-    if (!data.startsWith("+QMTCONN: 0,0,0"))
+    if (!data.endsWith("+QMTCONN: 0,0,0"))
     {
 #ifdef DEBUG
         Serial.println("MQTT服务器认证失败");
