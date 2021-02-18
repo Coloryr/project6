@@ -100,7 +100,6 @@ namespace ColoryrTrash.App
         }
         public static void LoginOut()
         {
-            Config.Token = "";
             IsLogin = false;
             Save();
             mainPage.ClearName();

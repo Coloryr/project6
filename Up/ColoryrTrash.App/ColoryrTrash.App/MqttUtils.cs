@@ -146,7 +146,6 @@ namespace ColoryrTrash.App
 
         public static void OnMqttClientDisConnected(MqttClientDisconnectedEventArgs arg)
         {
-            App.notificationManager.ReceiveNotification(arg.Reason.ToString(), arg.Exception.ToString());
             if (!IsConnecting)
             {
                 App.Show("服务器", "服务器连接断开");
