@@ -427,7 +427,7 @@ namespace ColoryrTrash.Server.Mqtt
                     }
                     break;
                 case DataType.MoveUserGroup:
-                    if(!ServerMain.UserData.MoveGroup(temp, temp1))
+                    if (!ServerMain.UserData.MoveGroup(temp, temp1))
                     {
                         Send(ClientId, new DataPackObj
                         {

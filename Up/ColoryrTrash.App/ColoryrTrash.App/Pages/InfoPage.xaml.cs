@@ -3,9 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -58,7 +55,7 @@ namespace ColoryrTrash.App.Pages
         {
             if (App.IsLogin)
             {
-                App.MqttUtils.GetItems();
+                MqttUtils.GetItems();
             }
             else
             {
@@ -87,7 +84,7 @@ namespace ColoryrTrash.App.Pages
                 var res = await DisplayAlert($"垃圾桶:{obj.UUID}", GetString(obj), "更新", "OK");
                 if (res)
                 {
-                    App.MqttUtils.Updata(obj.UUID);
+                    MqttUtils.Updata(obj.UUID);
                 }
             }
         }

@@ -1,11 +1,9 @@
-﻿using System;
-
-using Android.App;
+﻿using Android.App;
+using Android.Content;
 using Android.Content.PM;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;
 using Android.OS;
+using Android.Runtime;
+using System.Threading.Tasks;
 
 namespace ColoryrTrash.App.Droid
 {
@@ -20,6 +18,9 @@ namespace ColoryrTrash.App.Droid
             ToolbarResource = Resource.Layout.Toolbar;
 
             base.OnCreate(savedInstanceState);
+
+            Intent server = new Intent(this, typeof(SelfServer));
+            StartService(server);
 
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);

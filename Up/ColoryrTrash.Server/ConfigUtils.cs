@@ -142,7 +142,7 @@ namespace ColoryrTrash.Server
         }
         public bool RenameGroup(string old, string group)
         {
-            if (!IsFileNameValid(group) || old == EmptyGroup || 
+            if (!IsFileNameValid(group) || old == EmptyGroup ||
                 !Groups.ContainsKey(old) || Groups.ContainsKey(group))
             {
                 return false;
@@ -435,7 +435,7 @@ namespace ColoryrTrash.Server
         }
         public bool RenameGroup(string old, string group)
         {
-            if (!IsFileNameValid(group) || old == EmptyGroup || 
+            if (!IsFileNameValid(group) || old == EmptyGroup ||
                 !Groups.ContainsKey(old) || Groups.ContainsKey(group))
             {
                 return false;
@@ -519,7 +519,7 @@ namespace ColoryrTrash.Server
             }
         }
 
-        public void UpData(string uuid, double x, double y, int capacity, 
+        public void UpData(string uuid, double x, double y, int capacity,
             bool open, ItemState state, int battery, string Time)
         {
             if (UUID_Group.ContainsKey(uuid))

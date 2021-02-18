@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
 
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -14,7 +12,10 @@ namespace ColoryrTrash.App.Pages
         public LoginPage()
         {
             InitializeComponent();
-            Updata();
+            IP.Text = App.Config.IP;
+            Port.Text = App.Config.Port.ToString();
+            User.Text = App.Config.User;
+            Save.IsToggled = App.Config.AutoLogin;
         }
 
         public void Updata()
@@ -80,7 +81,7 @@ namespace ColoryrTrash.App.Pages
                 Act.IsRunning = false;
                 IsLoging = false;
             }
-            else 
+            else
             {
                 App.LoginOut();
             }

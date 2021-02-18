@@ -13,6 +13,7 @@ bool Close;
 bool busy;
 bool IsOpen;
 bool SendOnce;
+uint16_t timego = 0;
 uint8_t State;
 //0 ok
 //1 初始化
@@ -24,7 +25,6 @@ uint8_t Time;
 
 void longTask(void *arg)
 {
-    uint16_t timego = 0;
     for (;;)
     {
         if (!IoT->isOnline())
@@ -50,9 +50,9 @@ void longTask(void *arg)
             {
                 busy = true;
                 IoT->sendSIM();
-                delay(100);
+                delay(1000);
                 IoT->readGnss();
-                delay(100);
+                delay(1000);
                 IoT->send();
                 timego = 0;
                 SendOnce = false;
@@ -64,7 +64,7 @@ void longTask(void *arg)
                 timego = 0;
                 busy = true;
                 IoT->readGnss();
-                delay(100);
+                delay(1000);
                 IoT->send();
                 busy = false;
             }
@@ -187,6 +187,7 @@ void setup()
 void loop()
 {
     tick();
+    Up->tick();
     if (!busy)
         IoT->tick();
     delay(100);

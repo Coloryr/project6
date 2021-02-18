@@ -1,10 +1,10 @@
-﻿using System;
-using Android.App;
+﻿using Android.App;
 using Android.Content;
 using Android.Graphics;
 using Android.OS;
 using Android.Widget;
 using AndroidX.Core.App;
+using System;
 using Xamarin.Forms;
 using AndroidApp = Android.App.Application;
 
@@ -27,7 +27,7 @@ namespace ColoryrTrash.App.Droid
         }
     }
     public class AndroidMessageHand : IMessageHand
-    { 
+    {
         public void Message(string title, string text)
         {
             Toast.MakeText(MainActivity.MainActivity_, text, ToastLength.Short).Show();

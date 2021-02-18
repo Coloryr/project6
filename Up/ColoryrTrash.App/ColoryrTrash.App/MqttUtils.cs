@@ -11,26 +11,24 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Xamarin.Forms;
 
 namespace ColoryrTrash.App
 {
     public class MqttUtils
     {
-        private readonly MqttClient Client;
-        private string SelfServerTopic;
-        private string SelfClientTopic;
-        private bool IsConnecting;
+        private static string SelfServerTopic;
+        private static string SelfClientTopic;
+        private static bool IsConnecting;
 
-        public string Token { get; set; }
-        public MqttUtils()
+        public static string Token { get; set; }
+        public static ISelfMqtt Client;
+        public static void Init()
         {
-            Client = new MqttFactory().CreateMqttClient() as MqttClient;
-            Client.ConnectedHandler = new MqttClientConnectedHandlerDelegate(OnMqttClientConnected);
-            Client.DisconnectedHandler = new MqttClientDisconnectedHandlerDelegate(OnMqttClientDisConnected);
-            Client.ApplicationMessageReceivedHandler = new MqttApplicationMessageReceivedHandlerDelegate(OnSubscriberMessageReceived);
+            Client = DependencyService.Get<ISelfMqtt>();
         }
 
-        private void OnSubscriberMessageReceived(MqttApplicationMessageReceivedEventArgs arg)
+        public static void OnSubscriberMessageReceived(MqttApplicationMessageReceivedEventArgs arg)
         {
             try
             {
@@ -109,15 +107,25 @@ namespace ColoryrTrash.App
                     switch (obj.Type)
                     {
                         case DataType.SetUserGroupBind:
-                            if(App.GroupName == obj.Data)
+                            if (App.GroupName == obj.Data)
                             {
                                 GetItems();
                             }
                             break;
                         case DataType.UpdataTrash:
-                            if(App.GroupName == obj.Data)
+                            if (App.GroupName == obj.Data)
                             {
                                 App.infoPage.Update(JsonConvert.DeserializeObject<TrashSaveObj>(obj.Data1));
+                            }
+                            break;
+                        case DataType.Full:
+                            if (obj.Data == "")
+                            {
+                                App.notificationManager.SendNotification("垃圾桶", $"垃圾桶{obj.Data1}快满");
+                            }
+                            else
+                            { 
+                                
                             }
                             break;
                     }
@@ -129,21 +137,21 @@ namespace ColoryrTrash.App
             }
         }
 
-        private void OnMqttClientDisConnected(MqttClientDisconnectedEventArgs arg)
+        public static void OnMqttClientDisConnected(MqttClientDisconnectedEventArgs arg)
         {
             App.Show("服务器", "服务器连接断开");
             if (!IsConnecting)
                 App.LoginOut();
         }
 
-        private void OnMqttClientConnected(MqttClientConnectedEventArgs arg)
+        public static void OnMqttClientConnected(MqttClientConnectedEventArgs arg)
         {
             App.Show("服务器", "服务器已连接");
         }
 
-        private void Send(string message)
+        public static void Send(string message)
         {
-            if (Client.IsConnected)
+            if (Client.IsConnected())
             {
                 var obj = new MqttApplicationMessageBuilder()
                     .WithTopic(SelfClientTopic)
@@ -154,12 +162,12 @@ namespace ColoryrTrash.App
                 Client.PublishAsync(obj);
             }
         }
-        public async Task<bool> Start()
+        public static async Task<bool> Start()
         {
             try
             {
                 IsConnecting = true;
-                if (Client.IsConnected)
+                if (Client.IsConnected())
                     await Stop();
                 var options = new MqttClientOptions
                 {
@@ -199,7 +207,7 @@ namespace ColoryrTrash.App
             return false;
         }
 
-        public async Task Stop()
+        public static async Task Stop()
         {
             try
             {
@@ -211,7 +219,7 @@ namespace ColoryrTrash.App
             }
         }
 
-        public void CheckLogin(string token)
+        public static void CheckLogin(string token)
         {
             var obj = new DataPackObj
             {
@@ -221,7 +229,7 @@ namespace ColoryrTrash.App
             Send(JsonConvert.SerializeObject(obj));
         }
 
-        public void Login(string pass)
+        public static void Login(string pass)
         {
             var obj = new DataPackObj
             {
@@ -231,7 +239,7 @@ namespace ColoryrTrash.App
             Send(JsonConvert.SerializeObject(obj));
         }
 
-        public void GetInfo()
+        public static void GetInfo()
         {
             var obj = new DataPackObj
             {
@@ -241,7 +249,7 @@ namespace ColoryrTrash.App
             };
             Send(JsonConvert.SerializeObject(obj));
         }
-        public void GetItems()
+        public static void GetItems()
         {
             var obj = new DataPackObj
             {
@@ -251,7 +259,7 @@ namespace ColoryrTrash.App
             };
             Send(JsonConvert.SerializeObject(obj));
         }
-        public void Updata(string uuid)
+        public static void Updata(string uuid)
         {
             var obj = new DataPackObj
             {

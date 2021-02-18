@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ColoryrTrash.App
+﻿namespace ColoryrTrash.App
 {
     public interface IMessageHand
     {

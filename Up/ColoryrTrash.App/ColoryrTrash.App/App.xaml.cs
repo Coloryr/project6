@@ -1,10 +1,9 @@
 ﻿using ColoryrTrash.App.Pages;
-using Lib;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Reflection;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Xamarin.Essentials;
@@ -15,8 +14,8 @@ namespace ColoryrTrash.App
     public partial class App : Application
     {
         public static bool IsLogin { get; set; }
+        public static string GroupName;
         public static ConfigObj Config;
-        public static MqttUtils MqttUtils;
 
         public static MainPage mainPage;
         public static HelloPage helloPage;
@@ -30,12 +29,9 @@ namespace ColoryrTrash.App
         public static NavigationPage mapPage_;
 
         public static IMessageHand MessageHand;
-
-        public static string GroupName;
+        public static INotificationManager notificationManager;
 
         private static App ThisApp;
-        private static INotificationManager notificationManager;
-
         private static HttpListener HttpServer = new HttpListener();
         private static byte[] ImgData;
         private static byte[] WebData;
@@ -49,6 +45,7 @@ namespace ColoryrTrash.App
 
             notificationManager = DependencyService.Get<INotificationManager>();
             MessageHand = DependencyService.Get<IMessageHand>();
+
             fileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "config.json");
             Config = ConfigSave.Config(new ConfigObj()
             {
@@ -60,27 +57,7 @@ namespace ColoryrTrash.App
                 User = ""
             }, fileName);
 
-            HttpServer.Prefixes.Add($"http://+:{Config.HttpPort}/");
-
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
-
-            var assembly = IntrospectionExtensions.GetTypeInfo(typeof(App)).Assembly;
-            Stream stream = assembly.GetManifestResourceStream("ColoryrTrash.App.map.png");
-
-            ImgData = new byte[stream.Length];
-            stream.Read(ImgData);
-            stream.Close();
-
-            stream = assembly.GetManifestResourceStream("ColoryrTrash.App.html.txt");
-
-            WebData = new byte[stream.Length];
-            stream.Read(WebData);
-            stream.Close();
-
-            HttpServer.Start();
-            HttpServer.BeginGetContext(ContextReady, null);
-
-            MqttUtils = new MqttUtils();
+            MqttUtils.Init();
 
             mainPage = new MainPage();
             helloPage = new HelloPage();
@@ -94,20 +71,6 @@ namespace ColoryrTrash.App
             mapPage_ = new NavigationPage(mapPage);
 
             MainPage = mainPage;
-
-            Task.Run(() =>
-            {
-                Thread.Sleep(1000);
-                if (MqttUtils.Start().Result && Config.AutoLogin)
-                {
-                    MqttUtils.Token = Config.Token;
-                    MqttUtils.CheckLogin(Config.Token);
-                }
-                if (!IsLogin)
-                {
-                    mainPage.Switch(PageName.LoginPage);
-                }
-            });
         }
 
         public static void Show(string title, string text)
@@ -160,7 +123,7 @@ namespace ColoryrTrash.App
         public static async void Login(string pass)
         {
             if (!await MqttUtils.Start())
-            { 
+            {
                 return;
             }
             MqttUtils.Login(pass);
@@ -168,6 +131,37 @@ namespace ColoryrTrash.App
 
         protected override void OnStart()
         {
+            HttpServer.Prefixes.Add($"http://+:{Config.HttpPort}/");
+
+            var assembly = IntrospectionExtensions.GetTypeInfo(typeof(App)).Assembly;
+            Stream stream = assembly.GetManifestResourceStream("ColoryrTrash.App.map.png");
+
+            ImgData = new byte[stream.Length];
+            stream.Read(ImgData);
+            stream.Close();
+
+            stream = assembly.GetManifestResourceStream("ColoryrTrash.App.html.txt");
+
+            WebData = new byte[stream.Length];
+            stream.Read(WebData);
+            stream.Close();
+
+            HttpServer.Start();
+            HttpServer.BeginGetContext(ContextReady, null);
+
+            Task.Run(() =>
+            {
+                Thread.Sleep(1000);
+                if (MqttUtils.Start().Result && Config.AutoLogin)
+                {
+                    MqttUtils.Token = Config.Token;
+                    MqttUtils.CheckLogin(Config.Token);
+                }
+                if (!IsLogin)
+                {
+                    mainPage.Switch(PageName.LoginPage);
+                }
+            });
         }
 
         protected override void OnSleep()

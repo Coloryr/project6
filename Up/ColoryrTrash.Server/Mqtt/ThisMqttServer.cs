@@ -44,25 +44,29 @@ namespace ColoryrTrash.Server.Mqtt
 
         private static void OnMessageReceived(MqttApplicationMessageReceivedEventArgs arg)
         {
-            try
+
+            Task.Run(() =>
             {
-                if (arg.ApplicationMessage.Topic.StartsWith(DataArg.TopicDesktopClient))
+                try
                 {
-                    DesktopServer.DesktopReceived(arg.ClientId, arg.ApplicationMessage.Payload);
+                    if (arg.ApplicationMessage.Topic.StartsWith(DataArg.TopicDesktopClient))
+                    {
+                        DesktopServer.DesktopReceived(arg.ClientId, arg.ApplicationMessage.Payload);
+                    }
+                    else if (arg.ApplicationMessage.Topic.StartsWith(DataArg.TopicAppClient))
+                    {
+                        AppServer.AppReceived(arg.ClientId, arg.ApplicationMessage.Payload);
+                    }
+                    else if (arg.ApplicationMessage.Topic.StartsWith(DataArg.TopicTrashClient))
+                    {
+                        TrashServer.TrashReceived(arg.ClientId, arg.ApplicationMessage.Payload);
+                    }
                 }
-                else if (arg.ApplicationMessage.Topic.StartsWith(DataArg.TopicAppClient))
+                catch (Exception e)
                 {
-                    AppServer.AppReceived(arg.ClientId, arg.ApplicationMessage.Payload);
+                    ServerMain.LogError(e);
                 }
-                else if (arg.ApplicationMessage.Topic.StartsWith(DataArg.TopicTrashClient))
-                {
-                    TrashServer.TrashReceived(arg.ClientId, arg.ApplicationMessage.Payload);
-                }
-            }
-            catch (Exception e)
-            {
-                ServerMain.LogError(e);
-            }
+            });
         }
 
         private static void OnUnsubscribedTopic(MqttServerClientUnsubscribedTopicEventArgs arg)

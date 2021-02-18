@@ -4,7 +4,7 @@ namespace Lib
 {
     public enum DataType
     {
-        CheckLogin, Login, 
+        CheckLogin, Login,
         GetTrashGroups, GetTrashGroupInfo, UpdataTrash,
         AddTrashGroup, MoveTrashGroup, RenameTrashGroup,
         SetTrashNick, CheckTrashUUID,
@@ -13,11 +13,11 @@ namespace Lib
         AddUserGroup, MoveUserGroup, RenameUserGroup,
         AddUser, DeleteUser, SetUser, SetUserTask,
         GetUserGroupBind, SetUserGroupBind,
-        UpdataNow
+        UpdataNow, Full
     }
     public enum ItemState
     {
-        正常, 初始化, 初始化完成, 距离传感器错误, Null, 快满了
+        正常, 初始化, 初始化完成, 传感器错误, Null, 快满了
     }
     public class DataPackObj
     {

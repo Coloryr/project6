@@ -1,10 +1,7 @@
 ﻿using Lib;
 using MQTTnet;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace ColoryrTrash.Server.Mqtt
 {
@@ -33,7 +30,7 @@ namespace ColoryrTrash.Server.Mqtt
             {
                 string uuid = temp[0];
                 string sim = temp[1];
-                ServerMain.SaveData.UpSIM(uuid, sim); 
+                ServerMain.SaveData.UpSIM(uuid, sim);
             }
             else
             {
@@ -56,8 +53,8 @@ namespace ColoryrTrash.Server.Mqtt
                         res = ConvertGPS.Gps84_To_bd09(new PointLatLng(y, x));
                     }
                     catch
-                    { 
-                        
+                    {
+
                     }
                     int day = int.Parse(YMD.Substring(0, 2));
                     int month = int.Parse(YMD.Substring(2, 2));
@@ -72,6 +69,10 @@ namespace ColoryrTrash.Server.Mqtt
                         int.Parse(Capacity), Close != "1",
                         (ItemState)state, int.Parse(Battery), Time);
                     Send(ClientId, "OK");
+                    if (int.Parse(Capacity) < 10)
+                    {
+                        AppServer.Full(uuid);
+                    }
                 }
                 catch
                 {

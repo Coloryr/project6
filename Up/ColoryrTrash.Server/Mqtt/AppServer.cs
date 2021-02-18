@@ -4,7 +4,6 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -129,7 +128,7 @@ namespace ColoryrTrash.Server.Mqtt
                         var group = ServerMain.UserData.ID_Group[temp];
                         var obj1 = ServerMain.UserData.Groups[group];
                         var list = new List<TrashSaveObj>();
-                        foreach(var item in obj1.Bind)
+                        foreach (var item in obj1.Bind)
                         {
                             if (ServerMain.SaveData.Groups.ContainsKey(item))
                             {
@@ -160,6 +159,44 @@ namespace ColoryrTrash.Server.Mqtt
                         TrashServer.Send(temp, "Up");
                     }
                     break;
+            }
+        }
+
+        public static void Full(string uuid)
+        {
+            if (uuid == "")
+            {
+                var send = new DataPackObj
+                {
+                    Type = DataType.Full,
+                    Res = true,
+                    Data = "",
+                    Data1 = uuid
+                };
+                Task.Run(() => SendAll(send));
+            }
+            else if (ServerMain.SaveData.CheckUUID(uuid))
+            {
+                var temp = ServerMain.SaveData.UUID_Group[uuid];
+                var list = new List<string>();
+                foreach (var item in ServerMain.UserData.Groups.Values)
+                {
+                    if (item.Bind.Contains(temp))
+                    {
+                        list.Add(item.Name);
+                    }
+                }
+                if (list.Count > 0)
+                {
+                    var send = new DataPackObj
+                    {
+                        Type = DataType.Full,
+                        Res = true,
+                        Data = JsonConvert.SerializeObject(list),
+                        Data1 = uuid
+                    };
+                    Task.Run(() => SendAll(send));
+                }
             }
         }
 

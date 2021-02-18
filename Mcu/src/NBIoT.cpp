@@ -77,7 +77,7 @@ void NBIoT::tick()
             {
                 if (data1.equals("Up"))
                 {
-                    SendOnce = true;
+                    timego = 400;
                 }
             }
         }
@@ -412,6 +412,14 @@ void NBIoT::send()
         return;
     if (mqtt)
     {
+#ifdef DEBUG
+        Serial.printf("AT+QMTPUB=0,1,1,0,\"%s\",\"%s,%s,%s,%s,%s,%d,%d,%d,%d\"\n",
+                      TopicTrashClient.c_str(),
+                      UUID,
+                      X.c_str(), Y.c_str(),
+                      Time_YMD.c_str(), Time_HMS.c_str(),
+                      Close, IO->readBattery(), State, Capacity);
+#endif
         Serial2.flush();
         Serial2.printf("AT+QMTPUB=0,1,1,0,\"%s\",\"%s,%s,%s,%s,%s,%d,%d,%d,%d\"",
                        TopicTrashClient.c_str(),
@@ -430,8 +438,13 @@ void NBIoT::sendSIM()
         return;
     if (mqtt)
     {
+#ifdef DEBUG
+        Serial.printf(" AT+QMTPUB=0,1,1,0,\"%s\",\"%s,%s\"\n",
+                      TopicTrashClient.c_str(),
+                      UUID, SIM);
+#endif
         Serial2.flush();
-        Serial2.printf("AT+QMTPUB=0,1,1,0,\"%s\",\"%s,%s\"",
+        Serial2.printf(" AT+QMTPUB=0,1,1,0,\"%s\",\"%s,%s\"",
                        TopicTrashClient.c_str(),
                        UUID, SIM);
         Serial2.println();

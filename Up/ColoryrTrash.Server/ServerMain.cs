@@ -49,6 +49,9 @@ namespace ColoryrTrash.Server
                     case "stop":
                         Stop();
                         return;
+                    case "test":
+                        AppServer.Full("");
+                        break;
                 }
             }
         }

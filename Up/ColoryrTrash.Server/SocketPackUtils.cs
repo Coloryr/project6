@@ -45,7 +45,7 @@ namespace ColoryrTrash.Server
                     0 => ItemState.正常,
                     1 => ItemState.初始化,
                     2 => ItemState.初始化完成,
-                    3 => ItemState.距离传感器错误,
+                    3 => ItemState.传感器错误,
                     4 => ItemState.Null,
                     5 => ItemState.快满了
                 };
@@ -78,7 +78,7 @@ namespace ColoryrTrash.Server
                         0 => ItemState.正常,
                         1 => ItemState.初始化,
                         2 => ItemState.初始化完成,
-                        3 => ItemState.距离传感器错误,
+                        3 => ItemState.传感器错误,
                         4 => ItemState.Null,
                         5 => ItemState.快满了
                     };
