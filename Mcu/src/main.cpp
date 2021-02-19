@@ -25,7 +25,6 @@ RTC_DATA_ATTR uint8_t State;
 //3 距离传感器错误
 //5 快满了
 uint8_t Capacity;
-uint8_t Time;
 
 #define uS_TO_S_FACTOR 1000000 /* Conversion factor for micro seconds to seconds */
 #define TIME_TO_SLEEP 5        /* Time ESP32 will go to sleep (in seconds) */
@@ -41,14 +40,41 @@ void longTask()
     {
         busy = true;
         IoT.init();
-        delay(100);
-        IoT.setGnssOpen(true);
+        delay(200);
+        IoT.test();
+        delay(200);
+        IoT.sleep();
         busy = false;
     }
     else if (!IoT.isMqtt())
     {
         busy = true;
         IoT.startMqtt();
+        delay(200);
+        IoT.sendSIM();
+        delay(200);
+        IoT.sleep();
+        busy = false;
+    }
+
+    if (SendOnce)
+    {
+#ifdef DEBUG
+        Serial.println("上传数据");
+#endif
+        busy = true;
+        IoT.setGnssOpen(true);
+        delay(200);
+        IoT.readGnss();
+        delay(200);
+        IoT.setGnssOpen(false);
+        delay(200);
+        IoT.send();
+        delay(200);
+        IoT.sleep();
+        timego = 0;
+        timego1 = 0;
+        SendOnce = false;
         busy = false;
     }
 
@@ -57,30 +83,13 @@ void longTask()
         timego1 = 0;
         busy = true;
         IoT.test();
+        delay(200);
+        IoT.sleep();
         busy = false;
     }
-    if (SendOnce)
-    {
-        busy = true;
-        IoT.sendSIM();
-        delay(1000);
-        IoT.readGnss();
-        delay(1000);
-        IoT.send();
-        timego = 0;
-        timego1 = 0;
-        SendOnce = false;
-        busy = false;
-    }
-
     if (timego > 360)
     {
-        timego = 0;
-        busy = true;
-        IoT.readGnss();
-        delay(1000);
-        IoT.send();
-        busy = false;
+        SendOnce = true;
     }
 }
 
@@ -89,8 +98,9 @@ void tick()
     if (IsOpen)
     {
         ThisServo.close();
+        IsOpen = false;
     }
-    
+
     Close = IO.isClose() && IO.readClose();
     if (!Close)
         return;
@@ -132,9 +142,14 @@ void tick()
         if (Capacity < 10)
         {
             State = 5;
+            SendOnce = true;
         }
         else
         {
+            if (State == 5)
+            {
+                SendOnce = true;
+            }
             State = 0;
         }
     }
@@ -142,11 +157,11 @@ void tick()
 
 void Io_Read()
 {
+    SendOnce = true;
     if (IO.readOpen())
     {
         IsOpen = true;
         ThisServo.open();
-        return;
     }
 }
 
@@ -201,6 +216,9 @@ void print_wakeup_reason()
         if (!busy)
             IoT.tick();
         break;
+    case ESP_SLEEP_WAKEUP_UNDEFINED:
+        longTask();
+        break;
     default:
         break;
     }
@@ -234,6 +252,7 @@ void setup()
 
     print_wakeup_reason();
     esp_sleep_enable_ext0_wakeup(GPIO_NUM_12, 0);
+    esp_sleep_enable_ext0_wakeup(GPIO_NUM_16, 0);
     esp_sleep_enable_timer_wakeup(TIME_TO_SLEEP * uS_TO_S_FACTOR * 2);
     esp_deep_sleep_start();
 }

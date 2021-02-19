@@ -28,7 +28,7 @@ public:
     void startSocket();
     void startMqtt();
     void send();
-    bool setGnssOpen(bool open);
+    void setGnssOpen(bool open);
     void readGnss();
     void init();
     bool isMqtt();
@@ -36,6 +36,7 @@ public:
     void sendSIM();
     void tick();
     void test();
+    void sleep();
     
 };
 

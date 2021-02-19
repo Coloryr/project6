@@ -50,6 +50,11 @@ void NBIoT::test()
         {
             mqtt = false;
         }
+        else
+        {
+            mqtt = true;
+        }
+
         return;
     }
 }
@@ -105,7 +110,6 @@ void NBIoT::init()
     if (getQuality() == 99)
         return;
     checkOnline();
-    setGnssOpen(true);
 }
 
 void NBIoT::check()
@@ -227,34 +231,33 @@ uint8_t NBIoT::getQuality()
     return 99;
 }
 
-bool NBIoT::setGnssOpen(bool open)
+void NBIoT::setGnssOpen(bool open)
 {
+#ifdef DEBUG
+    Serial.printf("NB-IoT:GNSS模式设置为:%d\n", open);
+#endif
+    if (!open)
+    {
+        Serial2.println("AT+QGNSSC=0");
+        return;
+    }
     Serial2.flush();
     Serial2.println("AT+QGNSSC?");
     delay(500);
     String data = Serial2.readString();
     data.trim();
-    bool state;
-    state = data.startsWith("+QGNSSC: 1");
-    if (open != state)
+    if (!data.startsWith("+QGNSSC: 1"))
     {
-        Serial2.flush();
-        if (open && !state)
-            Serial2.println("AT+QGNSSC=1");
-        else if (!open && state)
-            Serial2.println("AT+QGNSSC=0");
+        Serial2.println("AT+QGNSSC=1");
         data = Serial2.readString();
         data.trim();
+        if (data.endsWith("OK"))
+        {
+            Serial2.println("AT+QGNSSAGPS=1");
+            return;
+        }
     }
-    if (data.endsWith("OK"))
-    {
-#ifdef DEBUG
-        Serial.printf("NB-IoT:GNSS模式设置为:%d\n", open);
-#endif
-        Serial2.println("AT+QGNSSAGPS=1");
-        return true;
-    }
-    return false;
+    return;
 }
 
 void NBIoT::readGnss()
@@ -266,11 +269,21 @@ void NBIoT::readGnss()
     data.trim();
     if (!data.startsWith("+QGNSSRD: $GNRMC,"))
     {
+#ifdef DEBUG
+        Serial.println("无效的定位");
+#endif
+        delay(10000);
         readGnss();
+        return;
     }
     data.replace("+QGNSSRD: $GNRMC,", "");
     if (data[0] == ',')
     {
+#ifdef DEBUG
+        Serial.println("无效的定位");
+#endif
+        delay(10000);
+        readGnss();
         return;
     }
     Time_HMS = data.substring(0, 9);
@@ -280,18 +293,6 @@ void NBIoT::readGnss()
 #ifdef DEBUG
         Serial.println("无效的定位");
 #endif
-        data = data.substring(8);
-        if (data[0] == ',')
-        {
-#ifdef DEBUG
-            Serial.println("无效的时间");
-#endif
-            return;
-        }
-        else
-        {
-            Time_YMD = data.substring(0, 6);
-        }
         delay(10000);
         readGnss();
         return;
@@ -308,7 +309,6 @@ void NBIoT::readGnss()
         data = data.substring(20);
         Time_YMD = data.substring(0, 6);
     }
-    delay(200);
 #ifdef DEBUG
     Serial.printf("当前时间:%s, %s\n", Time_YMD.c_str(), Time_HMS.c_str());
     Serial.printf("当前坐标:%s, %s\n", X.c_str(), Y.c_str());
@@ -453,4 +453,16 @@ void NBIoT::sendSIM()
                        SelfUUID.c_str(), SIM);
         Serial2.println();
     }
+}
+
+void NBIoT::sleep()
+{
+    if (!ok)
+        return;
+#ifdef DEBUG
+    Serial.println("NB-IoT:进入低功耗");
+#endif
+    Serial2.println("AT+QSCLK=2");
+    Serial2.println("AT+QNBIOTEVENT=1,1");
+    Serial2.flush();
 }
