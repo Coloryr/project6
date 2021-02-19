@@ -25,15 +25,11 @@ bool IOInput::readOpen()
 {
     if (digitalRead(Open_IN) == LOW)
     {
-        delay(10);
-        if (digitalRead(Open_IN) == LOW)
+        while (digitalRead(Open_IN) == LOW)
         {
-            while (digitalRead(Open_IN) == LOW)
-            {
-                delay(10);
-            }
-            return true;
+            delay(10);
         }
+        return true;
     }
     return false;
 }

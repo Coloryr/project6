@@ -65,7 +65,21 @@ void longTask()
         busy = true;
         IoT.setGnssOpen(true);
         delay(200);
-        IoT.readGnss();
+        uint8_t time = 0;
+        for (;;)
+        {
+            if (IoT.readGnss())
+            {
+                break;
+            }
+            time++;
+            if (time >= 5)
+            {
+                IoT.setGnssOpen(true);
+                time = 0;
+            }
+            delay(10000);
+        }
         delay(200);
         IoT.setGnssOpen(false);
         delay(200);
@@ -157,9 +171,9 @@ void tick()
 
 void Io_Read()
 {
-    SendOnce = true;
     if (IO.readOpen())
     {
+        SendOnce = true;
         IsOpen = true;
         ThisServo.open();
     }
@@ -252,7 +266,6 @@ void setup()
 
     print_wakeup_reason();
     esp_sleep_enable_ext0_wakeup(GPIO_NUM_12, 0);
-    esp_sleep_enable_ext0_wakeup(GPIO_NUM_16, 0);
     esp_sleep_enable_timer_wakeup(TIME_TO_SLEEP * uS_TO_S_FACTOR * 2);
     esp_deep_sleep_start();
 }

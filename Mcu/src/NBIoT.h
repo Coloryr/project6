@@ -29,7 +29,7 @@ public:
     void startMqtt();
     void send();
     void setGnssOpen(bool open);
-    void readGnss();
+    bool readGnss();
     void init();
     bool isMqtt();
     bool isSocket();

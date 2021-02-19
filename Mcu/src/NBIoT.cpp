@@ -260,7 +260,7 @@ void NBIoT::setGnssOpen(bool open)
     return;
 }
 
-void NBIoT::readGnss()
+bool NBIoT::readGnss()
 {
     Serial2.flush();
     Serial2.println("AT+QGNSSRD=\"NMEA/RMC\"");
@@ -272,9 +272,7 @@ void NBIoT::readGnss()
 #ifdef DEBUG
         Serial.println("无效的定位");
 #endif
-        delay(10000);
-        readGnss();
-        return;
+        return false;
     }
     data.replace("+QGNSSRD: $GNRMC,", "");
     if (data[0] == ',')
@@ -282,9 +280,7 @@ void NBIoT::readGnss()
 #ifdef DEBUG
         Serial.println("无效的定位");
 #endif
-        delay(10000);
-        readGnss();
-        return;
+        return false;
     }
     Time_HMS = data.substring(0, 9);
     data = data.substring(10);
@@ -293,9 +289,7 @@ void NBIoT::readGnss()
 #ifdef DEBUG
         Serial.println("无效的定位");
 #endif
-        delay(10000);
-        readGnss();
-        return;
+        return false;
     }
     else
     {
@@ -313,6 +307,7 @@ void NBIoT::readGnss()
     Serial.printf("当前时间:%s, %s\n", Time_YMD.c_str(), Time_HMS.c_str());
     Serial.printf("当前坐标:%s, %s\n", X.c_str(), Y.c_str());
 #endif
+    return true;
 }
 
 bool NBIoT::isOK()
@@ -357,16 +352,17 @@ void NBIoT::startMqtt()
     Serial2.flush();
     Serial2.printf("AT+QMTOPEN=0,\"%d.%d.%d.%d\",%d", IP[0], IP[1], IP[2], IP[3], Port);
     Serial2.println();
-    delay(5000);
+    delay(10000);
     String data = Serial2.readString();
     data.trim();
-    if (!data.endsWith("+QMTOPEN: 0,0"))
+    if (!data.endsWith("+QMTOPEN: 0,0") && !data.endsWith("+QMTSTAT: 0,3"))
     {
-        mqtt = false;
-        return;
 #ifdef DEBUG
         Serial.println("MQTT服务器连接失败");
+        Serial.println(data.c_str());
 #endif
+        mqtt = false;
+        return;
     }
 #ifdef DEBUG
     Serial.println("MQTT服务器已连接");
@@ -379,13 +375,14 @@ void NBIoT::startMqtt()
     Serial2.flush();
     Serial2.printf("AT+QMTCONN=0,\"%s\",\"%s\",\"%s\"", SelfUUID.c_str(), User, Pass);
     Serial2.println();
-    delay(5000);
+    delay(10000);
     data = Serial2.readString();
     data.trim();
     if (!data.endsWith("+QMTCONN: 0,0,0"))
     {
 #ifdef DEBUG
         Serial.println("MQTT服务器认证失败");
+        Serial.println(data.c_str());
 #endif
         mqtt = false;
         return;
@@ -403,7 +400,6 @@ void NBIoT::startMqtt()
     // delay(5000);
     Serial2.printf("AT+QMTSUB=0,2,\"%s\",2", SelfTopic.c_str());
     Serial2.println();
-    delay(5000);
     Serial2.flush();
     mqtt = true;
     SendOnce = true;
