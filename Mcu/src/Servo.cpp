@@ -1,10 +1,10 @@
 #include "Servo.h"
 #include "main.h"
 
-uint8_t openset;
-uint8_t closeset;
+RTC_DATA_ATTR uint8_t openset;
+RTC_DATA_ATTR uint8_t closeset;
 
-Servo *ThisServo;
+Servo ThisServo;
 Servo::Servo()
 {
     ledcSetup(Channel, Freq, Resolution); // 设置通道

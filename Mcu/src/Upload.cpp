@@ -7,7 +7,7 @@
 #include "tools.h"
 #include "Servo.h"
 
-Upload *Up;
+Upload Up;
 
 const uint8_t TestPack[9] = {0x87, 0x32, 0xf5, 0xae, 0x1d, 0x91, 0x0f, 0x8e, 0x3f};
 const uint8_t ResPack[9] = {0x21, 0x00, 0x4f, 0x56, 0xae, 0xac, 0xe3, 0x76, 0x89};
@@ -106,19 +106,19 @@ void Upload::sendRead(uint8_t type)
         break;
     case 3:
         buildPack(3);
-        tow.u16 = IO->readADC();
+        tow.u16 = IO.readADC();
         writebuff[6] = tow.u8[1];
         writebuff[7] = tow.u8[0];
-        VL53L0A->update();
-        VL53L0B->update();
-        tow.u16 = VL53L0A->count[2];
+        VL53L0A.update();
+        VL53L0B.update();
+        tow.u16 = VL53L0A.count[2];
         writebuff[8] = tow.u8[0];
         writebuff[9] = tow.u8[1];
-        writebuff[10] = VL53L0A->status;
-        tow.u16 = VL53L0B->count[2];
+        writebuff[10] = VL53L0A.status;
+        tow.u16 = VL53L0B.count[2];
         writebuff[11] = tow.u8[0];
         writebuff[12] = tow.u8[1];
-        writebuff[13] = VL53L0B->status;
+        writebuff[13] = VL53L0B.status;
         send(14);
         break;
     case 4:
@@ -141,7 +141,7 @@ void Upload::sendWrite(uint8_t type)
         {
             UUID[a] = readbuff[a + 5];
         }
-        ThisEEPROM->saveUUID();
+        ThisEEPROM.saveUUID();
         break;
     case 1:
         Mytow tow;
@@ -156,7 +156,7 @@ void Upload::sendWrite(uint8_t type)
         ADC_HIGH = tow.u16;
         openset = readbuff[11];
         closeset = readbuff[12];
-        ThisEEPROM->saveSet();
+        ThisEEPROM.saveSet();
         break;
     case 2:
         IP[0] = readbuff[5];
@@ -166,7 +166,7 @@ void Upload::sendWrite(uint8_t type)
         tow.u8[0] = readbuff[9];
         tow.u8[1] = readbuff[10];
         Port = tow.u16;
-        ThisEEPROM->saveIP();
+        ThisEEPROM.saveIP();
         break;
     case 4:
         for (uint8_t a = 0; a < 16; a++)
@@ -174,7 +174,7 @@ void Upload::sendWrite(uint8_t type)
             User[a] = readbuff[5 + a];
             Pass[a] = readbuff[21 + a];
         }
-        ThisEEPROM->saveMqtt();
+        ThisEEPROM.saveMqtt();
         break;
     }
     reset();

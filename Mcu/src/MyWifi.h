@@ -1,8 +1,8 @@
-#ifndef MYWIFI_H
-#define MYWIFI_H
+// #ifndef MYWIFI_H
+// #define MYWIFI_H
 
-#include "Arduino.h"
+// #include "Arduino.h"
 
 
 
-#endif
+// #endif

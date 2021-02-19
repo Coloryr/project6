@@ -2,42 +2,45 @@
 #include "main.h"
 #include "IOInput.h"
 
-NBIoT *IoT;
+NBIoT IoT;
 
-uint8_t UUID[16];
-uint8_t User[16];
-uint8_t Pass[16];
+RTC_DATA_ATTR uint8_t UUID[16];
+RTC_DATA_ATTR uint8_t User[16];
+RTC_DATA_ATTR uint8_t Pass[16];
 
-uint8_t IP[4];
-uint16_t Port;
+RTC_DATA_ATTR uint8_t IP[4];
+RTC_DATA_ATTR uint16_t Port;
 
 const String TopicTrashServer = "trash/server";
 const String TopicTrashClient = "trash/client";
 
-String SelfTopic;
+RTC_DATA_ATTR String SelfTopic;
+RTC_DATA_ATTR String SelfUUID;
 
 uint8_t SIM[20];
 
-String X;
-String Y;
-String Time_YMD;
-String Time_HMS;
+RTC_DATA_ATTR String X;
+RTC_DATA_ATTR String Y;
+RTC_DATA_ATTR String Time_YMD;
+RTC_DATA_ATTR String Time_HMS;
+
+RTC_DATA_ATTR bool ok;
+RTC_DATA_ATTR bool card;
+RTC_DATA_ATTR bool socket;
+RTC_DATA_ATTR bool online;
+RTC_DATA_ATTR bool mqtt;
 
 NBIoT::NBIoT()
 {
-    Serial2.begin(115200);
-    Serial2.setTimeout(100);
-    Serial2.println("AT");
-    delay(200);
-    Serial2.println("ATE0");
-    delay(200);
-    init();
 }
 
 void NBIoT::test()
 {
     if (mqtt)
     {
+#ifdef DEBUG
+        Serial.println("连接测试");
+#endif
         Serial2.flush();
         Serial2.println("AT+QMTCONN?");
         delay(300);
@@ -289,6 +292,8 @@ void NBIoT::readGnss()
         {
             Time_YMD = data.substring(0, 6);
         }
+        delay(10000);
+        readGnss();
         return;
     }
     else
@@ -366,8 +371,13 @@ void NBIoT::startMqtt()
 #ifdef DEBUG
     Serial.println("MQTT服务器已连接");
 #endif
+    SelfUUID.clear();
+    for (uint8_t a = 0; a < 16; a++)
+    {
+        SelfUUID += (char)UUID[a];
+    }
     Serial2.flush();
-    Serial2.printf("AT+QMTCONN=0,\"%s\",\"%s\",\"%s\"", UUID, User, Pass);
+    Serial2.printf("AT+QMTCONN=0,\"%s\",\"%s\",\"%s\"", SelfUUID.c_str(), User, Pass);
     Serial2.println();
     delay(5000);
     data = Serial2.readString();
@@ -409,18 +419,18 @@ void NBIoT::send()
 #ifdef DEBUG
         Serial.printf("AT+QMTPUB=0,1,2,0,\"%s\",\"%s,%s,%s,%s,%s,%d,%d,%d,%d\"\n",
                       TopicTrashClient.c_str(),
-                      UUID,
+                      SelfUUID.c_str(),
                       X.c_str(), Y.c_str(),
                       Time_YMD.c_str(), Time_HMS.c_str(),
-                      Close, IO->readBattery(), State, Capacity);
+                      Close, IO.readBattery(), State, Capacity);
 #endif
         Serial2.flush();
         Serial2.printf("AT+QMTPUB=0,1,2,0,\"%s\",\"%s,%s,%s,%s,%s,%d,%d,%d,%d\"",
                        TopicTrashClient.c_str(),
-                       UUID,
+                       SelfUUID.c_str(),
                        X.c_str(), Y.c_str(),
                        Time_YMD.c_str(), Time_HMS.c_str(),
-                       Close, IO->readBattery(), State, Capacity);
+                       Close, IO.readBattery(), State, Capacity);
         Serial2.println();
     }
 }
@@ -435,12 +445,12 @@ void NBIoT::sendSIM()
 #ifdef DEBUG
         Serial.printf(" AT+QMTPUB=0,1,2,0,\"%s\",\"%s,%s\"\n",
                       TopicTrashClient.c_str(),
-                      UUID, SIM);
+                      SelfUUID.c_str(), SIM);
 #endif
         Serial2.flush();
         Serial2.printf(" AT+QMTPUB=0,1,2,0,\"%s\",\"%s,%s\"",
                        TopicTrashClient.c_str(),
-                       UUID, SIM);
+                       SelfUUID.c_str(), SIM);
         Serial2.println();
     }
 }

@@ -9,29 +9,25 @@
 #include "tools.h"
 #include "Servo.h"
 
-EEPROM *ThisEEPROM;
-MyIIC *EEPROMIIC = NULL;
+EEPROM ThisEEPROM;
+MyIIC EEPROMIIC(I2C_EEPROM_SDA, I2C_EEPROM_SCL, I2C_EEPROM_NUM);
 
 EEPROM::EEPROM()
 {
-    if (EEPROMIIC == NULL)
-    {
-        EEPROMIIC = new MyIIC(I2C_EEPROM_SDA, I2C_EEPROM_SCL, I2C_EEPROM_NUM);
-    }
 }
 
 void EEPROM::init()
 {
-    EEPROMIIC->writeBit(Test_Add, EEPROM_Add, test_data);
+    EEPROMIIC.writeBit(Test_Add, EEPROM_Add, test_data);
     delay(10);
-    uint8_t data = EEPROMIIC->readBit(Test_Add, EEPROM_Add);
+    uint8_t data = EEPROMIIC.readBit(Test_Add, EEPROM_Add);
     ok = data == test_data;
     if (ok)
     {
 #ifdef DEBUG
         Serial.println("EEPROM ok");
 #endif
-        data = EEPROMIIC->readBit(Bit_Add, EEPROM_Add);
+        data = EEPROMIIC.readBit(Bit_Add, EEPROM_Add);
         if (data == bit_data)
         {
 #ifdef DEBUG
@@ -58,7 +54,7 @@ void EEPROM::init()
                 Port = 0;
             }
             saveAll();
-            EEPROMIIC->writeBit(Bit_Add, EEPROM_Add, bit_data);
+            EEPROMIIC.writeBit(Bit_Add, EEPROM_Add, bit_data);
         }
 #ifdef DEBUG
         Serial.printf("IP:%d.%d.%d.%d, Port:%d\n", IP[0], IP[1], IP[2], IP[3], Port);
@@ -104,13 +100,13 @@ void EEPROM::readAll()
 }
 void EEPROM::readUUID()
 {
-    EEPROMIIC->read(UUID_Add, EEPROM_Add, UUID, 8);
-    EEPROMIIC->read(UUID_Add + 8, EEPROM_Add, UUID + 8, 8);
+    EEPROMIIC.read(UUID_Add, EEPROM_Add, UUID, 8);
+    EEPROMIIC.read(UUID_Add + 8, EEPROM_Add, UUID + 8, 8);
 }
 void EEPROM::readIP()
 {
     uint8_t *buff = new uint8_t[6];
-    EEPROMIIC->read(IP_Add, EEPROM_Add, buff, 6);
+    EEPROMIIC.read(IP_Add, EEPROM_Add, buff, 6);
     IP[0] = buff[0];
     IP[1] = buff[1];
     IP[2] = buff[2];
@@ -124,7 +120,7 @@ void EEPROM::readIP()
 void EEPROM::readSet()
 {
     uint8_t *buff = new uint8_t[8];
-    EEPROMIIC->read(SET_Add, EEPROM_Add, buff, 8);
+    EEPROMIIC.read(SET_Add, EEPROM_Add, buff, 8);
     Mytow tow;
     tow.u8[0] = buff[0];
     tow.u8[1] = buff[1];
@@ -142,10 +138,10 @@ void EEPROM::readSet()
 
 void EEPROM::readMqtt()
 {
-    EEPROMIIC->read(User_Add, EEPROM_Add, User, 8);
-    EEPROMIIC->read(User_Add + 8, EEPROM_Add, User + 8, 8);
-    EEPROMIIC->read(Pass_Add, EEPROM_Add, Pass, 8);
-    EEPROMIIC->read(Pass_Add + 8, EEPROM_Add, Pass + 8, 8);
+    EEPROMIIC.read(User_Add, EEPROM_Add, User, 8);
+    EEPROMIIC.read(User_Add + 8, EEPROM_Add, User + 8, 8);
+    EEPROMIIC.read(Pass_Add, EEPROM_Add, Pass, 8);
+    EEPROMIIC.read(Pass_Add + 8, EEPROM_Add, Pass + 8, 8);
 }
 
 void EEPROM::saveAll()
@@ -161,9 +157,9 @@ void EEPROM::saveAll()
 }
 void EEPROM::saveUUID()
 {
-    EEPROMIIC->write(UUID_Add, EEPROM_Add, UUID, 8);
+    EEPROMIIC.write(UUID_Add, EEPROM_Add, UUID, 8);
     delay(10);
-    EEPROMIIC->write(UUID_Add + 8, EEPROM_Add, UUID + 8, 8);
+    EEPROMIIC.write(UUID_Add + 8, EEPROM_Add, UUID + 8, 8);
 }
 void EEPROM::saveIP()
 {
@@ -176,7 +172,7 @@ void EEPROM::saveIP()
     tow.u16 = Port;
     buff[4] = tow.u8[0];
     buff[5] = tow.u8[1];
-    EEPROMIIC->write(IP_Add, EEPROM_Add, buff, 6);
+    EEPROMIIC.write(IP_Add, EEPROM_Add, buff, 6);
     delete (buff);
 }
 void EEPROM::saveSet()
@@ -194,18 +190,18 @@ void EEPROM::saveSet()
     buff[5] = tow.u8[1];
     buff[6] = openset;
     buff[7] = closeset;
-    EEPROMIIC->write(SET_Add, EEPROM_Add, buff, 8);
+    EEPROMIIC.write(SET_Add, EEPROM_Add, buff, 8);
     delete (buff);
 }
 void EEPROM::saveMqtt()
 {
-    EEPROMIIC->write(User_Add, EEPROM_Add, User, 8);
+    EEPROMIIC.write(User_Add, EEPROM_Add, User, 8);
     delay(10);
-    EEPROMIIC->write(User_Add + 8, EEPROM_Add, User + 8, 8);
+    EEPROMIIC.write(User_Add + 8, EEPROM_Add, User + 8, 8);
     delay(10);
-    EEPROMIIC->write(Pass_Add, EEPROM_Add, Pass, 8);
+    EEPROMIIC.write(Pass_Add, EEPROM_Add, Pass, 8);
     delay(10);
-    EEPROMIIC->write(Pass_Add + 8, EEPROM_Add, Pass + 8, 8);
+    EEPROMIIC.write(Pass_Add + 8, EEPROM_Add, Pass + 8, 8);
 }
 
 bool EEPROM::isOK()

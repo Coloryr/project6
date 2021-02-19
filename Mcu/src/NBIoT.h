@@ -15,11 +15,6 @@ extern uint8_t SIM[20];
 class NBIoT
 {
 private:
-    bool ok;
-    bool card;
-    bool socket;
-    bool online;
-    bool mqtt;
     void check();
     void getCard();
     void checkOnline();

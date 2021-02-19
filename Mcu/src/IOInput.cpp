@@ -2,11 +2,11 @@
 #include "IOInput.h"
 #include "main.h"
 
-IOInput *IO;
+IOInput IO;
 
-uint16_t ADC_Low;
-uint16_t ADC_HIGH;
-bool last;
+RTC_DATA_ATTR uint16_t ADC_Low;
+RTC_DATA_ATTR uint16_t ADC_HIGH;
+RTC_DATA_ATTR bool last;
 
 IOInput::IOInput()
 {
@@ -28,6 +28,10 @@ bool IOInput::readOpen()
         delay(10);
         if (digitalRead(Open_IN) == LOW)
         {
+            while (digitalRead(Open_IN) == LOW)
+            {
+                delay(10);
+            }
             return true;
         }
     }
