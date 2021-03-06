@@ -3,7 +3,8 @@
 
 #include "Arduino.h"
 
-#define DEBUG true
+// #define DEBUG true
+// #define SLEEP true
 
 extern uint8_t Capacity;
 extern bool Close;

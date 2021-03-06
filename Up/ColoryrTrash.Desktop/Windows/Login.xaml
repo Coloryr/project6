@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ColoryrTrash.Desktop.Windows"
         mc:Ignorable="d"
-        Title="控制台登录" Height="140" Width="248" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Loaded="Window_Loaded" Icon="/icon.png"
+        Title="控制台登录" Height="150" Width="254" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Loaded="Window_Loaded" Icon="/icon.png"
         Topmost="True" Closing="Window_Closing">
     <Grid>
         <Rectangle Fill="#FFF4F4F5" Stroke="#FF5ABED6" StrokeThickness="2"/>
@@ -20,5 +20,6 @@
         <PasswordBox VerticalAlignment="Top" Margin="49,64,0,0" HorizontalAlignment="Left" Width="181" x:Name="Pass"/>
         <Label Content="端口" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="141,10,0,0"/>
         <TextBox Text="{Binding Port}" TextWrapping="NoWrap" VerticalAlignment="Top" Margin="175,14,0,0" HorizontalAlignment="Left" Width="55" x:Name="Port"/>
+        <Button Content="硬件" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="115,86,0,0" Width="55" IsDefault="True" Click="Button_Click_1"/>
     </Grid>
 </Window>

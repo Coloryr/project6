@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ColoryrTrash.Desktop.Windows"
         mc:Ignorable="d"
-        Title="硬件编辑" Height="397" Width="439" ResizeMode="NoResize" Closing="Window_Closing">
+        Title="硬件编辑" Height="408" Width="450" ResizeMode="NoResize" Closing="Window_Closing">
     <Grid>
         <Rectangle Fill="#FFF4F4F5" Stroke="#FF5ABED6" StrokeThickness="2"/>
         <GroupBox Header="串口信息" Margin="4,4,0,0" HorizontalAlignment="Left" Width="231" Height="100" VerticalAlignment="Top">

@@ -9,6 +9,7 @@ Servo::Servo()
 {
     ledcSetup(Channel, Freq, Resolution); // 设置通道
     ledcAttachPin(ServoIO, Channel);      // 将通道与对应的引脚连接
+    pinMode(ServoPower, OUTPUT);
     close();
 }
 
@@ -17,6 +18,9 @@ void Servo::open()
 #ifdef DEBUG
     Serial.println("Open Trash");
 #endif
+    digitalWrite(ServoPower, LOW);
+    delay(20);
+    digitalWrite(ServoPower, HIGH);
     setServo(openset);
 }
 
@@ -25,6 +29,9 @@ void Servo::close()
 #ifdef DEBUG
     Serial.println("Close Trash");
 #endif
+    digitalWrite(ServoPower, LOW);
+    delay(20);
+    digitalWrite(ServoPower, HIGH);
     setServo(closeset);
 }
 

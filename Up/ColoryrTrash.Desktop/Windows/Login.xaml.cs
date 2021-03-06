@@ -101,5 +101,11 @@ namespace ColoryrTrash.Desktop.Windows
                 e.Cancel = true;
             }
         }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            App.MakeHardway_ = new MakeHardway();
+            App.MakeHardway_.Show();
+        }
     }
 }

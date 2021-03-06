@@ -1,5 +1,4 @@
 #include "Arduino.h"
-#include "MyBLE.h"
 #include "Servo.h"
 #include "main.h"
 #include "NBIoT.h"
@@ -8,6 +7,7 @@
 #include "EEPROM.h"
 #include "IOInput.h"
 #include "Upload.h"
+#include "driver/uart.h"
 
 RTC_DATA_ATTR bool Close;
 RTC_DATA_ATTR bool busy;
@@ -226,9 +226,9 @@ void print_wakeup_reason()
     case ESP_SLEEP_WAKEUP_TIMER:
         tick();
         longTask();
-        Up.tick();
         if (!busy)
             IoT.tick();
+        break;
         break;
     case ESP_SLEEP_WAKEUP_UNDEFINED:
         longTask();
@@ -264,12 +264,47 @@ void setup()
         Init = true;
     }
 
-    print_wakeup_reason();
+#ifdef SLEEP
     esp_sleep_enable_ext0_wakeup(GPIO_NUM_12, 0);
-    esp_sleep_enable_timer_wakeup(TIME_TO_SLEEP * uS_TO_S_FACTOR * 2);
-    esp_deep_sleep_start();
+    esp_sleep_enable_timer_wakeup(TIME_TO_SLEEP * uS_TO_S_FACTOR);
+#endif
 }
 
+#ifndef SLEEP
+uint8_t count = 0;
+#endif
 void loop()
 {
+#ifdef SLEEP
+    Serial.println("sleep");
+    delay(100);
+    esp_light_sleep_start();
+    Serial.println("wake");
+    print_wakeup_reason();
+#endif
+#ifndef SLEEP
+    if (VL53L0A.isOK())
+    {
+        VL53L0A.update();
+    }
+    if (VL53L0B.isOK())
+    {
+        VL53L0B.update();
+    }
+    if (IO.readOpen())
+    {
+        ThisServo.open();
+        count = 10;
+    }
+    else if (count == 0)
+    {
+        ThisServo.close();
+    }
+    if (count > 0)
+    {
+        count--;
+    }
+    Up.tick();
+    delay(200);
+#endif
 }
