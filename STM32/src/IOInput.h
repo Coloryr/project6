@@ -1,13 +1,7 @@
 #ifndef IOINPUT_h
 #define IOINPUT_h
 
-#include "main.h"
-
-#define ADC_IN 34
-#define Battery_IN 35
-
-#define Open_IN 12
-#define Close_IN 14
+#include "stm32f1xx_hal.h"
 
 extern uint16_t ADC_Low;
 extern uint16_t ADC_HIGH;
