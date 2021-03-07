@@ -23,8 +23,8 @@ extern TIM_HandleTypeDef htim1;
 extern UART_HandleTypeDef huart1;
 extern UART_HandleTypeDef huart2;
 
-extern class Servo *ThisServo;
-extern class NBIoT *IoT;
+extern class Servo ThisServo;
+extern class NBIoT IoT;
 extern class VL53L0 *VL53L0A;
 extern class VL53L0 *VL53L0B;
 extern class EEPROM ThisEEPROM;
@@ -33,7 +33,18 @@ extern class Upload Up;
 
 uint8_t SumDistance();
 
+void Error_Handler(void);
+
 void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
+void SystemClock_Config(void);
+void MX_GPIO_Init(void);
+void MX_ADC1_Init(void);
+void MX_ADC2_Init(void);
+void MX_I2C1_Init(void);
+void MX_I2C2_Init(void);
+void MX_TIM1_Init(void);
+void MX_USART1_UART_Init(void);
+void MX_USART2_UART_Init(void);
 
 typedef union
 {

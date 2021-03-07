@@ -4,8 +4,8 @@
 #include "stm32f1xx_hal.h"
 
 //PB
-#define ADC_IN GPIO_PIN_1
-#define Battery_IN GPIO_PIN_0
+#define ADC_IN GPIO_PIN_1 //ADC2
+#define Battery_IN GPIO_PIN_0 //ADC1
 //PB
 #define Open_IN GPIO_PIN_12
 #define Close_IN GPIO_PIN_13

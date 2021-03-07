@@ -27,7 +27,6 @@ private:
     void readMqtt();
     
 public:
-    EEPROM();
     void init();
     void saveAll();
     void saveUUID();

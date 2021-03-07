@@ -8,11 +8,11 @@
 
 Upload Up;
 
-const uint8_t TestPack[9] = {0x87, 0x32, 0xf5, 0xae, 0x1d, 0x91, 0x0f, 0x8e, 0x3f};
-const uint8_t ResPack[9] = {0x21, 0x00, 0x4f, 0x56, 0xae, 0xac, 0xe3, 0x76, 0x89};
-const uint8_t ReadPack[5] = {0x52, 0x45, 0x41, 0x44, 0x3A};
-const uint8_t SetPack[4] = {0x53, 0x45, 0x54, 0x3A};
-const uint8_t OKPack[] = {0x4F, 0x4B};
+uint8_t TestPack[9] = {0x87, 0x32, 0xf5, 0xae, 0x1d, 0x91, 0x0f, 0x8e, 0x3f};
+uint8_t ResPack[9] = {0x21, 0x00, 0x4f, 0x56, 0xae, 0xac, 0xe3, 0x76, 0x89};
+uint8_t ReadPack[5] = {0x52, 0x45, 0x41, 0x44, 0x3A};
+uint8_t SetPack[4] = {0x53, 0x45, 0x54, 0x3A};
+uint8_t OKPack[] = {0x4F, 0x4B};
 
 Upload::Upload()
 {
@@ -24,9 +24,9 @@ Upload::Upload()
 
 void Upload::tick()
 {
-    if (Serial.available() > 0)
+    if (__HAL_USART_GET_FLAG(&huart1, UART_FLAG_RXNE) != RESET)
     {
-        Serial.readBytes(readbuff, Serial.available());
+        HAL_UART_Receive(&huart1, readbuff, 64, 100);
         check();
     }
 }
@@ -108,16 +108,16 @@ void Upload::sendRead(uint8_t type)
         tow.u16 = IO.readADC();
         writebuff[6] = tow.u8[1];
         writebuff[7] = tow.u8[0];
-        VL53L0A.update();
-        VL53L0B.update();
-        tow.u16 = VL53L0A.count[2];
+        VL53L0A->update();
+        VL53L0B->update();
+        tow.u16 = VL53L0A->count[2];
         writebuff[8] = tow.u8[0];
         writebuff[9] = tow.u8[1];
-        writebuff[10] = VL53L0A.status;
-        tow.u16 = VL53L0B.count[2];
+        writebuff[10] = VL53L0A->status;
+        tow.u16 = VL53L0B->count[2];
         writebuff[11] = tow.u8[0];
         writebuff[12] = tow.u8[1];
-        writebuff[13] = VL53L0B.status;
+        writebuff[13] = VL53L0B->status;
         send(14);
         break;
     case 4:
@@ -189,17 +189,17 @@ void Upload::buildPack(uint8_t type)
 
 void Upload::sendOpen()
 {
-    Serial.write(ResPack, 9);
+    HAL_UART_Transmit(&huart1, ResPack, 9, 200);
 }
 
 void Upload::sendOK()
 {
-    Serial.write(OKPack, 2);
+    HAL_UART_Transmit(&huart1, OKPack, 2, 200);
 }
 
 void Upload::send(uint8_t size)
 {
-    Serial.write(writebuff, size);
+    HAL_UART_Transmit(&huart1, writebuff, size, 200);
     reset();
 }
 

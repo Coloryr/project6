@@ -31,16 +31,15 @@ void Servo::close()
 
 void Servo::setServo(uint8_t data)
 {
-    const float deadZone = 6.4; //对应0.5ms（0.5ms/(20ms/256）)
-    const float max = 32;       //对应2.5ms
     if (data < 0)
         data = 0;
     if (data > 180)
         data = 180;
-    uint32_t temp = (((max - deadZone) / 180) * data + deadZone);
-
-    ledcWrite(Channel, temp); // 输出PWM
-
+    float temp;
+    temp = (1.0 / 9.0) * data + 5.0; //占空比值 = 1/9 * 角度 + 5
+    HAL_TIM_Base_Start(&htim1);
+    HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
+    __HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_1, temp);
 #ifdef DEBUG
     Serial.printf("PWM:%d, data:%d\n", temp, data);
 #endif
