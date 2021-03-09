@@ -1,4 +1,4 @@
-package com.coloryrtrash.app.ui.home;
+package com.coloryrtrash.app.ui;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
@@ -7,22 +7,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.fragment.app.FragmentManager;
 import com.coloryrtrash.app.R;
 
 public class HomeFragment extends Fragment {
-
-    private HomeViewModel homeViewModel;
     @SuppressLint("StaticFieldLeak")
     private static TextView user;
     @SuppressLint("StaticFieldLeak")
     private static TextView group;
 
+    @SuppressLint("StaticFieldLeak")
+    private static View root;
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        homeViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_home, container, false);
+        if (root == null)
+            root = inflater.inflate(R.layout.fragment_home, container, false);
         user = root.findViewById(R.id.textView6);
         user.setText(R.string.user_no_login);
         group = root.findViewById(R.id.textGroup);

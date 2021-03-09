@@ -5,19 +5,118 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.user.UserFragment">
+        tools:context=".ui.UserFragment">
 
-    <TextView
-            android:id="@+id/text_slideshow"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:textAlignment="center"
-            android:textSize="20sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+    <LinearLayout android:layout_width="0dp"
+                  android:layout_height="wrap_content"
+                  android:orientation="vertical"
+                  android:gravity="center"
+                  tools:ignore="MissingConstraints" android:id="@+id/linearLayout"
+                  app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toStartOf="parent"
+                  app:layout_constraintEnd_toEndOf="parent">
+        <ImageView
+                android:src="@mipmap/icon"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:id="@+id/imageView2"
+                android:contentDescription="@string/todo"
+                android:layout_marginTop="68dp"/>
+
+        <LinearLayout android:layout_width="match_parent"
+                      android:layout_height="match_parent"
+                      android:orientation="horizontal"
+                      android:paddingStart="30dp"
+                      android:paddingEnd="30dp">
+            <TextView android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:text="@string/ip"
+                      android:textSize="18sp" android:id="@+id/ip_"/>
+            <EditText
+                    android:layout_width="88dp"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPersonName"
+                    android:text="@string/default_ip"
+                    android:ems="10"
+                    android:id="@+id/textIP"
+                    android:layout_weight="1"
+                    android:importantForAutofill="no"
+                    tools:ignore="LabelFor"/>
+            <TextView android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:text="@string/port"
+                      android:layout_marginStart="30dp"
+                      android:textSize="18sp" android:id="@+id/port_"/>
+            <EditText
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    android:ems="10"
+                    android:id="@+id/textPort"
+                    android:text="@string/default_port"
+                    android:layout_weight="1"
+                    android:importantForAutofill="no"
+                    tools:ignore="LabelFor"/>
+        </LinearLayout>
+        <LinearLayout android:layout_width="match_parent"
+                      android:layout_height="match_parent"
+                      android:orientation="horizontal"
+                      android:paddingStart="30dp"
+                      android:paddingEnd="30dp">
+            <TextView android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:text="@string/user"
+                      android:textSize="18sp" android:id="@+id/user_"/>
+            <EditText
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPersonName"
+                    android:text="@string/default_user"
+                    android:ems="10"
+                    android:id="@+id/textUser"
+                    android:layout_weight="1"
+                    android:importantForAutofill="no"
+                    tools:ignore="LabelFor"/>
+        </LinearLayout>
+        <LinearLayout android:layout_width="match_parent"
+                      android:layout_height="match_parent"
+                      android:orientation="horizontal"
+                      android:paddingStart="30dp"
+                      android:paddingEnd="30dp">
+            <TextView android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:text="@string/password"
+                      android:textSize="18sp" android:id="@+id/pass_"/>
+            <EditText
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPassword"
+                    android:ems="10"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:id="@+id/textPass"
+                    android:layout_weight="1"
+                    android:autofillHints="no"
+                    tools:ignore="LabelFor"/>
+        </LinearLayout>
+        <LinearLayout android:layout_width="match_parent"
+                      android:layout_height="match_parent"
+                      android:orientation="horizontal"
+                      android:paddingStart="30dp"
+                      android:paddingEnd="30dp">
+            <Switch
+                    android:text="@string/auto_login"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/auto_switch"
+                    android:layout_weight="1"
+                    tools:ignore="UseSwitchCompatOrMaterialXml"
+                    android:textSize="18sp"/>
+        </LinearLayout>
+        <Button
+                android:text="@string/login_button"
+                android:layout_width="191dp"
+                android:layout_height="53dp"
+                android:id="@+id/login_button"/>
+    </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

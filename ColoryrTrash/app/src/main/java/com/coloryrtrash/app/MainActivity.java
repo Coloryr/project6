@@ -1,25 +1,23 @@
 package com.coloryrtrash.app;
 
-import android.app.FragmentManager;
+import android.annotation.SuppressLint;
 import android.os.Bundle;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import com.baidu.mapapi.CoordType;
-import com.baidu.mapapi.SDKInitializer;
-import com.baidu.mapapi.map.BaiduMap;
-import com.baidu.mapapi.map.BaiduMapOptions;
-import com.baidu.mapapi.map.MapFragment;
-import com.baidu.mapapi.map.MapView;
-import com.google.android.material.navigation.NavigationView;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.appcompat.app.AppCompatActivity;
+import com.baidu.mapapi.CoordType;
+import com.baidu.mapapi.SDKInitializer;
+import com.google.android.material.navigation.NavigationView;
 
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
+    @SuppressLint("StaticFieldLeak")
+    private static NavController navController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,26 +35,27 @@ public class MainActivity extends AppCompatActivity {
                 R.id.nav_home, R.id.nav_list, R.id.nav_user, R.id.nav_map)
                 .setOpenableLayout(drawer)
                 .build();
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
-        new Thread(()->
-        {
+        new Thread(() -> {
             try {
-
-            }
-            catch (Exception e)
-            {
+                Thread.sleep(1000);
+                move();
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }).start();
+    }
 
+    public static void move()
+    {
+        navController.setGraph(R.id.nav_user);
     }
 
     @Override
     public boolean onSupportNavigateUp() {
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
     }

@@ -1,13 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:paddingStart="10dp"
+              android:paddingTop="5dp"
+              android:paddingEnd="5dp"
+              tools:ignore="RtlSymmetry">
     <ImageView
             android:layout_width="64dp"
             android:layout_height="64dp"
             android:baselineAlignBottom="true"
-            android:contentDescription="@string/image_item" app:srcCompat="@mipmap/icon"/>
+            android:contentDescription="@string/image_item"
+            app:srcCompat="@mipmap/icon"/>
     <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -32,7 +37,8 @@
                     android:textSize="14sp"
                     tools:text="@string/item_time"
                     android:paddingStart="5dp"
-                    tools:ignore="RtlSymmetry"/>
+                    tools:ignore="RtlSymmetry"
+                    android:id="@+id/time_"/>
 
             <TextView
                     android:id="@+id/time"
@@ -55,7 +61,8 @@
                     android:textSize="14sp"
                     tools:text="@string/item_uuid"
                     android:paddingStart="5dp"
-                    tools:ignore="RtlSymmetry"/>
+                    tools:ignore="RtlSymmetry"
+                    android:id="@+id/uuid_"/>
 
             <TextView
                     android:id="@+id/uuid"
@@ -77,7 +84,8 @@
                     android:textSize="14sp"
                     tools:text="@string/item_nick"
                     android:paddingStart="5dp"
-                    tools:ignore="RtlSymmetry"/>
+                    tools:ignore="RtlSymmetry"
+                    android:id="@+id/nick_"/>
 
             <TextView
                     android:id="@+id/nick"
@@ -93,7 +101,8 @@
                     android:textSize="14sp"
                     tools:text="@string/item_capacity"
                     android:paddingStart="5dp"
-                    tools:ignore="RtlSymmetry"/>
+                    tools:ignore="RtlSymmetry"
+                    android:id="@+id/capacity_"/>
 
             <TextView
                     android:id="@+id/capacity"
@@ -103,15 +112,12 @@
                     tools:text="30"
                     android:paddingStart="5dp"
                     tools:ignore="RtlSymmetry"/>
-
         </LinearLayout>
-    </LinearLayout>
-    <Button
-            android:text="Button"
-            android:layout_width="100dp"
-            android:layout_height="20dp"
-            android:id="@+id/button"
-            android:layout_row="0"
-            android:layout_column="2"/>
 
-</GridLayout>
+    </LinearLayout>
+    <Button android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="-30dp"
+            android:text="@string/local"
+            android:id="@+id/local"/>
+</LinearLayout>

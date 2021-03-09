@@ -5,10 +5,10 @@ public class TrashSaveObj {
     public String Nick;
     public double X;
     public double Y;
-    public int Capacity ;
+    public int Capacity;
     public String Time;
     public boolean Open;
     public ItemState State;
-    public String SIM ;
+    public String SIM;
     public int Battery;
 }

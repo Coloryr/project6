@@ -15,4 +15,18 @@
 
     <string name="image_user">user image</string>
     <string name="image_item">item image</string>
+
+    <string name="todo">TODO</string>
+    <string name="ip">IP：</string>
+    <string name="default_ip">127.0.0.1</string>
+    <string name="port">Port：</string>
+    <string name="default_port">12345</string>
+    <string name="user">用户：</string>
+    <string name="default_user">User</string>
+    <string name="password">密码：</string>
+    <string name="auto_login">保存令牌</string>
+
+    <string name="login_button">登录</string>
+    <string name="login_out_button">登出</string>
+    <string name="local">定位</string>
 </resources>

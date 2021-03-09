@@ -7,25 +7,25 @@
 
     <fragment
             android:id="@+id/nav_home"
-            android:name="com.coloryrtrash.app.ui.home.HomeFragment"
+            android:name="com.coloryrtrash.app.ui.HomeFragment"
             android:label="@string/menu_home"
             tools:layout="@layout/fragment_home"/>
 
     <fragment
             android:id="@+id/nav_list"
-            android:name="com.coloryrtrash.app.ui.list.ListFragment"
+            android:name="com.coloryrtrash.app.ui.ListFragment"
             android:label="@string/menu_list"
             tools:layout="@layout/fragment_list"/>
 
     <fragment
             android:id="@+id/nav_user"
-            android:name="com.coloryrtrash.app.ui.user.UserFragment"
+            android:name="com.coloryrtrash.app.ui.UserFragment"
             android:label="@string/menu_user"
             tools:layout="@layout/fragment_user"/>
 
     <fragment
             android:id="@+id/nav_map"
-            android:name="com.coloryrtrash.app.ui.map.MapFragment"
+            android:name="com.coloryrtrash.app.ui.MapFragment"
             android:label="@string/menu_map"
             tools:context="@layout/fragment_map"/>
 </navigation>

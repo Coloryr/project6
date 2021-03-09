@@ -5,12 +5,9 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.list.ListFragment">
-    <ListView
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginTop="1dp" android:layout_marginBottom="1dp" app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginStart="1dp" android:layout_marginEnd="1dp" android:id="@+id/list"/>
+        tools:context=".ui.ListFragment">
+    <com.coloryrtrash.app.PullRefresh
+            android:layout_width="match_parent"
+            android:id="@+id/list"
+            android:layout_height="match_parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
