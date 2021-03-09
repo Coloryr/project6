@@ -10,6 +10,10 @@ RTC_DATA_ATTR bool last;
 
 IOInput::IOInput()
 {
+}
+
+void IOInput::init()
+{
     pinMode(ADC_IN, ANALOG);
     pinMode(Open_IN, INPUT_PULLUP);
     pinMode(Close_IN, INPUT_PULLUP);

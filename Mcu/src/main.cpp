@@ -111,9 +111,15 @@ void tick()
         IsOpen = false;
     }
 
+    IO.init();
     Close = IO.isClose() && IO.readClose();
+#ifdef DEBUG
+    Serial.printf("关闭状态:%s\n", Close ? "true" : "false");
+#endif
     if (!Close)
         return;
+    VL53L0A.check();
+    VL53L0B.check();
     if (VL53L0A.isOK())
     {
         VL53L0A.update();
@@ -178,42 +184,42 @@ void Io_Read()
 void print_wakeup_reason()
 {
     esp_sleep_source_t wakeup_reason = esp_sleep_get_wakeup_cause();
-// #ifdef DEBUG
-//     Serial.println("低功耗唤醒");
-//     switch (wakeup_reason)
-//     {
-//     case ESP_SLEEP_WAKEUP_UNDEFINED:
-//         Serial.println("In case of deep sleep, reset was not caused by exit from deep sleep");
-//         break;
-//     case ESP_SLEEP_WAKEUP_ALL:
-//         Serial.println("Not a wakeup cause, used to disable all wakeup sources with esp_sleep_disable_wakeup_source");
-//         break;
-//     case ESP_SLEEP_WAKEUP_EXT0:
-//         Serial.println("Wakeup caused by external signal using RTC_IO");
-//         break;
-//     case ESP_SLEEP_WAKEUP_EXT1:
-//         Serial.println("Wakeup caused by external signal using RTC_CNTL");
-//         break;
-//     case ESP_SLEEP_WAKEUP_TIMER:
-//         Serial.println("Wakeup caused by timer");
-//         break;
-//     case ESP_SLEEP_WAKEUP_TOUCHPAD:
-//         Serial.println("Wakeup caused by touchpad");
-//         break;
-//     case ESP_SLEEP_WAKEUP_ULP:
-//         Serial.println("Wakeup caused by ULP program");
-//         break;
-//     case ESP_SLEEP_WAKEUP_GPIO:
-//         Serial.println("Wakeup caused by GPIO (light sleep only)");
-//         break;
-//     case ESP_SLEEP_WAKEUP_UART:
-//         Serial.println("Wakeup caused by UART (light sleep only)");
-//         break;
-//     default:
-//         Serial.println("Wakeup was not caused by deep sleep");
-//         break;
-//     }
-// #endif
+    // #ifdef DEBUG
+    //     Serial.println("低功耗唤醒");
+    //     switch (wakeup_reason)
+    //     {
+    //     case ESP_SLEEP_WAKEUP_UNDEFINED:
+    //         Serial.println("In case of deep sleep, reset was not caused by exit from deep sleep");
+    //         break;
+    //     case ESP_SLEEP_WAKEUP_ALL:
+    //         Serial.println("Not a wakeup cause, used to disable all wakeup sources with esp_sleep_disable_wakeup_source");
+    //         break;
+    //     case ESP_SLEEP_WAKEUP_EXT0:
+    //         Serial.println("Wakeup caused by external signal using RTC_IO");
+    //         break;
+    //     case ESP_SLEEP_WAKEUP_EXT1:
+    //         Serial.println("Wakeup caused by external signal using RTC_CNTL");
+    //         break;
+    //     case ESP_SLEEP_WAKEUP_TIMER:
+    //         Serial.println("Wakeup caused by timer");
+    //         break;
+    //     case ESP_SLEEP_WAKEUP_TOUCHPAD:
+    //         Serial.println("Wakeup caused by touchpad");
+    //         break;
+    //     case ESP_SLEEP_WAKEUP_ULP:
+    //         Serial.println("Wakeup caused by ULP program");
+    //         break;
+    //     case ESP_SLEEP_WAKEUP_GPIO:
+    //         Serial.println("Wakeup caused by GPIO (light sleep only)");
+    //         break;
+    //     case ESP_SLEEP_WAKEUP_UART:
+    //         Serial.println("Wakeup caused by UART (light sleep only)");
+    //         break;
+    //     default:
+    //         Serial.println("Wakeup was not caused by deep sleep");
+    //         break;
+    //     }
+    // #endif
     switch (wakeup_reason)
     {
     case ESP_SLEEP_WAKEUP_EXT0:
@@ -239,10 +245,12 @@ void setup()
     Serial.setTimeout(100);
     Serial2.begin(115200);
     Serial2.setTimeout(100);
+    Serial.println("start");
     if (!Init)
     {
         State = 1;
         delay(200);
+        IO.init();
         ThisEEPROM.init();
         ThisServo.close();
         VL53L0A.check();
@@ -253,6 +261,7 @@ void setup()
         delay(200);
         State = 2;
         Init = true;
+        Serial.println("init");
     }
 
 #ifdef SLEEP
@@ -285,6 +294,7 @@ void loop()
     else if (count == 0)
     {
         ThisServo.close();
+        count = -1;
     }
     if (count > 0)
     {

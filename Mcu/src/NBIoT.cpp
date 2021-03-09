@@ -100,7 +100,6 @@ void NBIoT::init()
     socket = false;
     online = false;
     mqtt = false;
-    Serial2.flush();
     check();
     if (!ok)
         return;

@@ -101,7 +101,7 @@ void VL53L0::update()
     status = ((buff[0] & 0x78) >> 3);
     close();
 #ifdef DEBUG
-    
+    Serial.printf("VL53L0:%c ambient count = %4d signal count = %4d distance = %4d status = %d \n", index, count[0], count[1], count[2], status);
 #endif
 }
 

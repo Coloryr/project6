@@ -22,6 +22,7 @@ public:
     bool readClose();
     bool isClose();
     uint16_t readBattery();
+    void init();
 
 };
 
