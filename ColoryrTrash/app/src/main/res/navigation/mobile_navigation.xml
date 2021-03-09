@@ -12,14 +12,19 @@
             tools:layout="@layout/fragment_home"/>
 
     <fragment
-            android:id="@+id/nav_gallery"
-            android:name="com.coloryrtrash.app.ui.gallery.GalleryFragment"
-            android:label="@string/menu_gallery"
-            tools:layout="@layout/fragment_gallery"/>
+            android:id="@+id/nav_list"
+            android:name="com.coloryrtrash.app.ui.list.ListFragment"
+            android:label="@string/menu_list"
+            tools:layout="@layout/fragment_list"/>
 
     <fragment
-            android:id="@+id/nav_slideshow"
-            android:name="com.coloryrtrash.app.ui.slideshow.SlideshowFragment"
-            android:label="@string/menu_slideshow"
-            tools:layout="@layout/fragment_slideshow"/>
+            android:id="@+id/nav_user"
+            android:name="com.coloryrtrash.app.ui.user.UserFragment"
+            android:label="@string/menu_user"
+            tools:layout="@layout/fragment_user"/>
+    <fragment
+            android:id="@+id/nav_map"
+            android:name="com.coloryrtrash.app.ui.user.UserFragment"
+            android:label="@string/menu_map"
+            tools:layout="@layout/fragment_map"/>
 </navigation>

@@ -7,10 +7,13 @@ RTC_DATA_ATTR uint8_t closeset;
 Servo ThisServo;
 Servo::Servo()
 {
+}
+
+void Servo::init()
+{
     ledcSetup(Channel, Freq, Resolution); // 设置通道
     ledcAttachPin(ServoIO, Channel);      // 将通道与对应的引脚连接
     pinMode(ServoPower, OUTPUT);
-    close();
 }
 
 void Servo::open()
@@ -18,10 +21,12 @@ void Servo::open()
 #ifdef DEBUG
     Serial.println("Open Trash");
 #endif
+    init();
     digitalWrite(ServoPower, LOW);
     delay(20);
     digitalWrite(ServoPower, HIGH);
     setServo(openset);
+    delay(1000);
 }
 
 void Servo::close()
@@ -29,10 +34,12 @@ void Servo::close()
 #ifdef DEBUG
     Serial.println("Close Trash");
 #endif
+    init();
     digitalWrite(ServoPower, LOW);
     delay(20);
     digitalWrite(ServoPower, HIGH);
     setServo(closeset);
+    delay(1000);
 }
 
 void Servo::setServo(uint8_t data)

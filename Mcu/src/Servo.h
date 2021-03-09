@@ -18,7 +18,8 @@ class Servo
 {
 private:
     void setServo(uint8_t degree);
-
+    void init();
+    
 public:
     Servo();
     void open();

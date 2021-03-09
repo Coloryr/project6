@@ -63,8 +63,6 @@ void longTask()
         Serial.println("上传数据");
 #endif
         busy = true;
-        IoT.setGnssOpen(true);
-        delay(200);
         uint8_t time = 0;
         for (;;)
         {
@@ -80,8 +78,6 @@ void longTask()
             }
             delay(10000);
         }
-        delay(200);
-        IoT.setGnssOpen(false);
         delay(200);
         IoT.send();
         delay(200);
@@ -182,42 +178,42 @@ void Io_Read()
 void print_wakeup_reason()
 {
     esp_sleep_source_t wakeup_reason = esp_sleep_get_wakeup_cause();
-#ifdef DEBUG
-    Serial.println("低功耗唤醒");
-    switch (wakeup_reason)
-    {
-    case ESP_SLEEP_WAKEUP_UNDEFINED:
-        Serial.println("In case of deep sleep, reset was not caused by exit from deep sleep");
-        break;
-    case ESP_SLEEP_WAKEUP_ALL:
-        Serial.println("Not a wakeup cause, used to disable all wakeup sources with esp_sleep_disable_wakeup_source");
-        break;
-    case ESP_SLEEP_WAKEUP_EXT0:
-        Serial.println("Wakeup caused by external signal using RTC_IO");
-        break;
-    case ESP_SLEEP_WAKEUP_EXT1:
-        Serial.println("Wakeup caused by external signal using RTC_CNTL");
-        break;
-    case ESP_SLEEP_WAKEUP_TIMER:
-        Serial.println("Wakeup caused by timer");
-        break;
-    case ESP_SLEEP_WAKEUP_TOUCHPAD:
-        Serial.println("Wakeup caused by touchpad");
-        break;
-    case ESP_SLEEP_WAKEUP_ULP:
-        Serial.println("Wakeup caused by ULP program");
-        break;
-    case ESP_SLEEP_WAKEUP_GPIO:
-        Serial.println("Wakeup caused by GPIO (light sleep only)");
-        break;
-    case ESP_SLEEP_WAKEUP_UART:
-        Serial.println("Wakeup caused by UART (light sleep only)");
-        break;
-    default:
-        Serial.println("Wakeup was not caused by deep sleep");
-        break;
-    }
-#endif
+// #ifdef DEBUG
+//     Serial.println("低功耗唤醒");
+//     switch (wakeup_reason)
+//     {
+//     case ESP_SLEEP_WAKEUP_UNDEFINED:
+//         Serial.println("In case of deep sleep, reset was not caused by exit from deep sleep");
+//         break;
+//     case ESP_SLEEP_WAKEUP_ALL:
+//         Serial.println("Not a wakeup cause, used to disable all wakeup sources with esp_sleep_disable_wakeup_source");
+//         break;
+//     case ESP_SLEEP_WAKEUP_EXT0:
+//         Serial.println("Wakeup caused by external signal using RTC_IO");
+//         break;
+//     case ESP_SLEEP_WAKEUP_EXT1:
+//         Serial.println("Wakeup caused by external signal using RTC_CNTL");
+//         break;
+//     case ESP_SLEEP_WAKEUP_TIMER:
+//         Serial.println("Wakeup caused by timer");
+//         break;
+//     case ESP_SLEEP_WAKEUP_TOUCHPAD:
+//         Serial.println("Wakeup caused by touchpad");
+//         break;
+//     case ESP_SLEEP_WAKEUP_ULP:
+//         Serial.println("Wakeup caused by ULP program");
+//         break;
+//     case ESP_SLEEP_WAKEUP_GPIO:
+//         Serial.println("Wakeup caused by GPIO (light sleep only)");
+//         break;
+//     case ESP_SLEEP_WAKEUP_UART:
+//         Serial.println("Wakeup caused by UART (light sleep only)");
+//         break;
+//     default:
+//         Serial.println("Wakeup was not caused by deep sleep");
+//         break;
+//     }
+// #endif
     switch (wakeup_reason)
     {
     case ESP_SLEEP_WAKEUP_EXT0:
@@ -228,7 +224,6 @@ void print_wakeup_reason()
         longTask();
         if (!busy)
             IoT.tick();
-        break;
         break;
     case ESP_SLEEP_WAKEUP_UNDEFINED:
         longTask();
@@ -244,29 +239,27 @@ void setup()
     Serial.setTimeout(100);
     Serial2.begin(115200);
     Serial2.setTimeout(100);
-#ifdef DEBUG
-    Serial.println("Start");
-#endif
     if (!Init)
     {
         State = 1;
         delay(200);
         ThisEEPROM.init();
+        ThisServo.close();
         VL53L0A.check();
         VL53L0B.check();
         Serial2.println("AT");
         delay(200);
         Serial2.println("ATE0");
         delay(200);
-        IoT.init();
-        delay(2000);
         State = 2;
         Init = true;
     }
 
 #ifdef SLEEP
+    print_wakeup_reason();
     esp_sleep_enable_ext0_wakeup(GPIO_NUM_12, 0);
-    esp_sleep_enable_timer_wakeup(TIME_TO_SLEEP * uS_TO_S_FACTOR);
+    esp_sleep_enable_timer_wakeup(TIME_TO_SLEEP * uS_TO_S_FACTOR * 2);
+    esp_deep_sleep_start();
 #endif
 }
 
@@ -275,13 +268,6 @@ uint8_t count = 0;
 #endif
 void loop()
 {
-#ifdef SLEEP
-    Serial.println("sleep");
-    delay(100);
-    esp_light_sleep_start();
-    Serial.println("wake");
-    print_wakeup_reason();
-#endif
 #ifndef SLEEP
     if (VL53L0A.isOK())
     {

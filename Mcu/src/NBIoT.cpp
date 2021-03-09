@@ -110,6 +110,7 @@ void NBIoT::init()
     if (getQuality() == 99)
         return;
     checkOnline();
+    IoT.setGnssOpen(true);
 }
 
 void NBIoT::check()
@@ -119,7 +120,7 @@ void NBIoT::check()
     delay(300);
     String data = Serial2.readString();
     data.trim();
-    if (data.equalsIgnoreCase("OK"))
+    if (data.startsWith("OK"))
     {
 #ifdef DEBUG
         Serial.println("NB-IoT:初始化成功");
@@ -130,6 +131,7 @@ void NBIoT::check()
     {
 #ifdef DEBUG
         Serial.println("NB-IoT:初始化失败");
+        Serial.println(data.c_str());
 #endif
         ok = false;
     }
@@ -249,15 +251,9 @@ void NBIoT::setGnssOpen(bool open)
     if (!data.startsWith("+QGNSSC: 1"))
     {
         Serial2.println("AT+QGNSSC=1");
-        data = Serial2.readString();
-        data.trim();
-        if (data.endsWith("OK"))
-        {
-            Serial2.println("AT+QGNSSAGPS=1");
-            return;
-        }
     }
-    return;
+    Serial2.println("AT+QGNSSAGPS=1");
+    delay(200);
 }
 
 bool NBIoT::readGnss()
@@ -267,6 +263,9 @@ bool NBIoT::readGnss()
     delay(200);
     String data = Serial2.readString();
     data.trim();
+#ifdef DEBUG
+    Serial.println(data.c_str());
+#endif
     if (!data.startsWith("+QGNSSRD: $GNRMC,"))
     {
 #ifdef DEBUG
@@ -444,7 +443,7 @@ void NBIoT::sendSIM()
                       SelfUUID.c_str(), SIM);
 #endif
         Serial2.flush();
-        Serial2.printf(" AT+QMTPUB=0,1,2,0,\"%s\",\"%s,%s\"",
+        Serial2.printf("AT+QMTPUB=0,1,2,0,\"%s\",\"%s,%s\"",
                        TopicTrashClient.c_str(),
                        SelfUUID.c_str(), SIM);
         Serial2.println();

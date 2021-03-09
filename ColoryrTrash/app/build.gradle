@@ -1,5 +1,11 @@
 apply plugin: 'com.android.application'
 
+repositories {
+    flatDir {
+        dir 'libs'
+    }
+}
+
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.3"
@@ -12,6 +18,12 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    sourceSets {
+        main {
+            jniLibs.srcDir 'libs'
+        }
     }
 
     buildTypes {

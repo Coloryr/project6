@@ -100,6 +100,9 @@ void VL53L0::update()
     count[2] = tow.u16;
     status = ((buff[0] & 0x78) >> 3);
     close();
+#ifdef DEBUG
+    
+#endif
 }
 
 char VL53L0::getIndex()
