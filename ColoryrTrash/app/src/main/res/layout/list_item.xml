@@ -15,7 +15,7 @@
             android:contentDescription="@string/image_item"
             app:srcCompat="@mipmap/icon"/>
     <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
         <LinearLayout
@@ -114,16 +114,6 @@
                     android:paddingStart="5dp"
                     tools:ignore="RtlSymmetry"/>
         </LinearLayout>
-
-    </LinearLayout>
-    <LinearLayout android:layout_width="match_parent"
-                  android:layout_height="match_parent"
-                  android:gravity="right|center_vertical"
-                  tools:ignore="RtlHardcoded">
-        <Button android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/local"
-                android:id="@+id/local"/>
     </LinearLayout>
 
 </LinearLayout>

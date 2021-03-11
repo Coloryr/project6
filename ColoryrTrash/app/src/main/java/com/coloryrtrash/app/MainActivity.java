@@ -3,8 +3,6 @@ package com.coloryrtrash.app;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.view.MenuItem;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
@@ -18,9 +16,10 @@ import com.alibaba.fastjson.JSON;
 import com.baidu.mapapi.CoordType;
 import com.baidu.mapapi.SDKInitializer;
 import com.coloryrtrash.app.objs.ConfigObj;
+import com.coloryrtrash.app.objs.TrashSaveObj;
 import com.coloryrtrash.app.ui.HomeFragment;
-import com.coloryrtrash.app.ui.TrashFragment;
 import com.coloryrtrash.app.ui.MapFragment;
+import com.coloryrtrash.app.ui.TrashFragment;
 import com.coloryrtrash.app.ui.UserFragment;
 import com.google.android.material.navigation.NavigationView;
 
@@ -52,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
     public static boolean isRun;
     public static boolean isLogin;
     public static String pass;
+    public static String groupName;
 
     @SuppressLint("StaticFieldLeak")
     private static TextView userName;
@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
         Transaction.add(R.id.nav_fragment, mapFragment);
         hideAllFragment(Transaction);
         navigationView.setCheckedItem(R.id.nav_home);
-        userName = navigationView.findViewById(R.id.userName);
+        userName = navigationView.getHeaderView(0).findViewById(R.id.userName);
         Transaction.show(homeFragment);
         Transaction.commit();
         navigationView.setNavigationItemSelectedListener(this::onNavigationItemSelected);
@@ -108,6 +108,16 @@ public class MainActivity extends AppCompatActivity {
 
         intent = new Intent(this, MqttUtils.class);
         MqttUtils.token = config.token;
+
+        if (config.auto) {
+            start("");
+        }
+    }
+
+    public static void local(TrashSaveObj item) {
+        MainActivity.mapFragment.clear();
+        MainActivity.mapFragment.addTrash(item);
+        MainActivity.move(R.id.nav_map);
     }
 
     public static void loginDone() {
@@ -117,6 +127,8 @@ public class MainActivity extends AppCompatActivity {
         userName.setText(config.user);
         MainActivity.move(R.id.nav_home);
         MainActivity.userFragment.close();
+        MqttUtils.getInfo();
+        MqttUtils.getItems();
     }
 
     public static void isConnect() {
@@ -132,8 +144,7 @@ public class MainActivity extends AppCompatActivity {
         config.token = "";
         save();
         userName.setText(R.string.user_no_login);
-        HomeFragment.setUser(userName.getText().toString());
-        HomeFragment.setGroup("");
+        HomeFragment.clear();
         MainActivity.move(R.id.nav_user);
         MainActivity.userFragment.open();
     }
@@ -167,18 +178,22 @@ public class MainActivity extends AppCompatActivity {
             case R.id.nav_home:
                 toolbar.setTitle(R.string.menu_home);
                 fTransaction.show(homeFragment);
+                navigationView.setCheckedItem(R.id.nav_home);
                 break;
             case R.id.nav_list:
                 toolbar.setTitle(R.string.menu_list);
                 fTransaction.show(trashFragment);
+                navigationView.setCheckedItem(R.id.nav_list);
                 break;
             case R.id.nav_user:
                 toolbar.setTitle(R.string.menu_user);
                 fTransaction.show(userFragment);
+                navigationView.setCheckedItem(R.id.nav_user);
                 break;
             case R.id.nav_map:
                 toolbar.setTitle(R.string.menu_map);
                 fTransaction.show(mapFragment);
+                navigationView.setCheckedItem(R.id.nav_map);
                 break;
         }
         fTransaction.commit();

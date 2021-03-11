@@ -1,6 +1,6 @@
 package com.coloryrtrash.app.objs;
 
-public class TrashSaveObj {
+public class TrashSaveObj implements Comparable<TrashSaveObj> {
     public String UUID;
     public String Nick;
     public double X;
@@ -11,4 +11,9 @@ public class TrashSaveObj {
     public ItemState State;
     public String SIM;
     public int Battery;
+
+    @Override
+    public int compareTo(TrashSaveObj item) {
+        return this.Capacity - item.Capacity;
+    }
 }

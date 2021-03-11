@@ -1,18 +1,21 @@
 package com.coloryrtrash.app.ui;
 
 import android.annotation.SuppressLint;
-import android.os.*;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import com.coloryrtrash.app.ItemAdapter;
-import com.coloryrtrash.app.PullRefresh;
-import com.coloryrtrash.app.R;
+import com.coloryrtrash.app.*;
 import com.coloryrtrash.app.objs.ItemState;
 import com.coloryrtrash.app.objs.TrashSaveObj;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -24,49 +27,43 @@ public class TrashFragment extends Fragment {
     @SuppressLint("StaticFieldLeak")
     private static View root;
 
-    private final List<TrashSaveObj> mData = new LinkedList<>();
-    private ItemAdapter mAdapter = null;
+    private final static List<TrashSaveObj> mData = new LinkedList<>();
+    @SuppressLint("StaticFieldLeak")
+    private static ItemAdapter mAdapter = null;
+
+    public static void setList(List<TrashSaveObj> list) {
+        mData.clear();
+        mData.addAll(list);
+        Collections.sort(mData); // 按年龄排序
+        Handler mainHandler = new Handler(Looper.getMainLooper());
+        mainHandler.post(() -> {
+            mAdapter.notifyDataSetChanged();
+            mySelfListView.updateHeaderResult();
+        });
+    }
+
+    public static void setDone() {
+        mySelfListView.updateHeaderResult();
+    }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         if (root == null)
             root = inflater.inflate(R.layout.fragment_list, container, false);
         mySelfListView = root.findViewById(R.id.listview);
-        initData(root);
+        mAdapter = new ItemAdapter(mData, root.getContext());
+        mySelfListView.setAdapter(mAdapter);
+        mySelfListView.setCallback(MqttUtils::getItems);
+        mySelfListView.setOnItemClickListener(this::onItemClick);
         return root;
     }
 
-    public void initData(View root) {
-
-        for (int i = 0; i < 2; i++) {
-            TrashSaveObj obj = new TrashSaveObj();
-            obj.Nick = "新的垃圾桶";
-            obj.State = ItemState.正常;
-            obj.UUID = "123456789" + i;
-            obj.Capacity = i;
-            mData.add(obj);
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        TrashSaveObj item = mData.get(position - 1);
+        if (item.X <= 0 || item.Y <= 0) {
+            Toast.makeText(view.getContext(), "无法定位垃圾桶", Toast.LENGTH_SHORT).show();
+            return;
         }
-
-        mAdapter = new ItemAdapter(mData, root.getContext());
-        mySelfListView.setAdapter(mAdapter);
-        mySelfListView.setCallback(() -> {
-            new Thread(() -> {
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                TrashSaveObj obj = new TrashSaveObj();
-                obj.Nick = "新的垃圾桶";
-                obj.State = ItemState.正常;
-                obj.UUID = "123456789";
-                mData.add(obj);
-                Handler mainHandler = new Handler(Looper.getMainLooper());
-                mainHandler.post(() -> {
-                    mAdapter.notifyDataSetChanged();
-                    mySelfListView.updateHeaderResult();
-                });
-            }).start();
-        });
+        MainActivity.local(item);
     }
 }

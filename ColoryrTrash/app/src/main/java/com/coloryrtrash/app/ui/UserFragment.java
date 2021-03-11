@@ -66,28 +66,34 @@ public class UserFragment extends Fragment {
     }
 
     private void onClick(View v) {
-        if (ip.getText().toString().isEmpty()) {
-            Toast.makeText(v.getContext(), "IP为空", Toast.LENGTH_SHORT).show();
-            return;
+        if (!MainActivity.isLogin) {
+            if (ip.getText().toString().isEmpty()) {
+                Toast.makeText(v.getContext(), "IP为空", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (port.getText().toString().isEmpty()) {
+                Toast.makeText(v.getContext(), "Port为空", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (user.getText().toString().isEmpty()) {
+                Toast.makeText(v.getContext(), "User为空", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (pass.getText().toString().isEmpty()) {
+                Toast.makeText(v.getContext(), "密码为空", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            MainActivity.config.ip = ip.getText().toString();
+            MainActivity.config.port = Integer.parseInt(port.getText().toString());
+            MainActivity.config.user = user.getText().toString();
+            MainActivity.config.auto = auto.isChecked();
+            MainActivity.config.token = "";
+            MainActivity.start(pass.getText().toString());
+            MainActivity.save();
+        } else {
+            MainActivity.loginOut();
+            Toast.makeText(v.getContext(), "已登出", Toast.LENGTH_SHORT).show();
         }
-        if (port.getText().toString().isEmpty()) {
-            Toast.makeText(v.getContext(), "Port为空", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (user.getText().toString().isEmpty()) {
-            Toast.makeText(v.getContext(), "User为空", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (pass.getText().toString().isEmpty()) {
-            Toast.makeText(v.getContext(), "密码为空", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        MainActivity.config.ip = ip.getText().toString();
-        MainActivity.config.port = Integer.parseInt(port.getText().toString());
-        MainActivity.config.user = user.getText().toString();
-        MainActivity.config.auto = auto.isChecked();
-        MainActivity.start(pass.getText().toString());
-        MainActivity.save();
     }
 
     public void close() {
@@ -96,6 +102,7 @@ public class UserFragment extends Fragment {
         user.setEnabled(false);
         pass.setEnabled(false);
         auto.setEnabled(false);
+        login.setText(R.string.login_out_button);
     }
 
     public void open() {
@@ -104,5 +111,6 @@ public class UserFragment extends Fragment {
         user.setEnabled(true);
         pass.setEnabled(true);
         auto.setEnabled(true);
+        login.setText(R.string.login_button);
     }
 }

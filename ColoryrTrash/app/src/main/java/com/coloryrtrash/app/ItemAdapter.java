@@ -15,7 +15,6 @@ import java.util.List;
 public class ItemAdapter extends BaseAdapter {
     private final List<TrashSaveObj> mData;
     private final Context mContext;
-    private Button local;
 
     public ItemAdapter(List<TrashSaveObj> mData, Context mContext) {
         this.mData = mData;
@@ -40,7 +39,7 @@ public class ItemAdapter extends BaseAdapter {
     @SuppressLint("ViewHolder")
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        if(convertView == null)
+        if (convertView == null)
             convertView = LayoutInflater.from(mContext).inflate(R.layout.list_item, parent, false);
         TrashSaveObj item = mData.get(position);
         TextView textView = convertView.findViewById(R.id.state);
@@ -61,10 +60,6 @@ public class ItemAdapter extends BaseAdapter {
         textView.setText(R.string.item_capacity);
         textView = convertView.findViewById(R.id.capacity);
         textView.setText(item.Capacity + "");
-        local = convertView.findViewById(R.id.local);
-        local.setOnClickListener(click -> {
-
-        });
         return convertView;
     }
 }
