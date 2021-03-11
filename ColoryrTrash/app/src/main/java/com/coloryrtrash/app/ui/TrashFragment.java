@@ -12,7 +12,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import com.coloryrtrash.app.*;
-import com.coloryrtrash.app.objs.ItemState;
 import com.coloryrtrash.app.objs.TrashSaveObj;
 
 import java.util.Collections;

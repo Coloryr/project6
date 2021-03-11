@@ -1,6 +1,11 @@
 package com.coloryrtrash.app;
 
 import android.annotation.SuppressLint;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -53,8 +58,27 @@ public class MainActivity extends AppCompatActivity {
     public static String pass;
     public static String groupName;
 
+    private static NotificationManager mNManager;
+
     @SuppressLint("StaticFieldLeak")
     private static TextView userName;
+
+    public static void full() {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            PendingIntent pendingIntent = PendingIntent.getActivity(MainActivity.getApplicationContext(),
+                    1, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+            Notification.Builder mBuilder = new Notification.Builder(MainActivity.getApplicationContext(),
+                    "ColoryrTrash");
+            mBuilder.setContentTitle("垃圾桶快满")
+                    .setContentText("有垃圾桶快满~")
+                    .setTicker("有垃圾桶快满~")
+                    .setSmallIcon(R.mipmap.icon)
+                    .setContentIntent(pendingIntent)
+                    .setAutoCancel(true);
+            Notification b = mBuilder.build();
+            mNManager.notify(1, b);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +87,11 @@ public class MainActivity extends AppCompatActivity {
 
         SDKInitializer.initialize(this.getApplication());
         SDKInitializer.setCoordType(CoordType.BD09LL);
+
+        mNManager = (NotificationManager) this.getApplicationContext().getSystemService(NOTIFICATION_SERVICE);
+        NotificationChannel channel = new NotificationChannel("ColoryrTrash", "ColoryrTrash", 3);
+        channel.setDescription("ColoryrTrash");
+        mNManager.createNotificationChannel(channel);
 
         setContentView(R.layout.activity_main);
         fManager = getSupportFragmentManager();
@@ -152,12 +181,12 @@ public class MainActivity extends AppCompatActivity {
     public static void start(String temp) {
         if (isRun)
             stop();
-        MainActivity.startService(intent);
+        MqttUtils.start();
         pass = temp;
     }
 
     public static void stop() {
-        MainActivity.stopService(intent);
+        MqttUtils.stop();
     }
 
     public static void save() {

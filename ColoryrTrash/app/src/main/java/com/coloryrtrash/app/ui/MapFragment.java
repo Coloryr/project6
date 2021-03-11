@@ -1,12 +1,10 @@
 package com.coloryrtrash.app.ui;
 
 import android.annotation.SuppressLint;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
@@ -69,6 +67,7 @@ public class MapFragment extends Fragment {
         MyLocationListener myLocationListener = new MyLocationListener();
         mLocationClient.registerLocationListener(myLocationListener);
         mLocationClient.start();
+
         map.setOnMarkerClickListener(marker -> {
             Bundle bundle = marker.getExtraInfo();
             String temp = bundle.getString(key);
