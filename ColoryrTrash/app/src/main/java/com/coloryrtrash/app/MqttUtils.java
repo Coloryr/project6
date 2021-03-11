@@ -1,6 +1,7 @@
 package com.coloryrtrash.app;
 
 import android.annotation.SuppressLint;
+import android.app.Notification;
 import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
@@ -129,6 +130,12 @@ public class MqttUtils extends Service {
     }
 
     @Override
+    public void onCreate() {
+        super.onCreate();
+        startForeground(2, new Notification());
+    }
+
+    @Override
     public IBinder onBind(Intent intent) {
         return null;
     }
@@ -144,8 +151,8 @@ public class MqttUtils extends Service {
             options.setCleanSession(false);
             options.setAutomaticReconnect(true);
             options.setUserName(MainActivity.config.user);
-            options.setConnectionTimeout(10);
-            options.setKeepAliveInterval(20);
+            options.setConnectionTimeout(2);
+            options.setKeepAliveInterval(2);
             mqttClient.setCallback(new Re());
             mqttClient.connect(options, null, new IMqttActionListener() {
                 @Override
