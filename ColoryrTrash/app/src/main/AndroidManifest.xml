@@ -30,8 +30,10 @@
         <meta-data
                 android:name="com.baidu.lbsapi.API_KEY"
                 android:value="c8Sl7vOK6UGBoKVVStf2WAo8KaV5x61b" />
-        <service android:name="org.eclipse.paho.android.service.MqttService" />
-        <service android:name=".MqttUtils" />
+        <service android:name="org.eclipse.paho.android.service.MqttService"
+                 android:persistent="true"/>
+        <service android:name=".MqttUtils"
+                 android:persistent="true"/>
         <service android:name="com.baidu.location.f"
                  android:enabled="true"
                  android:process=":remote"/>
