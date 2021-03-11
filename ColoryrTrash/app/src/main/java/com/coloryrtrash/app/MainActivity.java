@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
         SDKInitializer.setCoordType(CoordType.BD09LL);
 
         mNManager = (NotificationManager) this.getApplicationContext().getSystemService(NOTIFICATION_SERVICE);
-        NotificationChannel channel = new NotificationChannel("ColoryrTrash", "ColoryrTrash", NotificationManager.IMPORTANCE_DEFAULT);
+        NotificationChannel channel = new NotificationChannel("ColoryrTrash", "ColoryrTrash", 3);
         channel.setDescription("ColoryrTrash");
         mNManager.createNotificationChannel(channel);
 
@@ -136,7 +136,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         intent = new Intent(this, MqttUtils.class);
-
         MqttUtils.token = config.token;
 
         if (config.auto) {
