@@ -22,7 +22,7 @@
                 app:popupTheme="@style/AppTheme.PopupOverlay"/>
 
         <androidx.fragment.app.FragmentContainerView
-                android:id="@+id/nav_host_fragment"
+                android:id="@+id/nav_fragment"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
 

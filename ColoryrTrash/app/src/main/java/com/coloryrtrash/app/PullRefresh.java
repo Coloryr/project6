@@ -86,15 +86,15 @@ public class PullRefresh extends ListView implements AbsListView.OnScrollListene
     @Override
     public void onScrollStateChanged(AbsListView view, int scrollState) {
         // 如果是猛地滑动 或者 手指松开UP 才显示底部布局View
-        if (scrollState == SCROLL_STATE_IDLE || scrollState == SCROLL_STATE_FLING) {
-            // 判断必须是底部的Item的时候
-            if (getLastVisiblePosition() == (getCount() - 1)) {
-                // 回调接口方法
-                if (null != customUpdateListViewBack) {
-                    customUpdateListViewBack.refreshData();
-                }
-            }
-        }
+//        if (scrollState == SCROLL_STATE_IDLE || scrollState == SCROLL_STATE_FLING) {
+//            // 判断必须是底部的Item的时候
+//            if (getLastVisiblePosition() == (getCount() - 1)) {
+//                // 回调接口方法
+//                if (null != customUpdateListViewBack) {
+//                    customUpdateListViewBack.refreshData();
+//                }
+//            }
+//        }
     }
 
     private int firstVisibleItem;
