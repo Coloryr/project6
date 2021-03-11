@@ -18,12 +18,12 @@
             android:layout_height="wrap_content"
             android:text="TextView"
             android:textColor="#000"
-            android:textSize="18sp" />
+            android:textSize="18sp"/>
 
     <ProgressBar
             android:id="@+id/pull_next_img"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:indeterminateTint="@color/main"
-            android:layout_margin="5dp" />
+            android:layout_margin="5dp"/>
 </LinearLayout>
