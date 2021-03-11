@@ -257,5 +257,10 @@ namespace ColoryrTrash.Desktop.Windows
                 }
             });
         }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            App.LoginOut();
+        }
     }
 }

@@ -1,8 +1,12 @@
 package com.coloryrtrash.app;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.MenuItem;
+import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,14 +30,16 @@ public class MainActivity extends AppCompatActivity {
     public static final String fileName = "config.json";
 
     @SuppressLint("StaticFieldLeak")
+    public static MainActivity MainActivity;
+    @SuppressLint("StaticFieldLeak")
     private static FileUtils FileUtils;
 
     private FragmentManager fManager;
 
-    private HomeFragment HomeFragment;
-    private TrashFragment TrashFragment;
-    private MapFragment MapFragment;
-    private UserFragment UserFragment;
+    private HomeFragment homeFragment;
+    private TrashFragment trashFragment;
+    private MapFragment mapFragment;
+    private UserFragment userFragment;
 
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
@@ -41,8 +47,18 @@ public class MainActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private NavigationView navigationView;
 
+    private static Intent intent;
+
+    public static boolean isRun;
+    public static boolean isLogin;
+    public static String pass;
+
+    @SuppressLint("StaticFieldLeak")
+    private static TextView userName;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        MainActivity = this;
         super.onCreate(savedInstanceState);
 
         SDKInitializer.initialize(this.getApplication());
@@ -61,17 +77,18 @@ public class MainActivity extends AppCompatActivity {
         mDrawerLayout.addDrawerListener(mDrawerToggle);
 
         FragmentTransaction Transaction = fManager.beginTransaction();
-        HomeFragment = new HomeFragment();
-        TrashFragment = new TrashFragment();
-        UserFragment = new UserFragment();
-        MapFragment = new MapFragment();
-        Transaction.add(R.id.nav_fragment, HomeFragment);
-        Transaction.add(R.id.nav_fragment, TrashFragment);
-        Transaction.add(R.id.nav_fragment, UserFragment);
-        Transaction.add(R.id.nav_fragment, MapFragment);
+        homeFragment = new HomeFragment();
+        trashFragment = new TrashFragment();
+        userFragment = new UserFragment();
+        mapFragment = new MapFragment();
+        Transaction.add(R.id.nav_fragment, homeFragment);
+        Transaction.add(R.id.nav_fragment, trashFragment);
+        Transaction.add(R.id.nav_fragment, userFragment);
+        Transaction.add(R.id.nav_fragment, mapFragment);
         hideAllFragment(Transaction);
         navigationView.setCheckedItem(R.id.nav_home);
-        Transaction.show(HomeFragment);
+        userName = navigationView.findViewById(R.id.userName);
+        Transaction.show(homeFragment);
         Transaction.commit();
         navigationView.setNavigationItemSelectedListener(this::onNavigationItemSelected);
 
@@ -81,14 +98,55 @@ public class MainActivity extends AppCompatActivity {
         if (!temp.isEmpty()) {
             config = JSON.parseObject(temp, ConfigObj.class);
         }
-        if(config == null)
-        {
+        if (config == null) {
             config = new ConfigObj();
             config.ip = "127.0.0.1";
             config.port = 12345;
             config.user = "user";
             save();
         }
+
+        intent = new Intent(this, MqttUtils.class);
+        MqttUtils.token = config.token;
+    }
+
+    public static void loginDone() {
+        isLogin = true;
+        save();
+        HomeFragment.setUser(config.user);
+        userName.setText(config.user);
+        MainActivity.move(R.id.nav_home);
+        MainActivity.userFragment.close();
+    }
+
+    public static void isConnect() {
+        if (config.auto && !config.token.isEmpty()) {
+            MqttUtils.checkLogin();
+        } else if (pass != null) {
+            MqttUtils.Login();
+        }
+    }
+
+    public static void loginOut() {
+        isLogin = false;
+        config.token = "";
+        save();
+        userName.setText(R.string.user_no_login);
+        HomeFragment.setUser(userName.getText().toString());
+        HomeFragment.setGroup("");
+        MainActivity.move(R.id.nav_user);
+        MainActivity.userFragment.open();
+    }
+
+    public static void start(String temp) {
+        if (isRun)
+            stop();
+        MainActivity.startService(intent);
+        pass = temp;
+    }
+
+    public static void stop() {
+        MainActivity.stopService(intent);
     }
 
     public static void save() {
@@ -97,29 +155,33 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        move(menuItem.getItemId());
+        mDrawerLayout.closeDrawer(navigationView);
+        return true;
+    }
+
+    private void move(int id) {
         FragmentTransaction fTransaction = fManager.beginTransaction();
         hideAllFragment(fTransaction);
-        switch (menuItem.getItemId()) {
+        switch (id) {
             case R.id.nav_home:
                 toolbar.setTitle(R.string.menu_home);
-                fTransaction.show(HomeFragment);
+                fTransaction.show(homeFragment);
                 break;
             case R.id.nav_list:
                 toolbar.setTitle(R.string.menu_list);
-                fTransaction.show(TrashFragment);
+                fTransaction.show(trashFragment);
                 break;
             case R.id.nav_user:
                 toolbar.setTitle(R.string.menu_user);
-                fTransaction.show(UserFragment);
+                fTransaction.show(userFragment);
                 break;
             case R.id.nav_map:
                 toolbar.setTitle(R.string.menu_map);
-                fTransaction.show(MapFragment);
+                fTransaction.show(mapFragment);
                 break;
         }
-        mDrawerLayout.closeDrawer(navigationView);
         fTransaction.commit();
-        return true;
     }
 
     @Override
@@ -128,11 +190,10 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    //隐藏所有Fragment
     private void hideAllFragment(FragmentTransaction fragmentTransaction) {
-        fragmentTransaction.hide(HomeFragment);
-        fragmentTransaction.hide(TrashFragment);
-        fragmentTransaction.hide(MapFragment);
-        fragmentTransaction.hide(UserFragment);
+        fragmentTransaction.hide(homeFragment);
+        fragmentTransaction.hide(trashFragment);
+        fragmentTransaction.hide(mapFragment);
+        fragmentTransaction.hide(userFragment);
     }
 }

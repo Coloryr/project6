@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ColoryrTrash.Desktop.Windows"
         mc:Ignorable="d"
-        Title="用户列表" Height="450" Width="800" MinHeight="450" MinWidth="800" Icon="/icon.png" Loaded="Window_Loaded" Closing="Window_Closing">
+        Title="用户列表" Height="450" Width="812" MinHeight="450" MinWidth="812" Icon="/icon.png" Loaded="Window_Loaded" Closing="Window_Closing">
     <Grid>
         <Rectangle Fill="#FFF4F4F5" Stroke="#FF5ABED6" StrokeThickness="2"/>
         <ListView Margin="4,28,4,4" Name="List">
@@ -25,7 +25,7 @@
                 </ContextMenu>
             </ListView.ContextMenu>
         </ListView>
-        <ComboBox Margin="48,5,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="20" Width="417" Name="GroupList" 
+        <ComboBox Margin="48,5,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="20" Width="352" Name="GroupList" 
                   SelectionChanged="GroupList_SelectionChanged"/>
         <Label Content="选择组" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="2,2,0,0"/>
         <Button Content="创建组" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="470,5,0,0" Height="20" Width="60" Click="AddGroup_Click"/>
@@ -33,5 +33,6 @@
         <Button Content="刷新" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="730,5,0,0" Height="20" Width="60" Click="Re_Click"/>
         <Button Content="修改组" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="535,5,0,0" Height="20" Width="60" Click="RenameGroup_Click"/>
         <Button Content="绑定组" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="665,5,0,0" Height="20" Width="60" Click="Bind_Click"/>
+        <Button Content="登出" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="405,5,0,0" Height="20" Width="60" Click="Button_Click"/>
     </Grid>
 </Window>

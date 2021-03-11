@@ -8,8 +8,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import com.coloryrtrash.app.MainActivity;
 import com.coloryrtrash.app.R;
 
 public class UserFragment extends Fragment {
@@ -53,6 +55,54 @@ public class UserFragment extends Fragment {
         view = root.findViewById(R.id.pass_);
         view.setText(R.string.password);
 
+        login.setOnClickListener(this::onClick);
+
+        ip.setText(MainActivity.config.ip);
+        port.setText(MainActivity.config.port + "");
+        user.setText(MainActivity.config.user);
+        auto.setChecked(MainActivity.config.auto);
+
         return root;
+    }
+
+    private void onClick(View v) {
+        if (ip.getText().toString().isEmpty()) {
+            Toast.makeText(v.getContext(), "IP为空", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (port.getText().toString().isEmpty()) {
+            Toast.makeText(v.getContext(), "Port为空", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (user.getText().toString().isEmpty()) {
+            Toast.makeText(v.getContext(), "User为空", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (pass.getText().toString().isEmpty()) {
+            Toast.makeText(v.getContext(), "密码为空", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        MainActivity.config.ip = ip.getText().toString();
+        MainActivity.config.port = Integer.parseInt(port.getText().toString());
+        MainActivity.config.user = user.getText().toString();
+        MainActivity.config.auto = auto.isChecked();
+        MainActivity.start(pass.getText().toString());
+        MainActivity.save();
+    }
+
+    public void close() {
+        ip.setEnabled(false);
+        port.setEnabled(false);
+        user.setEnabled(false);
+        pass.setEnabled(false);
+        auto.setEnabled(false);
+    }
+
+    public void open() {
+        ip.setEnabled(true);
+        port.setEnabled(true);
+        user.setEnabled(true);
+        pass.setEnabled(true);
+        auto.setEnabled(true);
     }
 }

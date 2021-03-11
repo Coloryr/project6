@@ -25,5 +25,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/user_no_login"
-            android:id="@+id/textView" android:textSize="24sp"/>
+            android:id="@+id/userName"
+            android:textSize="24sp"/>
 </LinearLayout>

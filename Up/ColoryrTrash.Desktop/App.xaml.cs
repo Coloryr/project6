@@ -260,6 +260,13 @@ namespace ColoryrTrash.Desktop
             e.SetObserved();
         }
 
+        internal static void LoginOut()
+        {
+            Config.Token = "";
+            Save();
+            DisConnect();
+        }
+
         private void Application_Exit(object sender, ExitEventArgs e)
         {
             notifyIcon?.Dispose();

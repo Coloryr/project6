@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ColoryrTrash.Desktop.Windows"
         mc:Ignorable="d"
-        Title="用户设置" Height="80" Width="180" ResizeMode="NoResize" Icon="/icon.png">
+        Title="用户设置" Height="90" Width="200" ResizeMode="NoResize" Icon="/icon.png">
     <Grid>
         <Rectangle Fill="#FFF4F4F5" Stroke="#FF5ABED6" StrokeThickness="2"/>
         <Label Content="用户名" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="2,2,0,0"/>
