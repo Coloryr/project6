@@ -29,4 +29,5 @@
     <string name="login_button">登录</string>
     <string name="login_out_button">登出</string>
     <string name="local">定位</string>
+    <string name="get_local">定位</string>
 </resources>

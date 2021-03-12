@@ -124,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
         GPSUtils = new GPSUtils(this);
 
         SDKInitializer.initialize(this.getApplication());
-        SDKInitializer.setCoordType(CoordType.BD09LL);
+        SDKInitializer.setCoordType(CoordType.GCJ02);
 
         mNManager = (NotificationManager) this.getApplicationContext().getSystemService(NOTIFICATION_SERVICE);
         NotificationChannel channel = new NotificationChannel("ColoryrTrash", "ColoryrTrash", NotificationManager.IMPORTANCE_DEFAULT);

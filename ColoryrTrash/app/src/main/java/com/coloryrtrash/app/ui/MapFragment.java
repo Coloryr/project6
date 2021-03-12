@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
@@ -15,6 +16,7 @@ import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.baidu.mapapi.map.*;
 import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.utils.CoordinateConverter;
 import com.coloryrtrash.app.GPSUtils;
 import com.coloryrtrash.app.MainActivity;
 import com.coloryrtrash.app.R;
@@ -33,38 +35,11 @@ public class MapFragment extends Fragment {
     private static View root;
 
     private static BaiduMap map;
+    @SuppressLint("StaticFieldLeak")
+    private static Button getLocal;
     private static final Map<String, Overlay> points = new HashMap<>();
-    private LocationClient mLocationClient;
 
     private final String key = "info";
-
-    static class MyLocationListener implements GPSUtils.OnLocationResultListener {
-        @Override
-        public void onLocationResult(Location location) {
-            if (location == null || mMapView == null) {
-                return;
-            }
-            MyLocationData locData = new MyLocationData.Builder()
-                    .accuracy(location.getAccuracy())
-                    .direction(location.getBearing())
-                    .latitude(location.getLatitude())
-                    .longitude(location.getLongitude()).build();
-            map.setMyLocationData(locData);
-        }
-
-        @Override
-        public void OnLocationChange(Location location) {
-            if (location == null || mMapView == null) {
-                return;
-            }
-            MyLocationData locData = new MyLocationData.Builder()
-                    .accuracy(location.getAccuracy())
-                    .direction(location.getBearing())
-                    .latitude(location.getLatitude())
-                    .longitude(location.getLongitude()).build();
-            map.setMyLocationData(locData);
-        }
-    }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -75,14 +50,47 @@ public class MapFragment extends Fragment {
         map.setMyLocationEnabled(true);
         map.setCompassEnable(true);
 
-        MainActivity.GPSUtils.getLngAndLat(new MyLocationListener());
+        MainActivity.GPSUtils.setLocationListener(location -> {
+            if (location == null || mMapView == null) {
+                return;
+            }
+            LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+            MyLocationData locData = new MyLocationData.Builder()
+                    .accuracy(location.getAccuracy())
+                    .direction(location.getBearing())
+                    .latitude(location.getLatitude())
+                    .longitude(location.getLongitude()).build();
+            map.setMyLocationData(locData);
+        });
+        MainActivity.GPSUtils.getLngAndLat();
+
+        getLocal = root.findViewById(R.id.local);
+        getLocal.setOnClickListener(v -> {
+            Location location = MainActivity.GPSUtils.getLngAndLat();
+            if (location == null || mMapView == null) {
+                return;
+            }
+            LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+            MyLocationData locData = new MyLocationData.Builder()
+                    .accuracy(location.getAccuracy())
+                    .direction(location.getBearing())
+                    .latitude(location.getLatitude())
+                    .longitude(location.getLongitude()).build();
+            map.setMyLocationData(locData);
+            MapStatus mMapStatus = new MapStatus.Builder()
+                    .target(latLng)
+                    .zoom(18)
+                    .build();
+            MapStatusUpdate mMapStatusUpdate = MapStatusUpdateFactory.newMapStatus(mMapStatus);
+            map.setMapStatus(mMapStatusUpdate);
+        });
 
         map.setOnMarkerClickListener(marker -> {
             Bundle bundle = marker.getExtraInfo();
             String temp = bundle.getString(key);
             AlertDialog.Builder builder = new AlertDialog.Builder(root.getContext());
             AlertDialog alert = builder.setMessage(temp).create();
-            alert.show();                    //显示对话框
+            alert.show();
             return true;
         });
         return root;
@@ -103,7 +111,6 @@ public class MapFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mLocationClient.stop();
         map.setMyLocationEnabled(false);
         mMapView.onDestroy();
         mMapView = null;

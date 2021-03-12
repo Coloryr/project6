@@ -4,36 +4,27 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.Bundle;
-import android.provider.Settings;
 import androidx.core.app.ActivityCompat;
 
 import java.util.List;
 
 public class GPSUtils {
     @SuppressLint("StaticFieldLeak")
-    private static GPSUtils instance;
-    private Context mContext;
-    private Activity activity;
+    private final Context mContext;
+    private final Activity activity;
     private LocationManager locationManager;
+    private String locationProvider;
 
     public GPSUtils(Activity activity) {
         this.activity = activity;
         this.mContext = activity.getApplication().getApplicationContext();
     }
 
-    /**
-     * 获取经纬度
-     */
-    public void getLngAndLat(OnLocationResultListener onLocationResultListener) {
-        mOnLocationListener = onLocationResultListener;
-
-        String locationProvider = null;
+    private void init() {
         locationManager = (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
         //获取所有可用的位置提供器
         List<String> providers = locationManager.getProviders(true);
@@ -44,44 +35,39 @@ public class GPSUtils {
         } else if (providers.contains(LocationManager.NETWORK_PROVIDER)) {
             //如果是Network
             locationProvider = LocationManager.NETWORK_PROVIDER;
-        } else {
-            Intent i = new Intent();
-            i.setAction(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-            mContext.startActivity(i);
-            return;
         }
 
-        if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
                     Manifest.permission.ACCESS_COARSE_LOCATION}, PackageManager.PERMISSION_GRANTED);
+            return;
         }
-        Location location = locationManager.getLastKnownLocation(locationProvider);
-        if (location != null) {
-            //不为空,显示地理位置经纬度
-            if (mOnLocationListener != null) {
-                mOnLocationListener.onLocationResult(location);
-            }
-
-        }
-        //监视地理位置变化
         locationManager.requestLocationUpdates(locationProvider, 3000, 1, locationListener);
+    }
+
+    public void setLocationListener(OnLocationResultListener onLocationResultListener) {
+        mOnLocationListener = onLocationResultListener;
+    }
+
+    /**
+     * 获取经纬度
+     */
+    public Location getLngAndLat() {
+        if (locationManager == null) {
+            init();
+        }
+        if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION}, PackageManager.PERMISSION_GRANTED);
+            return null;
+        }
+        return locationManager.getLastKnownLocation(locationProvider);
     }
 
 
     public LocationListener locationListener = new LocationListener() {
-
-        // Provider被enable时触发此函数，比如GPS被打开
-        @Override
-        public void onProviderEnabled(String provider) {
-
-        }
-
-        // Provider被disable时触发此函数，比如GPS被关闭
-        @Override
-        public void onProviderDisabled(String provider) {
-
-        }
-
         //当坐标改变时触发此函数，如果Provider传进相同的坐标，它就不会被触发
         @Override
         public void onLocationChanged(Location location) {
@@ -98,8 +84,6 @@ public class GPSUtils {
     private OnLocationResultListener mOnLocationListener;
 
     public interface OnLocationResultListener {
-        void onLocationResult(Location location);
-
         void OnLocationChange(Location location);
     }
 }
