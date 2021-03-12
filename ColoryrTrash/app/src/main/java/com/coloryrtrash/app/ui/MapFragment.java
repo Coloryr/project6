@@ -55,15 +55,17 @@ public class MapFragment extends Fragment {
                 return;
             }
             LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+            CoordinateConverter converter  = new CoordinateConverter()
+                    .from(CoordinateConverter.CoordType.GPS)
+                    .coord(latLng);
+            latLng = converter.convert();
             MyLocationData locData = new MyLocationData.Builder()
                     .accuracy(location.getAccuracy())
                     .direction(location.getBearing())
-                    .latitude(location.getLatitude())
-                    .longitude(location.getLongitude()).build();
+                    .latitude(latLng.latitude)
+                    .longitude(latLng.longitude).build();
             map.setMyLocationData(locData);
         });
-        MainActivity.GPSUtils.getLngAndLat();
-
         getLocal = root.findViewById(R.id.local);
         getLocal.setOnClickListener(v -> {
             Location location = MainActivity.GPSUtils.getLngAndLat();
@@ -71,11 +73,15 @@ public class MapFragment extends Fragment {
                 return;
             }
             LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+            CoordinateConverter converter  = new CoordinateConverter()
+                    .from(CoordinateConverter.CoordType.GPS)
+                    .coord(latLng);
+            latLng = converter.convert();
             MyLocationData locData = new MyLocationData.Builder()
                     .accuracy(location.getAccuracy())
                     .direction(location.getBearing())
-                    .latitude(location.getLatitude())
-                    .longitude(location.getLongitude()).build();
+                    .latitude(latLng.latitude)
+                    .longitude(latLng.longitude).build();
             map.setMyLocationData(locData);
             MapStatus mMapStatus = new MapStatus.Builder()
                     .target(latLng)

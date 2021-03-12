@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.widget.Toast;
 import androidx.core.app.ActivityCompat;
 
 import java.util.List;
@@ -43,6 +44,10 @@ public class GPSUtils {
                     Manifest.permission.ACCESS_COARSE_LOCATION}, PackageManager.PERMISSION_GRANTED);
             return;
         }
+        if (locationProvider == null) {
+            Toast.makeText(mContext, "GPS定位没有开启", Toast.LENGTH_SHORT).show();
+            return;
+        }
         locationManager.requestLocationUpdates(locationProvider, 3000, 1, locationListener);
     }
 
@@ -54,8 +59,9 @@ public class GPSUtils {
      * 获取经纬度
      */
     public Location getLngAndLat() {
-        if (locationManager == null) {
+        if (locationManager == null || locationProvider == null) {
             init();
+            return null;
         }
         if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
