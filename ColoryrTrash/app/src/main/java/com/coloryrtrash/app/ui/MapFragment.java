@@ -1,6 +1,7 @@
 package com.coloryrtrash.app.ui;
 
 import android.annotation.SuppressLint;
+import android.location.Location;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,8 @@ import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.baidu.mapapi.map.*;
 import com.baidu.mapapi.model.LatLng;
+import com.coloryrtrash.app.GPSUtils;
+import com.coloryrtrash.app.MainActivity;
 import com.coloryrtrash.app.R;
 import com.coloryrtrash.app.objs.TrashSaveObj;
 
@@ -35,15 +38,29 @@ public class MapFragment extends Fragment {
 
     private final String key = "info";
 
-    static class MyLocationListener extends BDAbstractLocationListener {
+    static class MyLocationListener implements GPSUtils.OnLocationResultListener {
         @Override
-        public void onReceiveLocation(BDLocation location) {
+        public void onLocationResult(Location location) {
             if (location == null || mMapView == null) {
                 return;
             }
             MyLocationData locData = new MyLocationData.Builder()
-                    .accuracy(location.getRadius())
-                    .direction(location.getDirection()).latitude(location.getLatitude())
+                    .accuracy(location.getAccuracy())
+                    .direction(location.getBearing())
+                    .latitude(location.getLatitude())
+                    .longitude(location.getLongitude()).build();
+            map.setMyLocationData(locData);
+        }
+
+        @Override
+        public void OnLocationChange(Location location) {
+            if (location == null || mMapView == null) {
+                return;
+            }
+            MyLocationData locData = new MyLocationData.Builder()
+                    .accuracy(location.getAccuracy())
+                    .direction(location.getBearing())
+                    .latitude(location.getLatitude())
                     .longitude(location.getLongitude()).build();
             map.setMyLocationData(locData);
         }
@@ -58,15 +75,7 @@ public class MapFragment extends Fragment {
         map.setMyLocationEnabled(true);
         map.setCompassEnable(true);
 
-        mLocationClient = new LocationClient(root.getContext());
-        LocationClientOption option = new LocationClientOption();
-        option.setOpenGps(true); // 打开gps
-        option.setCoorType("bd09ll"); // 设置坐标类型
-        option.setScanSpan(1000);
-        mLocationClient.setLocOption(option);
-        MyLocationListener myLocationListener = new MyLocationListener();
-        mLocationClient.registerLocationListener(myLocationListener);
-        mLocationClient.start();
+        MainActivity.GPSUtils.getLngAndLat(new MyLocationListener());
 
         map.setOnMarkerClickListener(marker -> {
             Bundle bundle = marker.getExtraInfo();

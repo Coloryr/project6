@@ -1,19 +1,22 @@
 package com.coloryrtrash.app;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -58,6 +61,9 @@ public class MainActivity extends AppCompatActivity {
     public static String pass;
     public static String groupName;
 
+    @SuppressLint("StaticFieldLeak")
+    public static GPSUtils GPSUtils;
+
     private static NotificationManager mNManager;
 
     @SuppressLint("StaticFieldLeak")
@@ -81,9 +87,41 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case PackageManager.PERMISSION_GRANTED: {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                    // 权限被用户同意。
+                    // 执形我们想要的操作
+                } else {
+                    // 权限被用户拒绝了。
+                    //若是点击了拒绝和不再提醒
+                    //关于shouldShowRequestPermissionRationale
+                    // 1、当用户第一次被询问是否同意授权的时候，返回false
+                    // 2、当之前用户被询问是否授权，点击了false,并且点击了不在询问（第一次询问不会出现“不再询问”的选项），
+                    // 之后便会返回false
+                    // 3、当用户被关闭了app的权限，该app不允许授权的时候，返回false
+                    // 4、当用户上一次不同意授权，没有点击“不再询问”的时候，下一次返回true
+                    if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                            || !ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
+                        //提示用户前往设置界面自己打开权限
+                        Toast.makeText(this, "请前往设置界面打开权限", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                }
+            }
+        }
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         MainActivity = this;
         super.onCreate(savedInstanceState);
+
+        GPSUtils = new GPSUtils(this);
 
         SDKInitializer.initialize(this.getApplication());
         SDKInitializer.setCoordType(CoordType.BD09LL);
