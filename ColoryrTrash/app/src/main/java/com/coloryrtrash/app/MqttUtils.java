@@ -18,7 +18,6 @@ import com.coloryrtrash.app.ui.HomeFragment;
 import com.coloryrtrash.app.ui.TrashFragment;
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.*;
-import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -145,14 +144,14 @@ public class MqttUtils extends Service {
             mqttClient = new MqttAndroidClient(MainActivity.MainActivity.getApplicationContext(), BROKER_URL
                     .replace("{0}", MainActivity.config.ip)
                     .replace("{1}", MainActivity.config.port + ""),
-                    MainActivity.config.user, new MemoryPersistence());
+                    MainActivity.config.user);
             // MQTT的连接设置
             MqttConnectOptions options = new MqttConnectOptions();
             options.setCleanSession(false);
             options.setAutomaticReconnect(true);
             options.setUserName(MainActivity.config.user);
-            options.setConnectionTimeout(2);
-            options.setKeepAliveInterval(2);
+            options.setConnectionTimeout(10);
+            options.setKeepAliveInterval(10);
             mqttClient.setCallback(new Re());
             mqttClient.connect(options, null, new IMqttActionListener() {
                 @Override
@@ -163,7 +162,7 @@ public class MqttUtils extends Service {
                     String[] topic1 = {selfServerTopic, DataArg.TopicAppServer};
                     try {
                         mqttClient.subscribe(topic1, Qos);
-                    } catch (MqttException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                     MainActivity.isRun = true;
@@ -175,7 +174,7 @@ public class MqttUtils extends Service {
 
                 }
             });
-        } catch (MqttException e) {
+        } catch (Exception e) {
             Toast.makeText(MainActivity.MainActivity.getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
             e.printStackTrace();
             MainActivity.isRun = false;
@@ -193,7 +192,7 @@ public class MqttUtils extends Service {
         try {
             mqttClient.disconnect(0);
             MainActivity.isRun = false;
-        } catch (MqttException e) {
+        } catch (Exception e) {
             Toast.makeText(MainActivity.MainActivity.getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
             e.printStackTrace();
         }
@@ -244,7 +243,7 @@ public class MqttUtils extends Service {
                         message.getBytes(StandardCharsets.UTF_8),
                         2,
                         false);
-            } catch (MqttException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
