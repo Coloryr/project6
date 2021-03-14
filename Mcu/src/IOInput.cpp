@@ -44,15 +44,23 @@ bool IOInput::readClose()
         delay(10);
         if (digitalRead(Close_IN) == LOW)
         {
+            Serial.println("Close Down");
             return true;
         }
+        Serial.println("Close Up");
         return false;
     }
+#ifdef DEBUG
+    Serial.println("Close Up");
+#endif
     return false;
 }
 bool IOInput::isClose()
 {
     uint16_t temp = readADC();
+#ifdef DEBUG
+    Serial.printf("ADC:%d\n", temp);
+#endif
     if (last)
     {
         if (temp > ADC_HIGH)

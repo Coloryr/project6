@@ -258,6 +258,8 @@ void NBIoT::setGnssOpen(bool open)
 bool NBIoT::readGnss()
 {
     Serial2.flush();
+    delay(2000);
+    Serial2.flush();
     Serial2.println("AT+QGNSSRD=\"NMEA/RMC\"");
     delay(200);
     String data = Serial2.readString();

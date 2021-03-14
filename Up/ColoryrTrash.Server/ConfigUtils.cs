@@ -508,6 +508,7 @@ namespace ColoryrTrash.Server
                     var obj = Groups[group];
                     var item = obj.List[uuid];
                     item.SIM = sim;
+                    item.Time = string.Format("{0:s}", DateTime.Now);
                     DesktopServer.UpdateTrashItem(group, item);
                 }
                 SaveUUID(uuid);

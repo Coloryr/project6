@@ -15,6 +15,7 @@ RTC_DATA_ATTR bool IsOpen;
 RTC_DATA_ATTR bool SendOnce;
 
 RTC_DATA_ATTR bool Init = false;
+RTC_DATA_ATTR bool Later = false;
 
 RTC_DATA_ATTR uint16_t timego = 0;
 RTC_DATA_ATTR uint16_t timego1 = 0;
@@ -24,6 +25,7 @@ RTC_DATA_ATTR uint8_t State;
 //2 初始化完成
 //3 距离传感器错误
 //5 快满了
+//6 定位失效
 uint8_t Capacity;
 
 #define uS_TO_S_FACTOR 1000000 /* Conversion factor for micro seconds to seconds */
@@ -64,18 +66,24 @@ void longTask()
 #endif
         busy = true;
         uint8_t time = 0;
+        IoT.setGnssOpen(true);
         for (;;)
         {
+            if (Later)
+                break;
             if (IoT.readGnss())
             {
                 break;
             }
             time++;
-            if (time >= 5)
+            if (time >= 2)
             {
-                IoT.setGnssOpen(true);
                 time = 0;
+                Later = true;
+                State = 6;
+                break;
             }
+            State = 0;
             delay(10000);
         }
         delay(200);
@@ -90,6 +98,7 @@ void longTask()
 
     if (timego1 > 30)
     {
+        Later = false;
         timego1 = 0;
         busy = true;
         IoT.test();
@@ -184,42 +193,6 @@ void Io_Read()
 void print_wakeup_reason()
 {
     esp_sleep_source_t wakeup_reason = esp_sleep_get_wakeup_cause();
-    // #ifdef DEBUG
-    //     Serial.println("低功耗唤醒");
-    //     switch (wakeup_reason)
-    //     {
-    //     case ESP_SLEEP_WAKEUP_UNDEFINED:
-    //         Serial.println("In case of deep sleep, reset was not caused by exit from deep sleep");
-    //         break;
-    //     case ESP_SLEEP_WAKEUP_ALL:
-    //         Serial.println("Not a wakeup cause, used to disable all wakeup sources with esp_sleep_disable_wakeup_source");
-    //         break;
-    //     case ESP_SLEEP_WAKEUP_EXT0:
-    //         Serial.println("Wakeup caused by external signal using RTC_IO");
-    //         break;
-    //     case ESP_SLEEP_WAKEUP_EXT1:
-    //         Serial.println("Wakeup caused by external signal using RTC_CNTL");
-    //         break;
-    //     case ESP_SLEEP_WAKEUP_TIMER:
-    //         Serial.println("Wakeup caused by timer");
-    //         break;
-    //     case ESP_SLEEP_WAKEUP_TOUCHPAD:
-    //         Serial.println("Wakeup caused by touchpad");
-    //         break;
-    //     case ESP_SLEEP_WAKEUP_ULP:
-    //         Serial.println("Wakeup caused by ULP program");
-    //         break;
-    //     case ESP_SLEEP_WAKEUP_GPIO:
-    //         Serial.println("Wakeup caused by GPIO (light sleep only)");
-    //         break;
-    //     case ESP_SLEEP_WAKEUP_UART:
-    //         Serial.println("Wakeup caused by UART (light sleep only)");
-    //         break;
-    //     default:
-    //         Serial.println("Wakeup was not caused by deep sleep");
-    //         break;
-    //     }
-    // #endif
     switch (wakeup_reason)
     {
     case ESP_SLEEP_WAKEUP_EXT0:
@@ -259,15 +232,15 @@ void setup()
         delay(200);
         Serial2.println("ATE0");
         delay(200);
+        IoT.init();
         State = 2;
         Init = true;
-        Serial.println("init");
     }
 
 #ifdef SLEEP
     print_wakeup_reason();
     esp_sleep_enable_ext0_wakeup(GPIO_NUM_12, 0);
-    esp_sleep_enable_timer_wakeup(TIME_TO_SLEEP * uS_TO_S_FACTOR * 2);
+    esp_sleep_enable_timer_wakeup(TIME_TO_SLEEP * uS_TO_S_FACTOR);
     esp_deep_sleep_start();
 #endif
 }

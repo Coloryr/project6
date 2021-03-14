@@ -38,6 +38,8 @@ namespace ColoryrTrash.Server.Mqtt
                 try
                 {
                     string uuid = temp[0];
+                    if (string.IsNullOrWhiteSpace(uuid))
+                        return;
                     string Y = temp[1];
                     string X = temp[2];
                     string YMD = temp[3];
