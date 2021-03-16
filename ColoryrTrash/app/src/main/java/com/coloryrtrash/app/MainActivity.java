@@ -202,7 +202,7 @@ public class MainActivity extends AppCompatActivity {
     public static void isConnect() {
         if (config.auto && !config.token.isEmpty()) {
             MqttUtils.checkLogin();
-        } else if (pass != null) {
+        } else if (pass != null && !pass.isEmpty()) {
             MqttUtils.Login();
         }
     }

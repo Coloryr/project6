@@ -35,7 +35,7 @@ public class MqttUtils extends Service {
         @Override
         public void connectionLost(Throwable cause) {
             MainActivity.isRun = false;
-            System.out.println("连接失败---");
+            MainActivity.loginOut();
         }
 
         @Override
@@ -62,6 +62,7 @@ public class MqttUtils extends Service {
                         if (!obj.Res) {
                             Toast.makeText(MainActivity.MainActivity.getApplicationContext(),
                                     "自动登录失败", Toast.LENGTH_SHORT).show();
+                            MainActivity.loginOut();
                         } else {
                             token = MainActivity.config.token;
                             MainActivity.loginDone();
@@ -171,13 +172,14 @@ public class MqttUtils extends Service {
 
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-
+                    Toast.makeText(MainActivity.MainActivity.getApplicationContext(), "服务器链接失败", Toast.LENGTH_LONG).show();
                 }
             });
         } catch (Exception e) {
             Toast.makeText(MainActivity.MainActivity.getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
             e.printStackTrace();
             MainActivity.isRun = false;
+            MainActivity.loginOut();
         }
     }
 
