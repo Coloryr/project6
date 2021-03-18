@@ -32,6 +32,8 @@ uint8_t Capacity;
 
 RTC_DATA_ATTR int bootCount = 0;
 
+void get();
+
 void longTask()
 {
     if (!IoT.isOnline())
@@ -57,6 +59,7 @@ void longTask()
         Serial.println("上传数据");
 #endif
         busy = true;
+        Serial2.println("ATE0");
         IoT.setGnssOpen(true);
         for (;;)
         {
@@ -68,6 +71,7 @@ void longTask()
             State = 0;
             return;
         }
+        get();
         delay(200);
         IoT.send();
         delay(200);
@@ -111,6 +115,11 @@ void tick()
 #endif
     if (!Close)
         return;
+    get();
+}
+
+void get()
+{
     VL53L0A.check();
     VL53L0B.check();
     if (VL53L0A.isOK())
@@ -202,6 +211,7 @@ void setup()
     Serial.setTimeout(100);
     Serial2.begin(115200);
     Serial.println("start");
+#ifdef SLEEP
     if (!Init)
     {
         State = 1;
@@ -219,11 +229,20 @@ void setup()
         State = 2;
         Init = true;
     }
+#endif
+#ifndef SLEEP
+    IO.init();
+    ThisEEPROM.init();
+    ThisServo.close();
+    VL53L0A.check();
+    VL53L0B.check();
+    Serial.println("init done");
+#endif
 
 #ifdef SLEEP
     print_wakeup_reason();
     esp_sleep_enable_ext0_wakeup(GPIO_NUM_12, 0);
-    esp_sleep_enable_timer_wakeup(TIME_TO_SLEEP * uS_TO_S_FACTOR);
+    esp_sleep_enable_timer_wakeup(TIME_TO_SLEEP * uS_TO_S_FACTOR * 2);
     esp_deep_sleep_start();
 #endif
 }

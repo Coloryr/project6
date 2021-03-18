@@ -1,14 +1,14 @@
 package com.coloryrtrash.app;
 
-import android.annotation.SuppressLint;
-import android.app.Notification;
 import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
+import android.util.Log;
 import android.widget.Toast;
+import androidx.annotation.Nullable;
 import com.alibaba.fastjson.JSON;
 import com.coloryrtrash.app.objs.DataArg;
 import com.coloryrtrash.app.objs.DataPackObj;
@@ -24,17 +24,35 @@ import java.util.List;
 
 public class MqttUtils extends Service {
 
-    public static final String BROKER_URL = "tcp://{0}:{1}";
-    private static String selfServerTopic;
-    private static String selfClientTopic;
-    @SuppressLint("StaticFieldLeak")
-    private static MqttAndroidClient mqttClient;
-    public static String token;
+    private static final String BROKER_URL = "tcp://{0}:{1}";
+    private String selfServerTopic;
+    private String selfClientTopic;
+    private MqttAndroidClient mqttClient;
+    private String token;
 
-    private static class Re implements MqttCallback {
+    private class connectclass implements IMqttActionListener {
+        @Override
+        public void onSuccess(IMqttToken asyncActionToken) {
+            selfServerTopic = DataArg.TopicAppServer + "/" + MainActivity.config.user;
+            selfClientTopic = DataArg.TopicAppClient + "/" + MainActivity.config.user;
+            int[] Qos = {2, 2};
+            String[] topic1 = {selfServerTopic, DataArg.TopicAppServer};
+            try {
+                mqttClient.subscribe(topic1, Qos);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            MainActivity.isConnect();
+        }
+
+        @Override
+        public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
+            Toast.makeText(MainActivity.MainActivity.getApplicationContext(), "服务器链接失败", Toast.LENGTH_LONG).show();
+        }
+    }
+    private class reclass implements MqttCallback {
         @Override
         public void connectionLost(Throwable cause) {
-            MainActivity.isRun = false;
             MainActivity.loginOut();
         }
 
@@ -129,18 +147,10 @@ public class MqttUtils extends Service {
         }
     }
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        startForeground(2, new Notification());
-    }
+    private final reclass re = new reclass();
+    private final connectclass connect = new connectclass();
 
-    @Override
-    public IBinder onBind(Intent intent) {
-        return null;
-    }
-
-    public static void start() {
+    public void start() {
         try {
             mqttClient = new MqttAndroidClient(MainActivity.MainActivity.getApplicationContext(), BROKER_URL
                     .replace("{0}", MainActivity.config.ip)
@@ -153,54 +163,64 @@ public class MqttUtils extends Service {
             options.setUserName(MainActivity.config.user);
             options.setConnectionTimeout(10);
             options.setKeepAliveInterval(10);
-            mqttClient.setCallback(new Re());
-            mqttClient.connect(options, null, new IMqttActionListener() {
-                @Override
-                public void onSuccess(IMqttToken asyncActionToken) {
-                    selfServerTopic = DataArg.TopicAppServer + "/" + MainActivity.config.user;
-                    selfClientTopic = DataArg.TopicAppClient + "/" + MainActivity.config.user;
-                    int[] Qos = {2, 2};
-                    String[] topic1 = {selfServerTopic, DataArg.TopicAppServer};
-                    try {
-                        mqttClient.subscribe(topic1, Qos);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    MainActivity.isRun = true;
-                    MainActivity.isConnect();
-                }
-
-                @Override
-                public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-                    Toast.makeText(MainActivity.MainActivity.getApplicationContext(), "服务器链接失败", Toast.LENGTH_LONG).show();
-                }
-            });
+            mqttClient.setCallback(re);
+            mqttClient.connect(options, null, connect);
         } catch (Exception e) {
             Toast.makeText(MainActivity.MainActivity.getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
             e.printStackTrace();
-            MainActivity.isRun = false;
             MainActivity.loginOut();
         }
     }
 
     @Override
+    public void onCreate() {
+        Log.i("ColoryrTrash", "onCreate");
+        super.onCreate();
+    }
+
+
+    @Override
     public void onDestroy() {
-        stopSelf();
-        stop();
+        Log.i("ColoryrTrash", "onDestroy");
         super.onDestroy();
     }
 
-    public static void stop() {
+    private final IBinder binder = new LocalBinder();
+
+    public class LocalBinder extends Binder {
+        MqttUtils getService() {
+            // Return this instance of LocalService so clients can call public methods
+            return MqttUtils.this;
+        }
+    }
+
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return binder;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    final Handler mHandler = new Handler();
+
+    private void toast(final CharSequence text) {
+        mHandler.post(() -> Toast.makeText(MainActivity.MainActivity.getApplicationContext(), text, Toast.LENGTH_SHORT).show());
+    }
+
+    public void stop() {
         try {
-            mqttClient.disconnect(0);
-            MainActivity.isRun = false;
+            if (mqttClient != null)
+                mqttClient.disconnect(0);
         } catch (Exception e) {
-            Toast.makeText(MainActivity.MainActivity.getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+            toast(e.getMessage());
             e.printStackTrace();
         }
     }
 
-    public static void getItems() {
+    public void getItems() {
         DataPackObj obj = new DataPackObj();
         obj.Token = token;
         obj.Type = DataType.GetUserTask;
@@ -208,7 +228,7 @@ public class MqttUtils extends Service {
         send(obj);
     }
 
-    public static void getInfo() {
+    public void getInfo() {
         DataPackObj obj = new DataPackObj();
         obj.Token = token;
         obj.Type = DataType.GetUserGroup;
@@ -216,7 +236,7 @@ public class MqttUtils extends Service {
         send(obj);
     }
 
-    public static void checkLogin() {
+    public void checkLogin() {
         Handler mainHandler = new Handler(Looper.getMainLooper());
         mainHandler.post(() -> {
             Toast.makeText(MainActivity.MainActivity.getApplicationContext(),
@@ -225,19 +245,17 @@ public class MqttUtils extends Service {
         DataPackObj obj = new DataPackObj();
         obj.Type = DataType.CheckLogin;
         obj.Token = token;
-        obj.Data = Tools.genSHA1(MainActivity.pass);
         send(obj);
     }
 
-    public static void Login() {
+    public void login(String pass) {
         DataPackObj obj = new DataPackObj();
         obj.Type = DataType.Login;
-        obj.Data = Tools.genSHA1(MainActivity.pass);
-        MainActivity.pass = "";
+        obj.Data = Tools.genSHA1(pass);
         send(obj);
     }
 
-    private static void send(Object object) {
+    private void send(Object object) {
         if (mqttClient.isConnected()) {
             String message = JSON.toJSONString(object);
             try {

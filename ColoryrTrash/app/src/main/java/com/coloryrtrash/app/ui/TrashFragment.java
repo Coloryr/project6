@@ -1,6 +1,7 @@
 package com.coloryrtrash.app.ui;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -52,7 +53,7 @@ public class TrashFragment extends Fragment {
         mySelfListView = root.findViewById(R.id.listview);
         mAdapter = new ItemAdapter(mData, root.getContext());
         mySelfListView.setAdapter(mAdapter);
-        mySelfListView.setCallback(MqttUtils::getItems);
+        mySelfListView.setCallback(()-> MainActivity.Mqtt.getItems());
         mySelfListView.setOnItemClickListener(this::onItemClick);
         return root;
     }

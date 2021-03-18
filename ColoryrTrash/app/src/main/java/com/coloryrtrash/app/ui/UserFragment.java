@@ -89,6 +89,7 @@ public class UserFragment extends Fragment {
             MainActivity.config.auto = auto.isChecked();
             MainActivity.config.token = "";
             MainActivity.start(pass.getText().toString());
+            Toast.makeText(v.getContext(), "正在登录", Toast.LENGTH_SHORT).show();
             MainActivity.save();
         } else {
             MainActivity.loginOut();

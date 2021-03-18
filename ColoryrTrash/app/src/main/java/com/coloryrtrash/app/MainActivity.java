@@ -6,9 +6,13 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -54,12 +58,12 @@ public class MainActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private NavigationView navigationView;
 
-    private static Intent intent;
-
-    public static boolean isRun;
     public static boolean isLogin;
-    public static String pass;
     public static String groupName;
+
+    private static String pass;
+
+    public static MqttUtils Mqtt;
 
     @SuppressLint("StaticFieldLeak")
     public static GPSUtils GPSUtils;
@@ -72,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
     public static void full() {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             PendingIntent pendingIntent = PendingIntent.getActivity(MainActivity.getApplicationContext(),
-                    1, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+                    1, null, PendingIntent.FLAG_CANCEL_CURRENT);
             Notification.Builder mBuilder = new Notification.Builder(MainActivity.getApplicationContext(),
                     "ColoryrTrash");
             mBuilder.setContentTitle("垃圾桶快满")
@@ -88,29 +92,13 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode) {
-            case PackageManager.PERMISSION_GRANTED: {
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED
-                        && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-                    // 权限被用户同意。
-                    // 执形我们想要的操作
-                } else {
-                    // 权限被用户拒绝了。
-                    //若是点击了拒绝和不再提醒
-                    //关于shouldShowRequestPermissionRationale
-                    // 1、当用户第一次被询问是否同意授权的时候，返回false
-                    // 2、当之前用户被询问是否授权，点击了false,并且点击了不在询问（第一次询问不会出现“不再询问”的选项），
-                    // 之后便会返回false
-                    // 3、当用户被关闭了app的权限，该app不允许授权的时候，返回false
-                    // 4、当用户上一次不同意授权，没有点击“不再询问”的时候，下一次返回true
-                    if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_COARSE_LOCATION)
-                            || !ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
-                        //提示用户前往设置界面自己打开权限
-                        Toast.makeText(this, "请前往设置界面打开权限", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-
+        if (requestCode == PackageManager.PERMISSION_GRANTED) {
+            if (!(grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                    && grantResults[1] == PackageManager.PERMISSION_GRANTED)) {
+                if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                        || !ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
+                    Toast.makeText(this, "请前往设置界面打开权限", Toast.LENGTH_SHORT).show();
                 }
             }
         }
@@ -173,14 +161,28 @@ public class MainActivity extends AppCompatActivity {
             save();
         }
 
-        intent = new Intent(this, MqttUtils.class);
-
-        MqttUtils.token = config.token;
-
-        if (config.auto) {
-            start("");
-        }
+        Intent intent = new Intent(this, MqttUtils.class);
+        bindService(intent, connection, Context.BIND_AUTO_CREATE);
     }
+
+    /** Defines callbacks for service binding, passed to bindService() */
+    private final ServiceConnection connection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName className,
+                                       IBinder service) {
+            MqttUtils.LocalBinder binder = (MqttUtils.LocalBinder) service;
+            Mqtt = binder.getService();
+            Mqtt.setToken(config.token);
+            if (config.auto) {
+                start("");
+            }
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+        }
+    };
 
     public static void local(TrashSaveObj item) {
         MainActivity.mapFragment.clear();
@@ -195,15 +197,16 @@ public class MainActivity extends AppCompatActivity {
         userName.setText(config.user);
         MainActivity.move(R.id.nav_home);
         MainActivity.userFragment.close();
-        MqttUtils.getInfo();
-        MqttUtils.getItems();
+        Mqtt.getInfo();
+        Mqtt.getItems();
     }
 
     public static void isConnect() {
         if (config.auto && !config.token.isEmpty()) {
-            MqttUtils.checkLogin();
+            Mqtt.checkLogin();
         } else if (pass != null && !pass.isEmpty()) {
-            MqttUtils.Login();
+            Mqtt.login(pass);
+            pass = "";
         }
     }
 
@@ -218,14 +221,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public static void start(String temp) {
-        if (isRun)
-            stop();
-        MqttUtils.start();
+        Mqtt.stop();
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         pass = temp;
-    }
-
-    public static void stop() {
-        MqttUtils.stop();
+        Mqtt.start();
     }
 
     public static void save() {

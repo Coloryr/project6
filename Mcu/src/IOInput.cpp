@@ -61,29 +61,21 @@ bool IOInput::isClose()
 #ifdef DEBUG
     Serial.printf("ADC:%d\n", temp);
 #endif
-    if (last)
+    if (temp > ADC_HIGH)
     {
-        if (temp > ADC_HIGH)
-        {
-            last = false;
-            return false;
-        }
-        else
-        {
-            return true;
-        }
+        last = true;
+        Serial.println("ADC close:true");
+        return true;
+    }
+    else if (temp < ADC_Low)
+    {
+        last = false;
+        Serial.println("ADC close:false");
+        return false;
     }
     else
     {
-        if (temp < ADC_Low)
-        {
-            last = true;
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return last;
     }
 }
 

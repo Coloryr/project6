@@ -1052,9 +1052,9 @@ namespace ColoryrTrash.Desktop.Windows
             }
             int temp = HardPack.ByteToInt(data[1], data[0]);
             WDis.Text = temp.ToString();
-            temp = HardPack.ByteToInt(data[2], data[3]);
+            temp = HardPack.ByteToInt(data[3], data[2]);
             WADC2.Text = temp.ToString();
-            temp = HardPack.ByteToInt(data[4], data[5]);
+            temp = HardPack.ByteToInt(data[5], data[4]);
             WADC1.Text = temp.ToString();
             WServo1.Text = data[6].ToString();
             WServo2.Text = data[7].ToString();

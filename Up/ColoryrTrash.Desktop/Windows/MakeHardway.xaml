@@ -99,14 +99,14 @@
         <GroupBox Header="硬件设置" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="4,208,0,0" Height="76" Width="425"
                   x:Name="Group3" IsEnabled="False">
             <Grid>
-                <Label Content="ADC开盖" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                <Label Content="ADC高" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="7,0,0,0"/>
                 <Button Content="编辑" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="367,27,0,0" Height="20" Width="50"
                         Name="SetSetting_Button" Click="SetSetting_Click"/>
                 <Button Content="读取" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="312,27,0,0" Height="20" Width="50"
                         Name="ReadSetting_Button" Click="ReadSetting_Click"/>
                 <TextBox Text="0" TextWrapping="Wrap" VerticalAlignment="Top" Height="20" HorizontalAlignment="Left" Width="43" Margin="60,3,0,0"
                          TextAlignment="Center" Name="WADC1" TextChanged="WADC_TextChanged"/>
-                <Label Content="ADC关盖" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="103,0,0,0"/>
+                <Label Content="ADC低" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="110,0,0,0"/>
                 <TextBox Text="0" TextWrapping="Wrap" VerticalAlignment="Top" Height="20" HorizontalAlignment="Left" Width="43" Margin="163,3,0,0"
                          TextAlignment="Center" Name="WADC2" TextChanged="WADC_TextChanged"/>
                 <Label Content="最大距离" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="1,25,0,0"/>

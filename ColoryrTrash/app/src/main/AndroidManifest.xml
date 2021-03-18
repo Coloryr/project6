@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.coloryrtrash.app">
+          xmlns:tools="http://schemas.android.com/tools" package="com.coloryrtrash.app">
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -31,7 +31,8 @@
                 android:name="com.baidu.lbsapi.API_KEY"
                 android:value="c8Sl7vOK6UGBoKVVStf2WAo8KaV5x61b" />
         <service android:name=".MqttUtils"
-                 android:persistent="true"/>
+                 android:persistent="true"
+                 android:permission="android.permission.BIND_JOB_SERVICE"/>
         <service android:name="com.baidu.location.f"
                  android:enabled="true"
                  android:process=":remote"/>
