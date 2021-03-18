@@ -47,6 +47,7 @@ public class MqttUtils extends Service {
 
         @Override
         public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
+            MainActivity.loginOut();
             Toast.makeText(MainActivity.MainActivity.getApplicationContext(), "服务器链接失败", Toast.LENGTH_LONG).show();
         }
     }

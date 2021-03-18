@@ -17,7 +17,6 @@ RTC_DATA_ATTR bool SendOnce;
 RTC_DATA_ATTR bool Init = false;
 
 RTC_DATA_ATTR uint16_t timego = 0;
-RTC_DATA_ATTR uint16_t timego1 = 0;
 RTC_DATA_ATTR uint8_t State;
 //0 ok
 //1 初始化
@@ -25,6 +24,7 @@ RTC_DATA_ATTR uint8_t State;
 //3 距离传感器错误
 //5 快满了
 //6 定位失效
+//7 电池电量过低
 uint8_t Capacity;
 
 #define uS_TO_S_FACTOR 1000000 /* Conversion factor for micro seconds to seconds */
@@ -55,47 +55,49 @@ void longTask()
 
     if (SendOnce)
     {
+        IoT.test();
+        if (!IoT.isMqtt())
+        {
+            return;
+        }
 #ifdef DEBUG
         Serial.println("上传数据");
 #endif
         busy = true;
         Serial2.println("ATE0");
         IoT.setGnssOpen(true);
-        for (;;)
+        if (IoT.readGnss())
         {
-            if (IoT.readGnss())
-            {
-                State = 6;
-                break;
-            }
             State = 0;
-            return;
+        }
+        else
+        {
+            State = 6;
         }
         get();
         delay(200);
         IoT.send();
-        delay(200);
-        IoT.sleep();
         timego = 0;
-        timego1 = 0;
-        SendOnce = false;
+        if (State == 0)
+        {
+            SendOnce = false;
+            IoT.setGnssOpen(false);
+            IoT.sleep();
+        }
         busy = false;
+    }
+
+    if (State != 7 && IO.readBattery() < 1950)
+    {
+        State = 7;
+        SendOnce = true;
     }
 
     timego++;
-    timego1++;
 
-    if (timego1 > 30)
-    {
-        timego1 = 0;
-        busy = true;
-        IoT.test();
-        delay(200);
-        IoT.sleep();
-        busy = false;
-    }
     if (timego > 360)
     {
+        State = 0;
         SendOnce = true;
     }
 }
@@ -183,6 +185,22 @@ void Io_Read()
     }
 }
 
+void read_task(void *date)
+{
+    for (;;)
+    {
+        if (IO.readOpen())
+        {
+            IsOpen = true;
+            ThisServo.open();
+            delay(5000);
+            IsOpen = false;
+            ThisServo.close();
+        }
+        delay(200);
+    }
+}
+
 void print_wakeup_reason()
 {
     esp_sleep_source_t wakeup_reason = esp_sleep_get_wakeup_cause();
@@ -240,9 +258,10 @@ void setup()
 #endif
 
 #ifdef SLEEP
+    xTaskCreate(read_task, "read", 1024, NULL, 5, NULL);
     print_wakeup_reason();
     esp_sleep_enable_ext0_wakeup(GPIO_NUM_12, 0);
-    esp_sleep_enable_timer_wakeup(TIME_TO_SLEEP * uS_TO_S_FACTOR * 2);
+    esp_sleep_enable_timer_wakeup(TIME_TO_SLEEP * uS_TO_S_FACTOR);
     esp_deep_sleep_start();
 #endif
 }
@@ -275,6 +294,7 @@ void loop()
     {
         count--;
     }
+    Serial.printf("now:%d\n", IO.readBattery());
     Up.tick();
     delay(200);
 #endif

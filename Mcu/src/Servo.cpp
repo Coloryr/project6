@@ -1,4 +1,5 @@
 #include "Servo.h"
+#include "IOInput.h"
 #include "main.h"
 
 RTC_DATA_ATTR uint8_t openset;
@@ -18,6 +19,10 @@ void Servo::init()
 
 void Servo::open()
 {
+    if (IO.readBattery() < 2100)
+    {
+        return;
+    }
 #ifdef DEBUG
     Serial.println("Open Trash");
 #endif

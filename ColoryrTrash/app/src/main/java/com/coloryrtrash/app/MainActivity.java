@@ -76,12 +76,12 @@ public class MainActivity extends AppCompatActivity {
     public static void full() {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             PendingIntent pendingIntent = PendingIntent.getActivity(MainActivity.getApplicationContext(),
-                    1, null, PendingIntent.FLAG_CANCEL_CURRENT);
+                    1, MainActivity.getIntent(), PendingIntent.FLAG_CANCEL_CURRENT);
             Notification.Builder mBuilder = new Notification.Builder(MainActivity.getApplicationContext(),
                     "ColoryrTrash");
-            mBuilder.setContentTitle("垃圾桶快满")
-                    .setContentText("有垃圾桶快满~")
-                    .setTicker("有垃圾桶快满~")
+            mBuilder.setContentTitle("垃圾桶警告")
+                    .setContentText("有垃圾桶出现警告")
+                    .setTicker("有垃圾桶出现警告")
                     .setSmallIcon(R.mipmap.icon)
                     .setContentIntent(pendingIntent)
                     .setAutoCancel(true);
@@ -165,9 +165,7 @@ public class MainActivity extends AppCompatActivity {
         bindService(intent, connection, Context.BIND_AUTO_CREATE);
     }
 
-    /** Defines callbacks for service binding, passed to bindService() */
     private final ServiceConnection connection = new ServiceConnection() {
-
         @Override
         public void onServiceConnected(ComponentName className,
                                        IBinder service) {

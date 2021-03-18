@@ -351,7 +351,7 @@ void NBIoT::startMqtt()
     Serial2.readString();
     Serial2.printf("AT+QMTOPEN=0,\"%d.%d.%d.%d\",%d", IP[0], IP[1], IP[2], IP[3], Port);
     Serial2.println();
-    delay(10000);
+    delay(2000);
     String data = Serial2.readString();
     data.trim();
     if (!data.endsWith("+QMTOPEN: 0,0") && !data.endsWith("+QMTSTAT: 0,3"))
@@ -374,7 +374,7 @@ void NBIoT::startMqtt()
     Serial2.readString();
     Serial2.printf("AT+QMTCONN=0,\"%s\",\"%s\",\"%s\"", SelfUUID.c_str(), User, Pass);
     Serial2.println();
-    delay(10000);
+    delay(2000);
     data = Serial2.readString();
     data.trim();
     if (!data.endsWith("+QMTCONN: 0,0,0"))
