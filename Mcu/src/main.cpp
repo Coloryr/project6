@@ -15,7 +15,6 @@ RTC_DATA_ATTR bool IsOpen;
 RTC_DATA_ATTR bool SendOnce;
 
 RTC_DATA_ATTR bool Init = false;
-RTC_DATA_ATTR bool Later = false;
 
 RTC_DATA_ATTR uint16_t timego = 0;
 RTC_DATA_ATTR uint16_t timego1 = 0;
@@ -35,17 +34,12 @@ RTC_DATA_ATTR int bootCount = 0;
 
 void longTask()
 {
-    timego++;
-    timego1++;
-
     if (!IoT.isOnline())
     {
         busy = true;
         IoT.init();
         delay(200);
         IoT.test();
-        delay(200);
-        IoT.sleep();
         busy = false;
     }
     else if (!IoT.isMqtt())
@@ -54,8 +48,6 @@ void longTask()
         IoT.startMqtt();
         delay(200);
         IoT.sendSIM();
-        delay(200);
-        IoT.sleep();
         busy = false;
     }
 
@@ -65,26 +57,16 @@ void longTask()
         Serial.println("上传数据");
 #endif
         busy = true;
-        uint8_t time = 0;
         IoT.setGnssOpen(true);
         for (;;)
         {
-            if (Later)
-                break;
             if (IoT.readGnss())
             {
-                break;
-            }
-            time++;
-            if (time >= 2)
-            {
-                time = 0;
-                Later = true;
                 State = 6;
                 break;
             }
             State = 0;
-            delay(10000);
+            return;
         }
         delay(200);
         IoT.send();
@@ -96,9 +78,11 @@ void longTask()
         busy = false;
     }
 
+    timego++;
+    timego1++;
+
     if (timego1 > 30)
     {
-        Later = false;
         timego1 = 0;
         busy = true;
         IoT.test();
@@ -217,7 +201,6 @@ void setup()
     Serial.begin(115200);
     Serial.setTimeout(100);
     Serial2.begin(115200);
-    Serial2.setTimeout(100);
     Serial.println("start");
     if (!Init)
     {
