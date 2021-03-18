@@ -55,6 +55,7 @@ void longTask()
 
     if (SendOnce)
     {
+        delay(200);
         IoT.test();
         if (!IoT.isMqtt())
         {
@@ -63,6 +64,7 @@ void longTask()
 #ifdef DEBUG
         Serial.println("上传数据");
 #endif
+        get();
         busy = true;
         Serial2.println("ATE0");
         IoT.setGnssOpen(true);
@@ -74,7 +76,6 @@ void longTask()
         {
             State = 6;
         }
-        get();
         delay(200);
         IoT.send();
         timego = 0;
