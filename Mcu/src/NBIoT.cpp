@@ -43,11 +43,14 @@ void NBIoT::test()
 #endif
         Serial2.readString();
         Serial2.println("AT+QMTCONN?");
-        delay(300);
+        delay(500);
         String data = Serial2.readString();
         data.trim();
         if (!data.startsWith("+QMTCONN: 0,3"))
         {
+#ifdef DEBUG
+            Serial.println(data.c_str());
+#endif
             mqtt = false;
         }
         else
@@ -250,11 +253,28 @@ void NBIoT::setGnssOpen(bool open)
     if (!data.startsWith("+QGNSSC: 1"))
     {
         Serial2.println("AT+QGNSSC=1");
+        delay(300);
+        Serial2.println("AT+QGNSSAGPS=1");
+        delay(200);
+        Serial2.readString();
     }
-    Serial2.println("AT+QGNSSAGPS=1");
-    delay(200);
-    Serial2.readString();
+    else
+    {
+        Serial.println("GPS已开启");
+    }
 }
+
+#ifdef DEBUG
+void gpsTest()
+{
+    Serial2.readString();
+    Serial2.println("AT+QGNSSRD?");
+    delay(200);
+    String data = Serial2.readString();
+    data.trim();
+    Serial.println(data.c_str());
+}
+#endif
 
 bool NBIoT::readGnss()
 {
@@ -270,6 +290,7 @@ bool NBIoT::readGnss()
     {
 #ifdef DEBUG
         Serial.println("无效的定位");
+        gpsTest();
 #endif
         return false;
     }
@@ -278,6 +299,7 @@ bool NBIoT::readGnss()
     {
 #ifdef DEBUG
         Serial.println("无效的定位");
+        gpsTest();
 #endif
         return false;
     }
@@ -285,9 +307,15 @@ bool NBIoT::readGnss()
     data = data.substring(10);
     if (data[0] == 'V')
     {
+        data = data.substring(8);
+        Serial.println(data.c_str());
+        Time_YMD = data.substring(0, 6);
+        Serial.printf("当前时间:%s, %s\n", Time_YMD.c_str(), Time_HMS.c_str());
 #ifdef DEBUG
         Serial.println("无效的定位");
+        gpsTest();
 #endif
+
         return false;
     }
     else

@@ -13,6 +13,7 @@ RTC_DATA_ATTR bool Close;
 RTC_DATA_ATTR bool busy;
 RTC_DATA_ATTR bool IsOpen;
 RTC_DATA_ATTR bool SendOnce;
+RTC_DATA_ATTR bool LocalDone;
 
 RTC_DATA_ATTR bool Init = false;
 
@@ -53,38 +54,53 @@ void longTask()
         busy = false;
     }
 
-    if (SendOnce)
+    if (!LocalDone)
     {
-        delay(200);
-        IoT.test();
-        if (!IoT.isMqtt())
-        {
-            return;
-        }
-#ifdef DEBUG
-        Serial.println("上传数据");
-#endif
-        get();
-        busy = true;
-        Serial2.println("ATE0");
-        IoT.setGnssOpen(true);
         if (IoT.readGnss())
         {
+            LocalDone = true;
+            SendOnce = true;
             State = 0;
         }
         else
         {
+            LocalDone = false;
+            State = 6;
+        }
+    }
+
+    if (SendOnce)
+    {
+        get();
+        busy = true;
+        Serial2.println("ATE0");
+        delay(200);
+        IoT.setGnssOpen(true);
+        delay(200);
+        IoT.test();
+        delay(200);
+        if (!IoT.isMqtt())
+        {
+            return;
+        }
+        delay(200);
+        if (!IoT.readGnss())
+        {
+            LocalDone = false;
             State = 6;
         }
         delay(200);
+#ifdef DEBUG
+        Serial.println("上传数据");
+#endif
         IoT.send();
         timego = 0;
         if (State == 0)
         {
-            SendOnce = false;
             IoT.setGnssOpen(false);
             IoT.sleep();
         }
+        SendOnce = false;
         busy = false;
     }
 

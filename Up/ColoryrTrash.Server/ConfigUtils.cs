@@ -531,8 +531,10 @@ namespace ColoryrTrash.Server
                     var obj = Groups[group];
                     var item = obj.List[uuid];
                     item.Capacity = capacity;
-                    item.X = x;
-                    item.Y = y;
+                    if (x != 0)
+                        item.X = x;
+                    if (y != 0)
+                        item.Y = y;
                     item.Open = open;
                     item.State = state;
                     item.Time = Time;
