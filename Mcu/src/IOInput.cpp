@@ -33,6 +33,9 @@ bool IOInput::readOpen()
         {
             delay(10);
         }
+#ifdef DEBUG
+        Serial.println("open");
+#endif
         return true;
     }
     return false;

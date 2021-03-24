@@ -311,7 +311,9 @@ void loop()
     {
         count--;
     }
+#ifdef DEBUG
     Serial.printf("now:%d\n", IO.readBattery());
+#endif
     Up.tick();
     delay(200);
 #endif

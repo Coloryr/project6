@@ -21,6 +21,9 @@ void Servo::open()
 {
     if (IO.readBattery() < 2100)
     {
+#ifdef DEBUG
+    Serial.println("No Power");
+#endif    
         return;
     }
 #ifdef DEBUG
